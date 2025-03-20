@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DocuFind - Lost Document Recovery System</title>
-    <link rel="stylesheet" href="./styles.css">
+    <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
     <header>
@@ -40,72 +40,91 @@
                 </div>
             </div>
         </div>
+        <button class="mobile-menu-btn">
+            <i class="fas fa-bars"></i>
+        </button>
     </header>
 
     <main id="main-content">
         <!-- Home Page -->
         <div id="home" class="page active">
             <section class="hero">
-                <h2>Find Your Lost Documents</h2>
-                <p>DocuFind helps you recover your lost documents quickly and securely. Whether you've lost your ID, passport, or driver's license, our platform connects document finders with owners.</p>
-                <div class="hero-buttons">
-                    <button id="search-docs-btn" class="btn btn-primary btn-large">
-                        <i class="fas fa-search"></i> Search Documents
-                    </button>
-                    <button id="report-found-btn" class="btn btn-secondary btn-large">
-                        <i class="fas fa-plus-circle"></i> Report Found Document
-                    </button>
+                <div class="hero-content">
+                    <h2>Find Your Lost Documents</h2>
+                    <p>DocuFind helps you recover your lost documents quickly and securely. Whether you've lost your ID, passport, or driver's license, our platform connects document finders with owners.</p>
+                    <div class="hero-buttons">
+                        <button id="search-docs-btn" class="btn btn-primary btn-large">
+                            <i class="fas fa-search"></i> Search Documents
+                        </button>
+                        <button id="report-found-btn" class="btn btn-secondary btn-large">
+                            <i class="fas fa-plus-circle"></i> Report Found Document
+                        </button>
+                    </div>
+                </div>
+                <div class="hero-image">
+                    <img src="https://images.unsplash.com/photo-1568219656418-15c329312bf1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="Documents illustration">
                 </div>
             </section>
 
             <div class="container">
-                <section>
+                <section class="how-it-works">
                     <h2>How It Works</h2>
                     <p class="section-description">Our platform makes it easy to recover lost documents through a simple process.</p>
-                    <div class="features">
-                        <div class="feature-card">
-                            <i class="fas fa-upload"></i>
+                    
+                    <div class="process-steps">
+                        <div class="process-step">
+                            <div class="step-number">1</div>
+                            <div class="step-icon"><i class="fas fa-upload"></i></div>
                             <h3>Report Found Documents</h3>
                             <p>Found a document? Report it on our platform to help the owner recover it and earn a reward.</p>
                         </div>
-                        <div class="feature-card">
-                            <i class="fas fa-search"></i>
+                        <div class="process-step">
+                            <div class="step-number">2</div>
+                            <div class="step-icon"><i class="fas fa-search"></i></div>
                             <h3>Search for Lost Documents</h3>
                             <p>Lost a document? Search our database to see if someone has found and reported it.</p>
                         </div>
-                        <div class="feature-card">
-                            <i class="fas fa-map-marker-alt"></i>
+                        <div class="process-step">
+                            <div class="step-number">3</div>
+                            <div class="step-icon"><i class="fas fa-map-marker-alt"></i></div>
                             <h3>Locate Collection Points</h3>
                             <p>Find the nearest collection point where your document is being held for safe retrieval.</p>
                         </div>
-                        <div class="feature-card">
-                            <i class="fas fa-handshake"></i>
+                        <div class="process-step">
+                            <div class="step-number">4</div>
+                            <div class="step-icon"><i class="fas fa-handshake"></i></div>
                             <h3>Claim Your Document</h3>
                             <p>Verify your identity and claim your document from one of our secure collection points.</p>
                         </div>
                     </div>
                 </section>
 
-                <section class="stats">
-                    <div class="stat">
-                        <h3>5,000+</h3>
-                        <p>Documents Recovered</p>
-                    </div>
-                    <div class="stat">
-                        <h3>10,000+</h3>
-                        <p>Registered Users</p>
-                    </div>
-                    <div class="stat">
-                        <h3>50+</h3>
-                        <p>Collection Points</p>
-                    </div>
-                    <div class="stat">
-                        <h3>98%</h3>
-                        <p>Success Rate</p>
+                <section class="stats-section">
+                    <div class="stats-container">
+                        <div class="stat">
+                            <div class="stat-icon"><i class="fas fa-id-card"></i></div>
+                            <h3>5,000+</h3>
+                            <p>Documents Recovered</p>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-icon"><i class="fas fa-users"></i></div>
+                            <h3>10,000+</h3>
+                            <p>Registered Users</p>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-icon"><i class="fas fa-building"></i></div>
+                            <h3>50+</h3>
+                            <p>Collection Points</p>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+                            <h3>98%</h3>
+                            <p>Success Rate</p>
+                        </div>
                     </div>
                 </section>
 
-                <section>
+                <section class="document-types">
                     <h2>Document Types We Handle</h2>
                     <p class="section-description">We help recover a wide range of important documents.</p>
                     <div class="features">
@@ -131,14 +150,67 @@
                         </div>
                     </div>
                 </section>
+
+                <section class="testimonials">
+                    <h2>Success Stories</h2>
+                    <p class="section-description">See how DocuFind has helped people recover their important documents.</p>
+                    
+                    <div class="testimonial-slider">
+                        <div class="testimonial">
+                            <div class="testimonial-content">
+                                <p>"I lost my passport while traveling and was in a panic. Thanks to DocuFind, someone reported finding it, and I was able to recover it within 24 hours!"</p>
+                            </div>
+                            <div class="testimonial-author">
+                                <div class="author-avatar">
+                                    <i class="fas fa-user-circle"></i>
+                                </div>
+                                <div class="author-info">
+                                    <h4>Sarah Johnson</h4>
+                                    <p>Passport Recovered</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="testimonial">
+                            <div class="testimonial-content">
+                                <p>"I found a wallet with several IDs and reported it on DocuFind. The owner was so grateful, and I received a reward for my honesty. Great platform!"</p>
+                            </div>
+                            <div class="testimonial-author">
+                                <div class="author-avatar">
+                                    <i class="fas fa-user-circle"></i>
+                                </div>
+                                <div class="author-info">
+                                    <h4>Michael Chen</h4>
+                                    <p>Document Reporter</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="cta-section">
+                    <div class="cta-content">
+                        <h2>Ready to Find Your Lost Document?</h2>
+                        <p>Join thousands of users who have successfully recovered their important documents through our platform.</p>
+                        <div class="cta-buttons">
+                            <button class="btn btn-primary btn-large" onclick="showPage('search')">
+                                <i class="fas fa-search"></i> Search Now
+                            </button>
+                            <button class="btn btn-outline btn-large" onclick="openRegisterModal()">
+                                <i class="fas fa-user-plus"></i> Create Account
+                            </button>
+                        </div>
+                    </div>
+                </section>
             </div>
         </div>
 
         <!-- Search Page -->
         <div id="search" class="page">
             <div class="container">
-                <h2>Search for Documents</h2>
-                <p class="section-description">Looking for a lost document? Search our database to see if it has been found and reported.</p>
+                <div class="page-header">
+                    <h2>Search for Documents</h2>
+                    <p class="section-description">Looking for a lost document? Search our database to see if it has been found and reported.</p>
+                </div>
 
                 <div class="search-container">
                     <div class="search-box">
@@ -198,8 +270,10 @@
         <!-- Report Page -->
         <div id="report" class="page">
             <div class="container">
-                <h2>Report a Found Document</h2>
-                <p class="section-description">Help someone recover their lost document by reporting it here. You'll be eligible for a reward when the document is claimed.</p>
+                <div class="page-header">
+                    <h2>Report a Found Document</h2>
+                    <p class="section-description">Help someone recover their lost document by reporting it here. You'll be eligible for a reward when the document is claimed.</p>
+                </div>
 
                 <div id="report-login-required" class="login-required-message" style="display: none;">
                     <i class="fas fa-lock"></i>
@@ -213,41 +287,43 @@
                         <p><i class="fas fa-info-circle"></i> Please provide accurate information about the document you found. This will help the owner identify and claim it.</p>
                     </div>
 
-                    <div class="form-group">
-                        <label for="document-type">Document Type</label>
-                        <select id="document-type" required>
-                            <option value="">Select Document Type</option>
-                        </select>
-                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="document-type">Document Type</label>
+                            <select id="document-type" required>
+                                <option value="">Select Document Type</option>
+                            </select>
+                        </div>
 
-                    <div class="form-group">
-                        <label for="document-number">Document Number</label>
-                        <input type="text" id="document-number" placeholder="Enter the document number" required>
-                        <p class="form-hint">This is usually printed on the document (e.g., ID number, passport number)</p>
-                    </div>
+                        <div class="form-group">
+                            <label for="document-number">Document Number</label>
+                            <input type="text" id="document-number" placeholder="Enter the document number" required>
+                            <p class="form-hint">This is usually printed on the document (e.g., ID number, passport number)</p>
+                        </div>
 
-                    <div class="form-group">
-                        <label for="document-name">Name on Document</label>
-                        <input type="text" id="document-name" placeholder="Enter the name as it appears on the document" required>
-                    </div>
+                        <div class="form-group">
+                            <label for="document-name">Name on Document</label>
+                            <input type="text" id="document-name" placeholder="Enter the name as it appears on the document" required>
+                        </div>
 
-                    <div class="form-group">
-                        <label for="found-location">Location Found</label>
-                        <select id="found-location" required>
-                            <option value="">Select Location</option>
-                        </select>
-                    </div>
+                        <div class="form-group">
+                            <label for="found-location">Location Found</label>
+                            <select id="found-location" required>
+                                <option value="">Select Location</option>
+                            </select>
+                        </div>
 
-                    <div class="form-group">
-                        <label for="found-outlet">Specific Outlet</label>
-                        <select id="found-outlet" required>
-                            <option value="">Select Outlet</option>
-                        </select>
-                    </div>
+                        <div class="form-group">
+                            <label for="found-outlet">Specific Outlet</label>
+                            <select id="found-outlet" required>
+                                <option value="">Select Outlet</option>
+                            </select>
+                        </div>
 
-                    <div class="form-group">
-                        <label for="found-date">Date Found</label>
-                        <input type="date" id="found-date" required>
+                        <div class="form-group">
+                            <label for="found-date">Date Found</label>
+                            <input type="date" id="found-date" required>
+                        </div>
                     </div>
 
                     <div class="form-group">
@@ -278,8 +354,10 @@
         <!-- Locations Page -->
         <div id="locations" class="page">
             <div class="container">
-                <h2>Our Locations</h2>
-                <p class="section-description">Find the nearest DocuFind location where you can report or collect documents.</p>
+                <div class="page-header">
+                    <h2>Our Locations</h2>
+                    <p class="section-description">Find the nearest DocuFind location where you can report or collect documents.</p>
+                </div>
 
                 <div class="locations-search">
                     <input type="text" placeholder="Search locations...">
@@ -297,7 +375,9 @@
         <!-- Dashboard Page -->
         <div id="dashboard" class="page">
             <div class="container">
-                <h2>Dashboard</h2>
+                <div class="page-header">
+                    <h2>Dashboard</h2>
+                </div>
                 <div id="dashboard-content">
                     <!-- Dashboard content will be populated here -->
                 </div>
@@ -307,7 +387,9 @@
         <!-- Profile Page -->
         <div id="profile" class="page">
             <div class="container">
-                <h2>My Profile</h2>
+                <div class="page-header">
+                    <h2>My Profile</h2>
+                </div>
                 <div id="profile-content">
                     <!-- Profile content will be populated here -->
                 </div>
@@ -317,8 +399,10 @@
         <!-- About Page -->
         <div id="about" class="page">
             <div class="container">
-                <h2>About DocuFind</h2>
-                <p class="section-description">Learn more about our mission to help people recover their lost documents.</p>
+                <div class="page-header">
+                    <h2>About DocuFind</h2>
+                    <p class="section-description">Learn more about our mission to help people recover their lost documents.</p>
+                </div>
 
                 <div class="about-content">
                     <div class="about-section">
@@ -503,6 +587,6 @@
         </div>
     </div>
 
-    <script src="./app.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>
