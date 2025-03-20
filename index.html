@@ -304,35 +304,196 @@
             </div>
         </div>
 
-        <!-- Other pages remain the same -->
         <!-- Report Page -->
         <div id="report" class="page">
-            <!-- Content remains the same -->
+            <div class="container">
+                <div class="page-header">
+                    <h2>Report a Found Document</h2>
+                    <p class="section-description">Help someone recover their lost document by reporting it here.</p>
+                </div>
+
+                <div id="report-login-required" class="login-required-message" style="display: none;">
+                    <i class="fas fa-lock"></i>
+                    <h3>Login Required</h3>
+                    <p>You need to <a href="#" id="report-login-link">login</a> to report a found document.</p>
+                    <p>Don't have an account? <a href="#" id="report-register-link">Register now</a> as a Document Finder to get started.</p>
+                </div>
+
+                <form id="report-form" class="form-container">
+                    <div class="form-notice">
+                        <p>
+                            <i class="fas fa-info-circle"></i>
+                            <span>By reporting a found document, you agree to hand it over to the nearest collection point. The document owner will be notified, and you may receive a reward once the document is claimed.</span>
+                        </p>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="document-type">Document Type*</label>
+                            <select id="document-type" required>
+                                <option value="">Select Document Type</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="document-number">Document Number*</label>
+                            <input type="text" id="document-number" placeholder="Enter the document number" required>
+                            <div class="form-hint">This is usually found on the front or back of the document.</div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="document-name">Name on Document*</label>
+                        <input type="text" id="document-name" placeholder="Enter the name as it appears on the document" required>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="found-location">Found Location*</label>
+                            <select id="found-location" required>
+                                <option value="">Select Location</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="found-outlet">Collection Point*</label>
+                            <select id="found-outlet" required>
+                                <option value="">Select Collection Point</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="found-date">Date Found*</label>
+                        <input type="date" id="found-date" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="additional-details">Additional Details</label>
+                        <textarea id="additional-details" placeholder="Provide any additional details about where and how you found the document"></textarea>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary btn-large">
+                            <i class="fas fa-paper-plane"></i> Submit Report
+                        </button>
+                        <button type="reset" class="btn btn-outline btn-large">
+                            <i class="fas fa-redo"></i> Reset Form
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
 
         <!-- Locations Page -->
         <div id="locations" class="page">
-            <!-- Content remains the same -->
+            <div class="container">
+                <div class="page-header">
+                    <h2>Collection Points</h2>
+                    <p class="section-description">Find the nearest collection point to drop off or collect documents.</p>
+                </div>
+
+                <div class="locations-search">
+                    <input type="text" id="location-search-input" placeholder="Search by location name or area...">
+                    <button id="location-search-button" class="btn btn-primary">
+                        <i class="fas fa-search"></i> Search
+                    </button>
+                </div>
+
+                <div class="locations-container" id="locations-container">
+                    <!-- Locations will be populated here -->
+                </div>
+            </div>
         </div>
 
         <!-- Dashboard Page -->
         <div id="dashboard" class="page">
-            <!-- Content remains the same -->
+            <div class="container" id="dashboard-content">
+                <!-- Dashboard content will be populated based on user type -->
+            </div>
         </div>
 
         <!-- Profile Page -->
         <div id="profile" class="page">
-            <!-- Content remains the same -->
+            <div class="container" id="profile-content">
+                <!-- Profile content will be populated based on user -->
+            </div>
         </div>
 
         <!-- About Page -->
         <div id="about" class="page">
-            <!-- Content remains the same -->
+            <div class="container">
+                <div class="page-header">
+                    <h2>About DocuFind</h2>
+                    <p class="section-description">Learn more about our mission to help people recover their lost documents.</p>
+                </div>
+
+                <div class="about-content">
+                    <div class="about-section">
+                        <h3>Our Mission</h3>
+                        <p>DocuFind was founded with a simple mission: to help people recover their lost documents quickly and securely. We understand the stress and inconvenience of losing important documents, and we've created a platform that connects document finders with owners.</p>
+                    </div>
+
+                    <div class="about-section">
+                        <h3>How We Started</h3>
+                        <p>The idea for DocuFind came when our founder lost his passport while traveling. After experiencing the frustration of trying to recover it, he realized there was no centralized system for reporting and finding lost documents. DocuFind was born to fill this gap.</p>
+                    </div>
+
+                    <div class="about-section">
+                        <h3>Our Team</h3>
+                        <p>We are a team of passionate individuals dedicated to making document recovery as simple and stress-free as possible. Our team includes technology experts, security specialists, and customer service professionals who work together to provide the best possible service.</p>
+                    </div>
+
+                    <div class="about-section">
+                        <h3>Security & Privacy</h3>
+                        <p>At DocuFind, we take security and privacy seriously. All reported documents are stored securely, and personal information is protected. We verify the identity of document owners before allowing them to claim their documents, ensuring that documents are returned to their rightful owners.</p>
+                    </div>
+                </div>
+            </div>
         </div>
     </main>
 
     <footer>
-        <!-- Footer content remains the same -->
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>DocuFind</h3>
+                    <p>Helping people recover lost documents quickly and securely.</p>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="#" data-page="home">Home</a></li>
+                        <li><a href="#" data-page="search">Search</a></li>
+                        <li><a href="#" data-page="report">Report Found</a></li>
+                        <li><a href="#" data-page="locations">Locations</a></li>
+                        <li><a href="#" data-page="about">About</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Help & Support</h3>
+                    <ul>
+                        <li><a href="#">FAQs</a></li>
+                        <li><a href="#">Contact Us</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Contact</h3>
+                    <p><i class="fas fa-map-marker-alt"></i> 123 Main Street, City, Country</p>
+                    <p><i class="fas fa-phone"></i> +1 234 567 890</p>
+                    <p><i class="fas fa-envelope"></i> info@docufind.com</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 DocuFind. All rights reserved.</p>
+            </div>
+        </div>
     </footer>
 
     <!-- Modals -->
@@ -466,4 +627,3 @@
     <script src="app.js"></script>
 </body>
 </html>
-

@@ -1,93 +1,93 @@
 // DOM Elements
-const mainNav = document.getElementById("main-nav")
-const mainContent = document.getElementById("main-content")
-const authSection = document.getElementById("auth-section")
-const userProfile = document.getElementById("user-profile")
-const usernameDisplay = document.getElementById("username-display")
-const loginBtn = document.getElementById("login-btn")
-const registerBtn = document.getElementById("register-btn")
-const logoutBtn = document.getElementById("logout-btn")
-const modalContainer = document.getElementById("modal-container")
-const loginModal = document.getElementById("login-modal")
-const registerModal = document.getElementById("register-modal")
-const documentDetailsModal = document.getElementById("document-details-modal")
-const loginForm = document.getElementById("login-form")
-const registerForm = document.getElementById("register-form")
-const switchToRegister = document.getElementById("switch-to-register")
-const switchToLogin = document.getElementById("switch-to-login")
-const registerUserType = document.getElementById("register-user-type")
-const agentLocationGroup = document.getElementById("agent-location-group")
-const agentOutletGroup = document.getElementById("agent-outlet-group")
-const searchDocsBtn = document.getElementById("search-docs-btn")
-const reportFoundBtn = document.getElementById("report-found-btn")
-const reportForm = document.getElementById("report-form")
-const reportLoginRequired = document.getElementById("report-login-required")
-const searchInput = document.getElementById("search-input")
-const searchButton = document.getElementById("search-button")
-const resultsCount = document.getElementById("results-count")
-const resultsList = document.getElementById("results-list")
-const pagination = document.getElementById("pagination")
-const locationFilter = document.getElementById("location-filter")
-const foundLocation = document.getElementById("found-location")
-const foundOutlet = document.getElementById("found-outlet")
-const agentLocation = document.getElementById("agent-location")
-const agentOutlet = document.getElementById("agent-outlet")
-const locationsContainer = document.getElementById("locations-container")
+const mainNav = document.getElementById("main-nav");
+const mainContent = document.getElementById("main-content");
+const authSection = document.getElementById("auth-section");
+const userProfile = document.getElementById("user-profile");
+const usernameDisplay = document.getElementById("username-display");
+const loginBtn = document.getElementById("login-btn");
+const registerBtn = document.getElementById("register-btn");
+const logoutBtn = document.getElementById("logout-btn");
+const modalContainer = document.getElementById("modal-container");
+const loginModal = document.getElementById("login-modal");
+const registerModal = document.getElementById("register-modal");
+const documentDetailsModal = document.getElementById("document-details-modal");
+const loginForm = document.getElementById("login-form");
+const registerForm = document.getElementById("register-form");
+const switchToRegister = document.getElementById("switch-to-register");
+const switchToLogin = document.getElementById("switch-to-login");
+const registerUserType = document.getElementById("register-user-type");
+const agentLocationGroup = document.getElementById("agent-location-group");
+const agentOutletGroup = document.getElementById("agent-outlet-group");
+const searchDocsBtn = document.getElementById("search-docs-btn");
+const reportFoundBtn = document.getElementById("report-found-btn");
+const reportForm = document.getElementById("report-form");
+const reportLoginRequired = document.getElementById("report-login-required");
+const searchInput = document.getElementById("search-input");
+const searchButton = document.getElementById("search-button");
+const resultsCount = document.getElementById("results-count");
+const resultsList = document.getElementById("results-list");
+const pagination = document.getElementById("pagination");
+const locationFilter = document.getElementById("location-filter");
+const foundLocation = document.getElementById("found-location");
+const foundOutlet = document.getElementById("found-outlet");
+const agentLocation = document.getElementById("agent-location");
+const agentOutlet = document.getElementById("agent-outlet");
+const locationsContainer = document.getElementById("locations-container");
 
 // DOM Elements for Home Search
-const homeSearchInput = document.getElementById("home-search-input")
-const homeSearchButton = document.getElementById("home-search-button")
-const homeSearchResultsSection = document.getElementById("home-search-results-section")
-const homeResultsList = document.getElementById("home-results-list")
-const homeResultsCount = document.getElementById("home-results-count")
-const homePagination = document.getElementById("home-pagination")
-const clearHomeSearch = document.getElementById("clear-home-search")
-const loginRequiredModal = document.getElementById("login-required-modal")
-const loginRequiredLoginBtn = document.getElementById("login-required-login-btn")
-const loginRequiredRegisterBtn = document.getElementById("login-required-register-btn")
+const homeSearchInput = document.getElementById("home-search-input");
+const homeSearchButton = document.getElementById("home-search-button");
+const homeSearchResultsSection = document.getElementById("home-search-results-section");
+const homeResultsList = document.getElementById("home-results-list");
+const homeResultsCount = document.getElementById("home-results-count");
+const homePagination = document.getElementById("home-pagination");
+const clearHomeSearch = document.getElementById("clear-home-search");
+const loginRequiredModal = document.getElementById("login-required-modal");
+const loginRequiredLoginBtn = document.getElementById("login-required-login-btn");
+const loginRequiredRegisterBtn = document.getElementById("login-required-register-btn");
 
 // Store the current document being viewed
-let currentViewingDocument = null
+let currentViewingDocument = null;
 
 // Toast notification system
 const createToast = (message, type = "info") => {
-  const toast = document.createElement("div")
-  toast.className = `toast toast-${type}`
+  const toast = document.createElement("div");
+  toast.className = `toast toast-${type}`;
   toast.innerHTML = `
         <div class="toast-content">
             <i class="fas ${type === "success" ? "fa-check-circle" : type === "error" ? "fa-exclamation-circle" : "fa-info-circle"}"></i>
             <span>${message}</span>
         </div>
         <button class="toast-close"><i class="fas fa-times"></i></button>
-    `
+    `;
 
-  document.body.appendChild(toast)
+  document.body.appendChild(toast);
 
   // Add event listener to close button
   toast.querySelector(".toast-close").addEventListener("click", () => {
-    toast.classList.add("toast-hiding")
+    toast.classList.add("toast-hiding");
     setTimeout(() => {
-      document.body.removeChild(toast)
-    }, 300)
-  })
+      document.body.removeChild(toast);
+    }, 300);
+  });
 
   // Auto-remove after 5 seconds
   setTimeout(() => {
     if (document.body.contains(toast)) {
-      toast.classList.add("toast-hiding")
+      toast.classList.add("toast-hiding");
       setTimeout(() => {
         if (document.body.contains(toast)) {
-          document.body.removeChild(toast)
+          document.body.removeChild(toast);
         }
-      }, 300)
+      }, 300);
     }
-  }, 5000)
+  }, 5000);
 
   // Animate in
   setTimeout(() => {
-    toast.classList.add("toast-visible")
-  }, 10)
-}
+    toast.classList.add("toast-visible");
+  }, 10);
+};
 
 // Simulated Database (localStorage)
 const initializeDatabase = () => {
@@ -133,7 +133,7 @@ const initializeDatabase = () => {
         userType: "admin",
         dateJoined: new Date().toISOString(),
       },
-    ]
+    ];
 
     // Locations Table
     const locations = [
@@ -177,7 +177,7 @@ const initializeDatabase = () => {
         email: "south@docufind.com",
         coordinates: { lat: -1.306389, lng: 36.797223 },
       },
-    ]
+    ];
 
     // Outlets Table
     const outlets = [
@@ -191,7 +191,7 @@ const initializeDatabase = () => {
       { id: 8, locationId: 4, name: "Westfield Office", address: "258 Field Avenue, West County" },
       { id: 9, locationId: 5, name: "South Center", address: "369 South Road, Suite 501" },
       { id: 10, locationId: 5, name: "Southside Mall", address: "741 Mall Circle, South City" },
-    ]
+    ];
 
     // Categories Table
     const categories = [
@@ -244,7 +244,7 @@ const initializeDatabase = () => {
         reporterFee: 400,
         ownerFee: 200,
       },
-    ]
+    ];
 
     // Reports Table (Initially empty, but with some sample data)
     const reports = [
@@ -333,171 +333,171 @@ const initializeDatabase = () => {
         reporterPaid: true,
         ownerPaid: true,
       },
-    ]
+    ];
 
     // Save to localStorage
-    localStorage.setItem("docufind_users", JSON.stringify(users))
-    localStorage.setItem("docufind_locations", JSON.stringify(locations))
-    localStorage.setItem("docufind_outlets", JSON.stringify(outlets))
-    localStorage.setItem("docufind_categories", JSON.stringify(categories))
-    localStorage.setItem("docufind_reports", JSON.stringify(reports))
-    localStorage.setItem("docufind_initialized", "true")
+    localStorage.setItem("docufind_users", JSON.stringify(users));
+    localStorage.setItem("docufind_locations", JSON.stringify(locations));
+    localStorage.setItem("docufind_outlets", JSON.stringify(outlets));
+    localStorage.setItem("docufind_categories", JSON.stringify(categories));
+    localStorage.setItem("docufind_reports", JSON.stringify(reports));
+    localStorage.setItem("docufind_initialized", "true");
   }
-}
+};
 
 // Database Helper Functions
-const getUsers = () => JSON.parse(localStorage.getItem("docufind_users") || "[]")
-const getLocations = () => JSON.parse(localStorage.getItem("docufind_locations") || "[]")
-const getOutlets = () => JSON.parse(localStorage.getItem("docufind_outlets") || "[]")
-const getCategories = () => JSON.parse(localStorage.getItem("docufind_categories") || "[]")
-const getReports = () => JSON.parse(localStorage.getItem("docufind_reports") || "[]")
+const getUsers = () => JSON.parse(localStorage.getItem("docufind_users") || "[]");
+const getLocations = () => JSON.parse(localStorage.getItem("docufind_locations") || "[]");
+const getOutlets = () => JSON.parse(localStorage.getItem("docufind_outlets") || "[]");
+const getCategories = () => JSON.parse(localStorage.getItem("docufind_categories") || "[]");
+const getReports = () => JSON.parse(localStorage.getItem("docufind_reports") || "[]");
 
-const saveUsers = (users) => localStorage.setItem("docufind_users", JSON.stringify(users))
-const saveLocations = (locations) => localStorage.setItem("docufind_locations", JSON.stringify(locations))
-const saveOutlets = (outlets) => localStorage.setItem("docufind_outlets", JSON.stringify(outlets))
-const saveCategories = (categories) => localStorage.setItem("docufind_categories", JSON.stringify(categories))
-const saveReports = (reports) => localStorage.setItem("docufind_reports", JSON.stringify(reports))
+const saveUsers = (users) => localStorage.setItem("docufind_users", JSON.stringify(users));
+const saveLocations = (locations) => localStorage.setItem("docufind_locations", JSON.stringify(locations));
+const saveOutlets = (outlets) => localStorage.setItem("docufind_outlets", JSON.stringify(outlets));
+const saveCategories = (categories) => localStorage.setItem("docufind_categories", JSON.stringify(categories));
+const saveReports = (reports) => localStorage.setItem("docufind_reports", JSON.stringify(reports));
 
-const getUserById = (id) => getUsers().find((user) => user.id === id)
-const getLocationById = (id) => getLocations().find((location) => location.id === id)
-const getOutletById = (id) => getOutlets().find((outlet) => outlet.id === id)
-const getCategoryById = (id) => getCategories().find((category) => category.id === id)
-const getReportById = (id) => getReports().find((report) => report.id === id)
+const getUserById = (id) => getUsers().find((user) => user.id === id);
+const getLocationById = (id) => getLocations().find((location) => location.id === id);
+const getOutletById = (id) => getOutlets().find((outlet) => outlet.id === id);
+const getCategoryById = (id) => getCategories().find((category) => category.id === id);
+const getReportById = (id) => getReports().find((report) => report.id === id);
 
-const getOutletsByLocationId = (locationId) => getOutlets().filter((outlet) => outlet.locationId === locationId)
+const getOutletsByLocationId = (locationId) => getOutlets().filter((outlet) => outlet.locationId === locationId);
 
 // Authentication Functions
 const getCurrentUser = () => {
-  const userId = localStorage.getItem("docufind_current_user")
-  if (!userId) return null
-  return getUserById(Number.parseInt(userId))
-}
+  const userId = localStorage.getItem("docufind_current_user");
+  if (!userId) return null;
+  return getUserById(Number.parseInt(userId));
+};
 
 const login = (email, password) => {
-  const users = getUsers()
-  const user = users.find((u) => u.email === email && u.password === password)
+  const users = getUsers();
+  const user = users.find((u) => u.email === email && u.password === password);
   if (user) {
-    localStorage.setItem("docufind_current_user", user.id)
-    return user
+    localStorage.setItem("docufind_current_user", user.id);
+    return user;
   }
-  return null
-}
+  return null;
+};
 
 const logout = () => {
-  localStorage.removeItem("docufind_current_user")
-}
+  localStorage.removeItem("docufind_current_user");
+};
 
 const register = (userData) => {
-  const users = getUsers()
+  const users = getUsers();
   const newUser = {
     id: users.length > 0 ? Math.max(...users.map((u) => u.id)) + 1 : 1,
     ...userData,
     dateJoined: new Date().toISOString(),
-  }
-  users.push(newUser)
-  saveUsers(users)
-  return newUser
-}
+  };
+  users.push(newUser);
+  saveUsers(users);
+  return newUser;
+};
 
 // UI Functions
 const showPage = (pageId) => {
   // Hide all pages
   document.querySelectorAll(".page").forEach((page) => {
-    page.classList.remove("active")
-  })
+    page.classList.remove("active");
+  });
 
   // Show the selected page
-  const page = document.getElementById(pageId)
+  const page = document.getElementById(pageId);
   if (page) {
-    page.classList.add("active")
+    page.classList.add("active");
   }
 
   // Update active nav link
   document.querySelectorAll("nav a").forEach((link) => {
-    link.classList.remove("active")
-  })
+    link.classList.remove("active");
+  });
 
-  const activeLink = document.querySelector(`nav a[data-page="${pageId}"]`)
+  const activeLink = document.querySelector(`nav a[data-page="${pageId}"]`);
   if (activeLink) {
-    activeLink.classList.add("active")
+    activeLink.classList.add("active");
   }
 
   // Special page handling
   if (pageId === "dashboard" || pageId === "profile") {
-    updateAuthenticatedPages()
+    updateAuthenticatedPages();
   } else if (pageId === "report") {
-    updateReportPage()
+    updateReportPage();
   } else if (pageId === "locations") {
-    loadLocations()
+    loadLocations();
   } else if (pageId === "search") {
-    populateLocationFilter()
-    populateCategoryFilter()
-    performSearch() // Load initial search results
+    populateLocationFilter();
+    populateCategoryFilter();
+    performSearch(); // Load initial search results
   }
 
   // Scroll to top
-  window.scrollTo(0, 0)
-}
+  window.scrollTo(0, 0);
+};
 
 const updateAuthUI = () => {
-  const currentUser = getCurrentUser()
+  const currentUser = getCurrentUser();
 
   if (currentUser) {
-    authSection.style.display = "none"
-    userProfile.style.display = "flex"
-    usernameDisplay.textContent = currentUser.name
+    authSection.style.display = "none";
+    userProfile.style.display = "flex";
+    usernameDisplay.textContent = currentUser.name;
 
     // Update navigation based on user type
-    updateNavigationForUserType(currentUser.userType)
+    updateNavigationForUserType(currentUser.userType);
   } else {
-    authSection.style.display = "flex"
-    userProfile.style.display = "none"
+    authSection.style.display = "flex";
+    userProfile.style.display = "none";
 
     // Reset navigation to default
-    updateNavigationForUserType(null)
+    updateNavigationForUserType(null);
   }
-}
+};
 
 const updateNavigationForUserType = (userType) => {
   // Hide all user-specific nav items first
   document.querySelectorAll(".nav-user-specific").forEach((item) => {
-    item.style.display = "none"
-  })
+    item.style.display = "none";
+  });
 
   // Show relevant nav items based on user type
   if (userType) {
     document.querySelectorAll(`.nav-${userType}`).forEach((item) => {
-      item.style.display = "block"
-    })
+      item.style.display = "block";
+    });
 
     // All logged-in users see these
     document.querySelectorAll(".nav-authenticated").forEach((item) => {
-      item.style.display = "block"
-    })
+      item.style.display = "block";
+    });
   } else {
     // Show items for non-authenticated users
     document.querySelectorAll(".nav-public").forEach((item) => {
-      item.style.display = "block"
-    })
+      item.style.display = "block";
+    });
   }
-}
+};
 
 // Improve role-based dashboard display
 const updateAuthenticatedPages = () => {
-  const currentUser = getCurrentUser()
-  const dashboardContent = document.getElementById("dashboard-content")
-  const profileContent = document.getElementById("profile-content")
+    const currentUser = getCurrentUser();
+    const dashboardContent = document.getElementById("dashboard-content");
+    const profileContent = document.getElementById("profile-content");
 
-  if (currentUser) {
-    // Update user role display in the header
-    const usernameDisplay = document.getElementById("username-display")
-    usernameDisplay.innerHTML = `${currentUser.name} <span class="user-role">(${currentUser.userType.charAt(0).toUpperCase() + currentUser.userType.slice(1)})</span>`
+    if (currentUser) {
+        // Update user role display in the header
+        const usernameDisplay = document.getElementById("username-display");
+        usernameDisplay.innerHTML = `${currentUser.name} <span class="user-role">(${currentUser.userType.charAt(0).toUpperCase() + currentUser.userType.slice(1)})</span>`;
+        
+        // Dashboard content based on user type
+        let dashboardHTML = "";
 
-    // Dashboard content based on user type
-    let dashboardHTML = ""
-
-    if (currentUser.userType === "reportee") {
-      dashboardHTML = `
+        if (currentUser.userType === "reportee") {
+            dashboardHTML = `
                 <div class="dashboard-welcome">
                     <h2>Welcome, ${currentUser.name}!</h2>
                     <p>This is your document owner dashboard. Here you can track documents you've claimed and search for lost documents.</p>
@@ -531,9 +531,9 @@ const updateAuthenticatedPages = () => {
                         </div>
                     </div>
                 </div>
-            `
-    } else if (currentUser.userType === "reporter") {
-      dashboardHTML = `
+            `;
+        } else if (currentUser.userType === "reporter") {
+            dashboardHTML = `
                 <div class="dashboard-welcome">
                     <h2>Welcome, ${currentUser.name}!</h2>
                     <p>This is your document reporter dashboard. Here you can track documents you've reported and report new found documents.</p>
@@ -567,15 +567,15 @@ const updateAuthenticatedPages = () => {
                         </div>
                     </div>
                 </div>
-            `
-    } else if (currentUser.userType === "agent") {
-      const location = getLocationById(currentUser.locationId)
-      const outlet = getOutletById(currentUser.outletId)
-      const pendingCount = getReports().filter(
-        (r) => r.locationId === currentUser.locationId && r.outletId === currentUser.outletId && r.status === "pending",
-      ).length
+            `;
+        } else if (currentUser.userType === "agent") {
+            const location = getLocationById(currentUser.locationId);
+            const outlet = getOutletById(currentUser.outletId);
+            const pendingCount = getReports().filter(
+                (r) => r.locationId === currentUser.locationId && r.outletId === currentUser.outletId && r.status === "pending"
+            ).length;
 
-      dashboardHTML = `
+            dashboardHTML = `
                 <div class="dashboard-welcome">
                     <h2>Welcome, Agent ${currentUser.name}!</h2>
                     <p>This is your agent dashboard. Here you can manage documents at your location and handle claims.</p>
@@ -632,9 +632,9 @@ const updateAuthenticatedPages = () => {
                         </table>
                     </div>
                 </div>
-            `
-    } else if (currentUser.userType === "admin") {
-      dashboardHTML = `
+            `;
+        } else if (currentUser.userType === "admin") {
+            dashboardHTML = `
                 <div class="dashboard-welcome">
                     <h2>Welcome, Administrator!</h2>
                     <p>This is your admin dashboard. Here you can monitor all system activity and manage documents.</p>
@@ -706,16 +706,16 @@ const updateAuthenticatedPages = () => {
                         </table>
                     </div>
                 </div>
-            `
-    }
+            `;
+        }
 
-    dashboardContent.innerHTML = dashboardHTML
+        dashboardContent.innerHTML = dashboardHTML;
 
-    // Add event listeners for dashboard elements
-    addDashboardEventListeners(currentUser.userType)
+        // Add event listeners for dashboard elements
+        addDashboardEventListeners(currentUser.userType);
 
-    // Profile content
-    profileContent.innerHTML = `
+        // Profile content
+        profileContent.innerHTML = `
             <div class="profile-container">
                 <div class="profile-header">
                     <div class="profile-avatar">
@@ -742,8 +742,8 @@ const updateAuthenticatedPages = () => {
                             <p>${new Date(currentUser.dateJoined).toLocaleDateString()}</p>
                         </div>
                         ${
-                          currentUser.userType === "agent"
-                            ? `
+                            currentUser.userType === "agent"
+                                ? `
                             <div class="profile-field">
                                 <label>Location:</label>
                                 <p>${getLocationById(currentUser.locationId)?.name || "Unknown"}</p>
@@ -753,7 +753,7 @@ const updateAuthenticatedPages = () => {
                                 <p>${getOutletById(currentUser.outletId)?.name || "Unknown"}</p>
                             </div>
                             `
-                            : ""
+                                : ""
                         }
                     </div>
                     <div class="profile-section">
@@ -777,74 +777,74 @@ const updateAuthenticatedPages = () => {
                     </div>
                 </div>
             </div>
-        `
+        `;
 
-    // Add event listeners for profile buttons
-    document.getElementById("edit-profile-btn")?.addEventListener("click", openEditProfileModal)
-    document.getElementById("change-password-btn")?.addEventListener("click", openChangePasswordModal)
-    document.getElementById("logout-profile-btn")?.addEventListener("click", () => {
-      logout()
-      updateAuthUI()
-      showPage("home")
-      createToast("You have been logged out successfully", "success")
-    })
-  } else {
-    // Show login required message
-    dashboardContent.innerHTML = `
+        // Add event listeners for profile buttons
+        document.getElementById("edit-profile-btn")?.addEventListener("click", openEditProfileModal);
+        document.getElementById("change-password-btn")?.addEventListener("click", openChangePasswordModal);
+        document.getElementById("logout-profile-btn")?.addEventListener("click", () => {
+            logout();
+            updateAuthUI();
+            showPage("home");
+            createToast("You have been logged out successfully", "success");
+        });
+    } else {
+        // Show login required message
+        dashboardContent.innerHTML = `
             <div class="login-required-message">
                 <i class="fas fa-lock"></i>
                 <h3>Access Restricted</h3>
                 <p>You need to <a href="#" id="dashboard-login-link">login</a> to access your dashboard.</p>
                 <p>Don't have an account? <a href="#" id="dashboard-register-link">Register now</a> to get started.</p>
             </div>
-        `
+        `;
 
-    profileContent.innerHTML = `
+        profileContent.innerHTML = `
             <div class="login-required-message">
                 <i class="fas fa-lock"></i>
                 <h3>Access Restricted</h3>
                 <p>You need to <a href="#" id="profile-login-link">login</a> to access your profile.</p>
                 <p>Don't have an account? <a href="#" id="profile-register-link">Register now</a> to get started.</p>
             </div>
-        `
+        `;
 
-    // Add event listeners for login links
-    document.getElementById("dashboard-login-link")?.addEventListener("click", (e) => {
-      e.preventDefault()
-      openLoginModal()
-    })
+        // Add event listeners for login links
+        document.getElementById("dashboard-login-link")?.addEventListener("click", (e) => {
+            e.preventDefault();
+            openLoginModal();
+        });
 
-    document.getElementById("dashboard-register-link")?.addEventListener("click", (e) => {
-      e.preventDefault()
-      openRegisterModal()
-    })
+        document.getElementById("dashboard-register-link")?.addEventListener("click", (e) => {
+            e.preventDefault();
+            openRegisterModal();
+        });
 
-    document.getElementById("profile-login-link")?.addEventListener("click", (e) => {
-      e.preventDefault()
-      openLoginModal()
-    })
+        document.getElementById("profile-login-link")?.addEventListener("click", (e) => {
+            e.preventDefault();
+            openLoginModal();
+        });
 
-    document.getElementById("profile-register-link")?.addEventListener("click", (e) => {
-      e.preventDefault()
-      openRegisterModal()
-    })
-  }
-}
+        document.getElementById("profile-register-link")?.addEventListener("click", (e) => {
+            e.preventDefault();
+            openRegisterModal();
+        });
+    }
+};
 
 // Helper Functions for Dashboard
 const generateReporteeDocumentsHTML = () => {
-  const currentUser = getCurrentUser()
-  const reports = getReports().filter((r) => r.claimedBy === currentUser.id)
+  const currentUser = getCurrentUser();
+  const reports = getReports().filter((r) => r.claimedBy === currentUser.id);
 
   if (reports.length === 0) {
-    return `<p class="no-data"><i class="fas fa-info-circle"></i> You haven't claimed any documents yet. <a href="#" onclick="showPage('search'); return false;">Search for documents</a> to see if yours has been found.</p>`
+    return `<p class="no-data"><i class="fas fa-info-circle"></i> You haven't claimed any documents yet. <a href="#" onclick="showPage('search'); return false;">Search for documents</a> to see if yours has been found.</p>`;
   }
 
-  let html = ""
+  let html = "";
   reports.forEach((report) => {
-    const category = getCategoryById(report.documentType)
-    const location = getLocationById(report.locationId)
-    const outlet = getOutletById(report.outletId)
+    const category = getCategoryById(report.documentType);
+    const location = getLocationById(report.locationId);
+    const outlet = getOutletById(report.outletId);
 
     html += `
             <div class="dashboard-card">
@@ -865,25 +865,25 @@ const generateReporteeDocumentsHTML = () => {
                     </button>
                 </div>
             </div>
-        `
-  })
+        `;
+  });
 
-  return html
-}
+  return html;
+};
 
 const generateReporterDocumentsHTML = () => {
-  const currentUser = getCurrentUser()
-  const reports = getReports().filter((r) => r.reporterId === currentUser.id)
+  const currentUser = getCurrentUser();
+  const reports = getReports().filter((r) => r.reporterId === currentUser.id);
 
   if (reports.length === 0) {
-    return `<p class="no-data"><i class="fas fa-info-circle"></i> You haven't reported any documents yet. <a href="#" onclick="showPage('report'); return false;">Report a found document</a> to help someone recover their lost item.</p>`
+    return `<p class="no-data"><i class="fas fa-info-circle"></i> You haven't reported any documents yet. <a href="#" onclick="showPage('report'); return false;">Report a found document</a> to help someone recover their lost item.</p>`;
   }
 
-  let html = ""
+  let html = "";
   reports.forEach((report) => {
-    const category = getCategoryById(report.documentType)
-    const location = getLocationById(report.locationId)
-    const outlet = getOutletById(report.outletId)
+    const category = getCategoryById(report.documentType);
+    const location = getLocationById(report.locationId);
+    const outlet = getOutletById(report.outletId);
 
     html += `
             <div class="dashboard-card">
@@ -909,25 +909,25 @@ const generateReporterDocumentsHTML = () => {
                     </button>
                 </div>
             </div>
-        `
-  })
+        `;
+  });
 
-  return html
-}
+  return html;
+};
 
 const generateAgentPendingDocumentsHTML = (locationId, outletId) => {
   const reports = getReports().filter(
     (r) => r.locationId === locationId && r.outletId === outletId && r.status === "pending",
-  )
+  );
 
   if (reports.length === 0) {
-    return `<p class="no-data"><i class="fas fa-info-circle"></i> No pending documents at your outlet.</p>`
+    return `<p class="no-data"><i class="fas fa-info-circle"></i> No pending documents at your outlet.</p>`;
   }
 
-  let html = ""
+  let html = "";
   reports.forEach((report) => {
-    const category = getCategoryById(report.documentType)
-    const reporter = getUserById(report.reporterId)
+    const category = getCategoryById(report.documentType);
+    const reporter = getUserById(report.reporterId);
 
     html += `
             <div class="dashboard-card">
@@ -950,25 +950,25 @@ const generateAgentPendingDocumentsHTML = (locationId, outletId) => {
                     </button>
                 </div>
             </div>
-        `
-  })
+        `;
+  });
 
-  return html
-}
+  return html;
+};
 
 const generateAgentActivityTableHTML = (locationId, outletId) => {
   const reports = getReports()
     .filter((r) => r.locationId === locationId && r.outletId === outletId)
     .sort((a, b) => new Date(b.dateReported) - new Date(a.dateReported))
-    .slice(0, 10)
+    .slice(0, 10);
 
   if (reports.length === 0) {
-    return `<tr><td colspan="5" class="no-data">No activity found at your outlet.</td></tr>`
+    return `<tr><td colspan="5" class="no-data">No activity found at your outlet.</td></tr>`;
   }
 
-  let html = ""
+  let html = "";
   reports.forEach((report) => {
-    const category = getCategoryById(report.documentType)
+    const category = getCategoryById(report.documentType);
 
     html += `
             <tr>
@@ -991,25 +991,25 @@ const generateAgentActivityTableHTML = (locationId, outletId) => {
                     }
                 </td>
             </tr>
-        `
-  })
+        `;
+  });
 
-  return html
-}
+  return html;
+};
 
 const generateAdminReportsTableHTML = () => {
   const reports = getReports()
     .sort((a, b) => new Date(b.dateReported) - new Date(a.dateReported))
-    .slice(0, 10)
+    .slice(0, 10);
 
   if (reports.length === 0) {
-    return `<tr><td colspan="7" class="no-data">No reports found.</td></tr>`
+    return `<tr><td colspan="7" class="no-data">No reports found.</td></tr>`;
   }
 
-  let html = ""
+  let html = "";
   reports.forEach((report) => {
-    const category = getCategoryById(report.documentType)
-    const location = getLocationById(report.locationId)
+    const category = getCategoryById(report.documentType);
+    const location = getLocationById(report.locationId);
 
     html += `
             <tr>
@@ -1031,20 +1031,20 @@ const generateAdminReportsTableHTML = () => {
                     </button>
                 </td>
             </tr>
-        `
-  })
+        `;
+  });
 
-  return html
-}
+  return html;
+};
 
 const generateAdminUsersTableHTML = () => {
-  const users = getUsers().sort((a, b) => new Date(b.dateJoined) - new Date(a.dateJoined))
+  const users = getUsers().sort((a, b) => new Date(b.dateJoined) - new Date(a.dateJoined));
 
   if (users.length === 0) {
-    return `<tr><td colspan="6" class="no-data">No users found.</td></tr>`
+    return `<tr><td colspan="6" class="no-data">No users found.</td></tr>`;
   }
 
-  let html = ""
+  let html = "";
   users.forEach((user) => {
     html += `
             <tr>
@@ -1062,318 +1062,318 @@ const generateAdminUsersTableHTML = () => {
                     </button>
                 </td>
             </tr>
-        `
-  })
+        `;
+  });
 
-  return html
-}
+  return html;
+};
 
 const addDashboardEventListeners = (userType) => {
   // Add event listeners for view document buttons
   document.querySelectorAll(".view-document").forEach((button) => {
     button.addEventListener("click", (e) => {
-      const reportId = Number.parseInt(e.target.getAttribute("data-id"))
-      openDocumentDetails(reportId)
-    })
-  })
+      const reportId = Number.parseInt(e.target.getAttribute("data-id"));
+      openDocumentDetails(reportId);
+    });
+  });
 
   // Add event listeners for mark as claimed buttons (agent only)
   if (userType === "agent") {
     document.querySelectorAll(".mark-claimed").forEach((button) => {
       button.addEventListener("click", (e) => {
-        const reportId = Number.parseInt(e.target.getAttribute("data-id"))
-        openMarkAsClaimedModal(reportId)
-      })
-    })
+        const reportId = Number.parseInt(e.target.getAttribute("data-id"));
+        openMarkAsClaimedModal(reportId);
+      });
+    });
   }
 
   // Add event listeners for admin actions
   if (userType === "admin") {
     document.querySelectorAll(".edit-document").forEach((button) => {
       button.addEventListener("click", (e) => {
-        const reportId = Number.parseInt(e.target.getAttribute("data-id"))
-        openEditDocumentModal(reportId)
-      })
-    })
+        const reportId = Number.parseInt(e.target.getAttribute("data-id"));
+        openEditDocumentModal(reportId);
+      });
+    });
 
     document.querySelectorAll(".delete-document").forEach((button) => {
       button.addEventListener("click", (e) => {
-        const reportId = Number.parseInt(e.target.getAttribute("data-id"))
-        confirmDeleteDocument(reportId)
-      })
-    })
+        const reportId = Number.parseInt(e.target.getAttribute("data-id"));
+        confirmDeleteDocument(reportId);
+      });
+    });
 
     document.querySelectorAll(".edit-user").forEach((button) => {
       button.addEventListener("click", (e) => {
-        const userId = Number.parseInt(e.target.getAttribute("data-id"))
-        openEditUserModal(userId)
-      })
-    })
+        const userId = Number.parseInt(e.target.getAttribute("data-id"));
+        openEditUserModal(userId);
+      });
+    });
 
     document.querySelectorAll(".delete-user").forEach((button) => {
       button.addEventListener("click", (e) => {
-        const userId = Number.parseInt(e.target.getAttribute("data-id"))
-        confirmDeleteUser(userId)
-      })
-    })
+        const userId = Number.parseInt(e.target.getAttribute("data-id"));
+        confirmDeleteUser(userId);
+      });
+    });
   }
-}
+};
 
 const updateReportPage = () => {
-  const currentUser = getCurrentUser()
+  const currentUser = getCurrentUser();
 
   if (currentUser) {
-    reportLoginRequired.style.display = "none"
-    reportForm.style.display = "block"
+    reportLoginRequired.style.display = "none";
+    reportForm.style.display = "block";
 
     // Populate location dropdown
-    populateLocationDropdown(foundLocation)
+    populateLocationDropdown(foundLocation);
 
     // Populate document type dropdown
-    populateDocumentTypeDropdown()
+    populateDocumentTypeDropdown();
 
     // Set default date to today
-    const today = new Date().toISOString().split("T")[0]
-    document.getElementById("found-date").value = today
+    const today = new Date().toISOString().split("T")[0];
+    document.getElementById("found-date").value = today;
   } else {
-    reportLoginRequired.style.display = "block"
-    reportForm.style.display = "none"
+    reportLoginRequired.style.display = "block";
+    reportForm.style.display = "none";
 
     // Add event listeners for login/register links
     document.getElementById("report-login-link").addEventListener("click", (e) => {
-      e.preventDefault()
-      openLoginModal()
-    })
+      e.preventDefault();
+      openLoginModal();
+    });
 
     document.getElementById("report-register-link").addEventListener("click", (e) => {
-      e.preventDefault()
-      openRegisterModal()
-    })
+      e.preventDefault();
+      openRegisterModal();
+    });
   }
-}
+};
 
 // Modal Functions
 const openLoginModal = () => {
-  modalContainer.style.display = "block"
-  loginModal.style.display = "block"
-  registerModal.style.display = "none"
-  documentDetailsModal.style.display = "none"
+  modalContainer.style.display = "block";
+  loginModal.style.display = "block";
+  registerModal.style.display = "none";
+  documentDetailsModal.style.display = "none";
 
   // Clear form
-  loginForm.reset()
-}
+  loginForm.reset();
+};
 
 const openRegisterModal = () => {
-  modalContainer.style.display = "block"
-  registerModal.style.display = "block"
-  loginModal.style.display = "none"
-  documentDetailsModal.style.display = "none"
+  modalContainer.style.display = "block";
+  registerModal.style.display = "block";
+  loginModal.style.display = "none";
+  documentDetailsModal.style.display = "none";
 
   // Clear form
-  registerForm.reset()
+  registerForm.reset();
 
   // Populate location dropdown for agent registration
-  populateLocationDropdown(agentLocation)
-}
+  populateLocationDropdown(agentLocation);
+};
 
 const closeModals = () => {
-  modalContainer.style.display = "none"
-  loginModal.style.display = "none"
-  registerModal.style.display = "none"
-  documentDetailsModal.style.display = "none"
-  loginRequiredModal.style.display = "none"
-}
+  modalContainer.style.display = "none";
+  loginModal.style.display = "none";
+  registerModal.style.display = "none";
+  documentDetailsModal.style.display = "none";
+  loginRequiredModal.style.display = "none";
+};
 
 // Dropdown Population Functions
 const populateLocationDropdown = (selectElement) => {
-  const locations = getLocations()
+  const locations = getLocations();
 
   // Clear existing options except the first one
   while (selectElement.options.length > 1) {
-    selectElement.remove(1)
+    selectElement.remove(1);
   }
 
   // Add location options
   locations.forEach((location) => {
-    const option = document.createElement("option")
-    option.value = location.id
-    option.textContent = location.name
-    selectElement.appendChild(option)
-  })
-}
+    const option = document.createElement("option");
+    option.value = location.id;
+    option.textContent = location.name;
+    selectElement.appendChild(option);
+  });
+};
 
 const populateOutletDropdown = (locationId, selectElement) => {
-  const outlets = getOutletsByLocationId(Number.parseInt(locationId))
+  const outlets = getOutletsByLocationId(Number.parseInt(locationId));
 
   // Clear existing options except the first one
   while (selectElement.options.length > 1) {
-    selectElement.remove(1)
+    selectElement.remove(1);
   }
 
   // Add outlet options
   outlets.forEach((outlet) => {
-    const option = document.createElement("option")
-    option.value = outlet.id
-    option.textContent = outlet.name
-    selectElement.appendChild(option)
-  })
-}
+    const option = document.createElement("option");
+    option.value = outlet.id;
+    option.textContent = outlet.name;
+    selectElement.appendChild(option);
+  });
+};
 
 const populateLocationFilter = () => {
-  const locations = getLocations()
+  const locations = getLocations();
 
   // Clear existing options except the first one
   while (locationFilter.options.length > 1) {
-    locationFilter.remove(1)
+    locationFilter.remove(1);
   }
 
   // Add location options
   locations.forEach((location) => {
-    const option = document.createElement("option")
-    option.value = location.id
-    option.textContent = location.name
-    locationFilter.appendChild(option)
-  })
-}
+    const option = document.createElement("option");
+    option.value = location.id;
+    option.textContent = location.name;
+    locationFilter.appendChild(option);
+  });
+};
 
 const populateCategoryFilter = () => {
-  const categoryFilter = document.getElementById("category-filter")
-  const categories = getCategories()
+  const categoryFilter = document.getElementById("category-filter");
+  const categories = getCategories();
 
   // Clear existing options except the first one
   while (categoryFilter.options.length > 1) {
-    categoryFilter.remove(1)
+    categoryFilter.remove(1);
   }
 
   // Add category options
   categories.forEach((category) => {
-    const option = document.createElement("option")
-    option.value = category.id
-    option.textContent = category.name
-    categoryFilter.appendChild(option)
-  })
-}
+    const option = document.createElement("option");
+    option.value = category.id;
+    option.textContent = category.name;
+    categoryFilter.appendChild(option);
+  });
+};
 
 const populateDocumentTypeDropdown = () => {
-  const documentTypeSelect = document.getElementById("document-type")
-  const categories = getCategories()
+  const documentTypeSelect = document.getElementById("document-type");
+  const categories = getCategories();
 
   // Clear existing options except the first one
   while (documentTypeSelect.options.length > 1) {
-    documentTypeSelect.remove(1)
+    documentTypeSelect.remove(1);
   }
 
   // Add category options
   categories.forEach((category) => {
-    const option = document.createElement("option")
-    option.value = category.id
-    option.textContent = category.name
-    documentTypeSelect.appendChild(option)
-  })
-}
+    const option = document.createElement("option");
+    option.value = category.id;
+    option.textContent = category.name;
+    documentTypeSelect.appendChild(option);
+  });
+};
 
 // Search Functions
 const performSearch = () => {
-  const searchTerm = searchInput.value.trim().toLowerCase()
-  const categoryFilter = document.getElementById("category-filter").value
-  const locationFilterValue = locationFilter.value
-  const dateFilter = document.getElementById("date-filter").value
-  const sortBy = document.getElementById("sort-select").value
+    const searchTerm = searchInput.value.trim().toLowerCase();
+    const categoryFilter = document.getElementById("category-filter").value;
+    const locationFilterValue = locationFilter.value;
+    const dateFilter = document.getElementById("date-filter").value;
+    const sortBy = document.getElementById("sort-select").value;
 
-  let reports = getReports()
+    let reports = getReports();
 
-  // Apply filters
-  if (searchTerm) {
-    reports = reports.filter(
-      (report) =>
-        report.documentNumber.toLowerCase().includes(searchTerm) ||
-        report.documentName.toLowerCase().includes(searchTerm),
-    )
-  }
+    // Apply filters
+    if (searchTerm) {
+        reports = reports.filter(
+            (report) =>
+                report.documentNumber.toLowerCase().includes(searchTerm) ||
+                report.documentName.toLowerCase().includes(searchTerm)
+        );
+    }
 
-  if (categoryFilter) {
-    reports = reports.filter((report) => report.documentType.toString() === categoryFilter)
-  }
+    if (categoryFilter) {
+        reports = reports.filter((report) => report.documentType.toString() === categoryFilter);
+    }
 
-  if (locationFilterValue) {
-    reports = reports.filter((report) => report.locationId.toString() === locationFilterValue)
-  }
+    if (locationFilterValue) {
+        reports = reports.filter((report) => report.locationId.toString() === locationFilterValue);
+    }
 
-  if (dateFilter) {
-    const now = new Date()
-    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
-    const weekAgo = new Date(today)
-    weekAgo.setDate(today.getDate() - 7)
-    const monthAgo = new Date(today)
-    monthAgo.setMonth(today.getMonth() - 1)
-    const yearAgo = new Date(today)
-    yearAgo.setFullYear(today.getFullYear() - 1)
+    if (dateFilter) {
+        const now = new Date();
+        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const weekAgo = new Date(today);
+        weekAgo.setDate(today.getDate() - 7);
+        const monthAgo = new Date(today);
+        monthAgo.setMonth(today.getMonth() - 1);
+        const yearAgo = new Date(today);
+        yearAgo.setFullYear(today.getFullYear() - 1);
 
-    reports = reports.filter((report) => {
-      const reportDate = new Date(report.dateReported)
+        reports = reports.filter((report) => {
+            const reportDate = new Date(report.dateReported);
 
-      if (dateFilter === "today") {
-        return reportDate >= today
-      } else if (dateFilter === "week") {
-        return reportDate >= weekAgo
-      } else if (dateFilter === "month") {
-        return reportDate >= monthAgo
-      } else if (dateFilter === "year") {
-        return reportDate >= yearAgo
-      }
+            if (dateFilter === "today") {
+                return reportDate >= today;
+            } else if (dateFilter === "week") {
+                return reportDate >= weekAgo;
+            } else if (dateFilter === "month") {
+                return reportDate >= monthAgo;
+            } else if (dateFilter === "year") {
+                return reportDate >= yearAgo;
+            }
 
-      return true
-    })
-  }
+            return true;
+        });
+    }
 
-  // Apply sorting
-  if (sortBy === "date-desc") {
-    reports.sort((a, b) => new Date(b.dateReported) - new Date(a.dateReported))
-  } else if (sortBy === "date-asc") {
-    reports.sort((a, b) => new Date(a.dateReported) - new Date(b.dateReported))
-  } else if (sortBy === "relevance" && searchTerm) {
-    // Simple relevance sorting - exact matches first
-    reports.sort((a, b) => {
-      const aExact = a.documentNumber.toLowerCase() === searchTerm || a.documentName.toLowerCase() === searchTerm
-      const bExact = b.documentNumber.toLowerCase() === searchTerm || b.documentName.toLowerCase() === searchTerm
+    // Apply sorting
+    if (sortBy === "date-desc") {
+        reports.sort((a, b) => new Date(b.dateReported) - new Date(a.dateReported));
+    } else if (sortBy === "date-asc") {
+        reports.sort((a, b) => new Date(a.dateReported) - new Date(b.dateReported));
+    } else if (sortBy === "relevance" && searchTerm) {
+        // Simple relevance sorting - exact matches first
+        reports.sort((a, b) => {
+            const aExact = a.documentNumber.toLowerCase() === searchTerm || a.documentName.toLowerCase() === searchTerm;
+            const bExact = b.documentNumber.toLowerCase() === searchTerm || b.documentName.toLowerCase() === searchTerm;
 
-      if (aExact && !bExact) return -1
-      if (!aExact && bExact) return 1
-      return 0
-    })
-  }
+            if (aExact && !bExact) return -1;
+            if (!aExact && bExact) return 1;
+            return 0;
+        });
+    }
 
-  // Update results count
-  resultsCount.textContent = `${reports.length} document${reports.length !== 1 ? "s" : ""} found`
+    // Update results count
+    resultsCount.textContent = `${reports.length} document${reports.length !== 1 ? "s" : ""} found`;
 
-  // Display results
-  displaySearchResults(reports)
-}
+    // Display results
+    displaySearchResults(reports);
+};
 
 // Function to display search results
 const displaySearchResults = (reports) => {
-  if (reports.length === 0) {
-    resultsList.innerHTML = `
+    if (reports.length === 0) {
+        resultsList.innerHTML = `
             <div class="no-results">
                 <i class="fas fa-search"></i>
                 <h3>No documents found</h3>
                 <p>We couldn't find any documents matching your search. Try different keywords or <a href="#" data-page="report">report a found document</a>.</p>
             </div>
-        `
-    pagination.innerHTML = ""
-    return
-  }
+        `;
+        pagination.innerHTML = "";
+        return;
+    }
 
-  // Simple pagination (first 5 results)
-  const displayReports = reports.slice(0, 5)
+    // Simple pagination (first 5 results)
+    const displayReports = reports.slice(0, 5);
 
-  let html = ""
-  displayReports.forEach((report) => {
-    const category = getCategoryById(report.documentType)
-    const location = getLocationById(report.locationId)
-    const dateReported = new Date(report.dateReported).toLocaleDateString()
+    let html = "";
+    displayReports.forEach((report) => {
+        const category = getCategoryById(report.documentType);
+        const location = getLocationById(report.locationId);
+        const dateReported = new Date(report.dateReported).toLocaleDateString();
 
-    html += `
+        html += `
             <div class="result-item">
                 <div class="result-header">
                     <div class="result-title">${category ? category.name : "Unknown Document"}</div>
@@ -1408,58 +1408,58 @@ const displaySearchResults = (reports) => {
                     </button>
                 </div>
             </div>
-        `
-  })
+        `;
+    });
 
-  resultsList.innerHTML = html
+    resultsList.innerHTML = html;
 
-  // Add pagination if needed
-  if (reports.length > 5) {
-    pagination.innerHTML = `
+    // Add pagination if needed
+    if (reports.length > 5) {
+        pagination.innerHTML = `
             <button class="active">1</button>
             <button>2</button>
             <button>3</button>
             <button disabled>...</button>
             <button>Next</button>
-        `
-  } else {
-    pagination.innerHTML = ""
-  }
+        `;
+    } else {
+        pagination.innerHTML = "";
+    }
 
-  // Add event listeners for view document buttons
-  document.querySelectorAll(".view-document-search").forEach((button) => {
-    button.addEventListener("click", (e) => {
-      const reportId = Number.parseInt(e.currentTarget.getAttribute("data-id"))
-      handleViewDocument(reportId)
-    })
-  })
-}
+    // Add event listeners for view document buttons
+    document.querySelectorAll(".view-document-search").forEach((button) => {
+        button.addEventListener("click", (e) => {
+            const reportId = Number.parseInt(e.currentTarget.getAttribute("data-id"));
+            handleViewDocument(reportId);
+        });
+    });
+};
 
 // Report Form Functions
 const submitReport = (e) => {
-  e.preventDefault()
+  e.preventDefault();
 
-  const currentUser = getCurrentUser()
+  const currentUser = getCurrentUser();
   if (!currentUser) {
-    createToast("You need to login to report a found document.", "error")
-    openLoginModal()
-    return
+    createToast("You need to login to report a found document.", "error");
+    openLoginModal();
+    return;
   }
 
-  const documentType = document.getElementById("document-type").value
-  const documentNumber = document.getElementById("document-number").value
-  const documentName = document.getElementById("document-name").value
-  const foundLocationId = document.getElementById("found-location").value
-  const foundOutletId = document.getElementById("found-outlet").value
-  const foundDate = document.getElementById("found-date").value
-  const additionalDetails = document.getElementById("additional-details").value
+  const documentType = document.getElementById("document-type").value;
+  const documentNumber = document.getElementById("document-number").value;
+  const documentName = document.getElementById("document-name").value;
+  const foundLocationId = document.getElementById("found-location").value;
+  const foundOutletId = document.getElementById("found-outlet").value;
+  const foundDate = document.getElementById("found-date").value;
+  const additionalDetails = document.getElementById("additional-details").value;
 
   if (!documentType || !documentNumber || !documentName || !foundLocationId || !foundOutletId || !foundDate) {
-    createToast("Please fill in all required fields.", "error")
-    return
+    createToast("Please fill in all required fields.", "error");
+    return;
   }
 
-  const reports = getReports()
+  const reports = getReports();
   const newReport = {
     id: reports.length > 0 ? Math.max(...reports.map((r) => r.id)) + 1 : 1,
     documentType: Number.parseInt(documentType),
@@ -1476,46 +1476,46 @@ const submitReport = (e) => {
     dateClaimed: null,
     reporterPaid: false,
     ownerPaid: false,
-  }
+  };
 
-  reports.push(newReport)
-  saveReports(reports)
+  reports.push(newReport);
+  saveReports(reports);
 
-  createToast("Document reported successfully! Thank you for helping someone recover their document.", "success")
-  reportForm.reset()
-  showPage("dashboard")
-}
+  createToast("Document reported successfully! Thank you for helping someone recover their document.", "success");
+  reportForm.reset();
+  showPage("dashboard");
+};
 
 // Home Search Functions
 const performHomeSearch = () => {
-  const searchTerm = homeSearchInput.value.trim().toLowerCase()
+  const searchTerm = homeSearchInput.value.trim().toLowerCase();
 
   if (!searchTerm) {
-    createToast("Please enter a search term", "info")
-    return
+    createToast("Please enter a search term", "info");
+    return;
   }
 
-  let reports = getReports()
+  let reports = getReports();
 
   // Filter reports by search term
   reports = reports.filter(
     (report) =>
       report.documentNumber.toLowerCase().includes(searchTerm) ||
       report.documentName.toLowerCase().includes(searchTerm),
-  )
+  );
 
   // Update results count
-  homeResultsCount.textContent = `${reports.length} document${reports.length !== 1 ? "s" : ""} found`
+  homeResultsCount.textContent = `${reports.length} document${reports.length !== 1 ? "s" : ""} found`;
 
   // Display results
-  displayHomeSearchResults(reports)
+  displayHomeSearchResults(reports);
 
   // Show results section
-  homeSearchResultsSection.style.display = "block"
+  homeSearchResultsSection.style.display = "block";
 
   // Scroll to results
-  homeSearchResultsSection.scrollIntoView({ behavior: "smooth" })
-}
+  homeSearchResultsSection.scrollIntoView({ behavior: "smooth" });
+};
 
 const displayHomeSearchResults = (reports) => {
   if (reports.length === 0) {
@@ -1525,22 +1525,22 @@ const displayHomeSearchResults = (reports) => {
         <h3>No documents found</h3>
         <p>We couldn't find any documents matching your search. Try different keywords or <a href="#" data-page="report">report a found document</a>.</p>
       </div>
-    `
-    homePagination.innerHTML = ""
-    return
+    `;
+    homePagination.innerHTML = "";
+    return;
   }
 
   // Sort by date (newest first)
-  reports.sort((a, b) => new Date(b.dateReported) - new Date(a.dateReported))
+  reports.sort((a, b) => new Date(b.dateReported) - new Date(a.dateReported));
 
   // Simple pagination (first 5 results)
-  const displayReports = reports.slice(0, 5)
+  const displayReports = reports.slice(0, 5);
 
-  let html = ""
+  let html = "";
   displayReports.forEach((report) => {
-    const category = getCategoryById(report.documentType)
-    const location = getLocationById(report.locationId)
-    const dateReported = new Date(report.dateReported).toLocaleDateString()
+    const category = getCategoryById(report.documentType);
+    const location = getLocationById(report.locationId);
+    const dateReported = new Date(report.dateReported).toLocaleDateString();
 
     html += `
       <div class="result-item">
@@ -1577,10 +1577,10 @@ const displayHomeSearchResults = (reports) => {
           </button>
         </div>
       </div>
-    `
-  })
+    `;
+  });
 
-  homeResultsList.innerHTML = html
+  homeResultsList.innerHTML = html;
 
   // Add pagination if needed
   if (reports.length > 5) {
@@ -1590,78 +1590,78 @@ const displayHomeSearchResults = (reports) => {
       <button>3</button>
       <button disabled>...</button>
       <button>Next</button>
-    `
+    `;
   } else {
-    homePagination.innerHTML = ""
+    homePagination.innerHTML = "";
   }
 
   // Add event listeners for view document buttons
   document.querySelectorAll(".view-document-home").forEach((button) => {
     button.addEventListener("click", (e) => {
-      const reportId = Number.parseInt(e.currentTarget.getAttribute("data-id"))
-      handleViewDocument(reportId)
-    })
-  })
-}
+      const reportId = Number.parseInt(e.currentTarget.getAttribute("data-id"));
+      handleViewDocument(reportId);
+    });
+  });
+};
 
 const handleViewDocument = (reportId) => {
-  const report = getReportById(reportId)
-  const currentUser = getCurrentUser()
+  const report = getReportById(reportId);
+  const currentUser = getCurrentUser();
 
   // Store the current document being viewed
-  currentViewingDocument = report
+  currentViewingDocument = report;
 
   // Check if user is logged in and is a reportee
   if (!currentUser) {
     // Show login required modal
-    openLoginRequiredModal()
-    return
+    openLoginRequiredModal();
+    return;
   } else if (
     currentUser.userType !== "reportee" &&
     currentUser.userType !== "admin" &&
     currentUser.userType !== "agent"
   ) {
     // If user is not a reportee, admin, or agent, show a message
-    createToast("You need to be registered as a document owner to view document details", "error")
-    return
+    createToast("You need to be registered as a document owner to view document details", "error");
+    return;
   }
 
   // User is logged in and is a reportee, admin, or agent - show document details
-  openDocumentDetails(reportId)
-}
+  openDocumentDetails(reportId);
+};
 
 const openLoginRequiredModal = () => {
-  modalContainer.style.display = "block"
-  loginRequiredModal.style.display = "block"
-  loginModal.style.display = "none"
-  registerModal.style.display = "none"
-  documentDetailsModal.style.display = "none"
-}
+  modalContainer.style.display = "block";
+  loginRequiredModal.style.display = "block";
+  loginModal.style.display = "none";
+  registerModal.style.display = "none";
+  documentDetailsModal.style.display = "none";
+};
 
 const clearHomeSearchResults = () => {
-  homeSearchInput.value = ""
-  homeSearchResultsSection.style.display = "none"
-}
+  homeSearchInput.value = "";
+  homeSearchResultsSection.style.display = "none";
+};
 
-// Function to open document details (existing function, just referenced here)
+// Function to open document details
 const openDocumentDetails = (reportId) => {
-  const report = getReportById(reportId)
-  const category = getCategoryById(report.documentType)
-  const location = getLocationById(report.locationId)
-  const outlet = getOutletById(report.outletId)
-  const reporter = getUserById(report.reporterId)
+  const report = getReportById(reportId);
+  const category = getCategoryById(report.documentType);
+  const location = getLocationById(report.locationId);
+  const outlet = getOutletById(report.outletId);
+  const reporter = getUserById(report.reporterId);
 
-  modalContainer.style.display = "block"
-  documentDetailsModal.style.display = "block"
-  loginModal.style.display = "none"
-  registerModal.style.display = "none"
-  loginRequiredModal.style.display = "none"
+  modalContainer.style.display = "block";
+  documentDetailsModal.style.display = "block";
+  loginModal.style.display = "none";
+  registerModal.style.display = "none";
+  loginRequiredModal.style.display = "none";
 
-  const dateReported = new Date(report.dateReported).toLocaleDateString()
-  const dateFound = new Date(report.dateFound).toLocaleDateString()
+  const dateReported = new Date(report.dateReported).toLocaleDateString();
+  const dateFound = new Date(report.dateFound).toLocaleDateString();
 
-  let claimButton = ""
-  const currentUser = getCurrentUser()
+  let claimButton = "";
+  const currentUser = getCurrentUser();
 
   // Only show claim button for reportees and if document is not claimed
   if (currentUser && currentUser.userType === "reportee" && report.status === "pending") {
@@ -1669,7 +1669,7 @@ const openDocumentDetails = (reportId) => {
       <button class="btn btn-success claim-document" data-id="${report.id}">
         <i class="fas fa-hand-holding"></i> Claim This Document
       </button>
-    `
+    `;
   }
 
   documentDetailsModal.querySelector("#document-details-content").innerHTML = `
@@ -1735,66 +1735,106 @@ const openDocumentDetails = (reportId) => {
         </button>
       </div>
     </div>
-  `
+  `;
 
   // Add event listener for claim button
-  const claimBtn = documentDetailsModal.querySelector(".claim-document")
+  const claimBtn = documentDetailsModal.querySelector(".claim-document");
   if (claimBtn) {
     claimBtn.addEventListener("click", () => {
-      claimDocument(reportId)
-    })
+      claimDocument(reportId);
+    });
   }
 
   // Add event listener for close button
-  documentDetailsModal.querySelector(".close-details").addEventListener("click", closeModals)
-}
+  documentDetailsModal.querySelector(".close-details").addEventListener("click", closeModals);
+};
 
 // Function to handle document claiming
 const claimDocument = (reportId) => {
-  const currentUser = getCurrentUser()
+  const currentUser = getCurrentUser();
   if (!currentUser || currentUser.userType !== "reportee") {
-    createToast("You must be logged in as a document owner to claim documents", "error")
-    return
+    createToast("You must be logged in as a document owner to claim documents", "error");
+    return;
   }
 
-  const reports = getReports()
-  const reportIndex = reports.findIndex((r) => r.id === reportId)
+  const reports = getReports();
+  const reportIndex = reports.findIndex((r) => r.id === reportId);
 
   if (reportIndex === -1) {
-    createToast("Document not found", "error")
-    return
+    createToast("Document not found", "error");
+    return;
   }
 
   // Update report status
-  reports[reportIndex].status = "claimed"
-  reports[reportIndex].claimedBy = currentUser.id
-  reports[reportIndex].dateClaimed = new Date().toISOString()
+  reports[reportIndex].status = "claimed";
+  reports[reportIndex].claimedBy = currentUser.id;
+  reports[reportIndex].dateClaimed = new Date().toISOString();
 
   // Save updated reports
-  saveReports(reports)
+  saveReports(reports);
 
   // Close modal
-  closeModals()
+  closeModals();
 
   // Show success message
-  createToast("Document claimed successfully! Please visit the collection point to retrieve your document.", "success")
+  createToast("Document claimed successfully! Please visit the collection point to retrieve your document.", "success");
 
   // Refresh dashboard if on dashboard page
   if (document.getElementById("dashboard").classList.contains("active")) {
-    updateAuthenticatedPages()
+    updateAuthenticatedPages();
   }
-}
+};
+
+// Load locations for the locations page
+const loadLocations = () => {
+  const locations = getLocations();
+  const locationsContainer = document.getElementById("locations-container");
+  
+  let html = "";
+  locations.forEach((location) => {
+    const outlets = getOutletsByLocationId(location.id);
+    
+    let outletsHTML = "";
+    outlets.forEach((outlet) => {
+      outletsHTML += `<span class="outlet-tag">${outlet.name}</span>`;
+    });
+    
+    html += `
+      <div class="location-card">
+        <div class="location-image">
+          <i class="fas fa-building"></i>
+        </div>
+        <div class="location-details">
+          <h3 class="location-name">${location.name}</h3>
+          <div class="location-info">
+            <p><i class="fas fa-map-marker-alt"></i> ${location.address}</p>
+            <p><i class="fas fa-phone"></i> ${location.phone}</p>
+            <p><i class="fas fa-envelope"></i> ${location.email}</p>
+          </div>
+          <div class="location-outlets">
+            <h4>Collection Points</h4>
+            <div class="outlets-list">
+              ${outletsHTML}
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  });
+  
+  locationsContainer.innerHTML = html;
+};
 
 // Event Listeners
 document.addEventListener("DOMContentLoaded", () => {
   // Initialize database
-  initializeDatabase()
+  initializeDatabase();
 
   // Update UI based on authentication status
-  updateAuthUI()
+  updateAuthUI();
 
   // Add CSS for toast notifications
-  const toastStyles = document.createElement("style")
+  const toastStyles = document.createElement("style");
   toastStyles.textContent = `
         .toast {
             position: fixed;
@@ -1881,146 +1921,142 @@ document.addEventListener("DOMContentLoaded", () => {
         .toast-close:hover {
             background-color: rgba(0, 0, 0, 0.05);
         }
-  `
-  document.head.appendChild(toastStyles)
+  `;
+  document.head.appendChild(toastStyles);
 
   // Navigation
   mainNav.addEventListener("click", (e) => {
     if (e.target.tagName === "A") {
-      e.preventDefault()
-      const pageId = e.target.getAttribute("data-page")
-      showPage(pageId)
+      e.preventDefault();
+      const pageId = e.target.getAttribute("data-page");
+      showPage(pageId);
     }
-  })
+  });
 
   // Footer navigation
   document.querySelectorAll("footer a[data-page]").forEach((link) => {
     link.addEventListener("click", (e) => {
-      e.preventDefault()
-      const pageId = e.target.getAttribute("data-page")
-      showPage(pageId)
-    })
-  })
+      e.preventDefault();
+      const pageId = e.target.getAttribute("data-page");
+      showPage(pageId);
+    });
+  });
 
   // Auth buttons
-  loginBtn.addEventListener("click", openLoginModal)
-  registerBtn.addEventListener("click", openRegisterModal)
+  loginBtn.addEventListener("click", openLoginModal);
+  registerBtn.addEventListener("click", openRegisterModal);
   logoutBtn.addEventListener("click", () => {
-    logout()
-    updateAuthUI()
-    showPage("home")
-    createToast("You have been logged out successfully", "success")
-  })
+    logout();
+    updateAuthUI();
+    showPage("home");
+    createToast("You have been logged out successfully", "success");
+  });
 
   // Modal close buttons
   document.querySelectorAll(".close-modal").forEach((button) => {
-    button.addEventListener("click", closeModals)
-  })
+    button.addEventListener("click", closeModals);
+  });
 
   // Close modal when clicking outside
   modalContainer.addEventListener("click", (e) => {
     if (e.target === modalContainer) {
-      closeModals()
+      closeModals();
     }
-  })
+  });
 
   // Switch between login and register
   switchToRegister.addEventListener("click", (e) => {
-    e.preventDefault()
-    loginModal.style.display = "none"
-    registerModal.style.display = "block"
-  })
+    e.preventDefault();
+    loginModal.style.display = "none";
+    registerModal.style.display = "block";
+  });
 
   switchToLogin.addEventListener("click", (e) => {
-    e.preventDefault()
-    registerModal.style.display = "none"
-    loginModal.style.display = "block"
-  })
+    e.preventDefault();
+    registerModal.style.display = "none";
+    loginModal.style.display = "block";
+  });
 
   // User type change in registration
   registerUserType.addEventListener("change", () => {
     if (registerUserType.value === "agent") {
-      agentLocationGroup.style.display = "block"
-      agentOutletGroup.style.display = "block"
+      agentLocationGroup.style.display = "block";
+      agentOutletGroup.style.display = "block";
     } else {
-      agentLocationGroup.style.display = "none"
-      agentOutletGroup.style.display = "none"
+      agentLocationGroup.style.display = "none";
+      agentOutletGroup.style.display = "none";
     }
-  })
+  });
 
   // Location change for outlets
   foundLocation.addEventListener("change", () => {
     if (foundLocation.value) {
-      populateOutletDropdown(foundLocation.value, foundOutlet)
+      populateOutletDropdown(foundLocation.value, foundOutlet);
     }
-  })
+  });
 
   agentLocation.addEventListener("change", () => {
     if (agentLocation.value) {
-      populateOutletDropdown(agentLocation.value, agentOutlet)
+      populateOutletDropdown(agentLocation.value, agentOutlet);
     }
-  })
+  });
 
   // Hero buttons
-  searchDocsBtn.addEventListener("click", () => {
-    showPage("search")
-  })
-
   reportFoundBtn.addEventListener("click", () => {
-    showPage("report")
-  })
+    showPage("report");
+  });
 
   // Login form submission
   loginForm.addEventListener("submit", (e) => {
-    e.preventDefault()
+    e.preventDefault();
 
-    const email = document.getElementById("login-email").value
-    const password = document.getElementById("login-password").value
+    const email = document.getElementById("login-email").value;
+    const password = document.getElementById("login-password").value;
 
-    const user = login(email, password)
+    const user = login(email, password);
 
     if (user) {
-      updateAuthUI()
-      closeModals()
-      showPage("dashboard")
-      createToast(`Welcome back, ${user.name}!`, "success")
+      updateAuthUI();
+      closeModals();
+      showPage("dashboard");
+      createToast(`Welcome back, ${user.name}!`, "success");
     } else {
-      createToast("Invalid email or password. Please try again.", "error")
+      createToast("Invalid email or password. Please try again.", "error");
     }
-  })
+  });
 
   // Register form submission
   registerForm.addEventListener("submit", (e) => {
-    e.preventDefault()
+    e.preventDefault();
 
-    const name = document.getElementById("register-name").value
-    const email = document.getElementById("register-email").value
-    const phone = document.getElementById("register-phone").value
-    const password = document.getElementById("register-password").value
-    const confirmPassword = document.getElementById("register-confirm-password").value
-    const userType = document.getElementById("register-user-type").value
-    const termsAgreed = document.getElementById("register-terms").checked
+    const name = document.getElementById("register-name").value;
+    const email = document.getElementById("register-email").value;
+    const phone = document.getElementById("register-phone").value;
+    const password = document.getElementById("register-password").value;
+    const confirmPassword = document.getElementById("register-confirm-password").value;
+    const userType = document.getElementById("register-user-type").value;
+    const termsAgreed = document.getElementById("register-terms").checked;
 
     if (!name || !email || !phone || !password || !confirmPassword || !userType) {
-      createToast("Please fill in all required fields.", "error")
-      return
+      createToast("Please fill in all required fields.", "error");
+      return;
     }
 
     if (password !== confirmPassword) {
-      createToast("Passwords do not match.", "error")
-      return
+      createToast("Passwords do not match.", "error");
+      return;
     }
 
     if (!termsAgreed) {
-      createToast("You must agree to the Terms and Conditions.", "error")
-      return
+      createToast("You must agree to the Terms and Conditions.", "error");
+      return;
     }
 
     // Check if email already exists
-    const users = getUsers()
+    const users = getUsers();
     if (users.some((user) => user.email === email)) {
-      createToast("Email already in use. Please use a different email or login.", "error")
-      return
+      createToast("Email already in use. Please use a different email or login.", "error");
+      return;
     }
 
     const userData = {
@@ -2029,158 +2065,180 @@ document.addEventListener("DOMContentLoaded", () => {
       phone,
       password,
       userType,
-    }
+    };
 
     // Add location and outlet for agents
     if (userType === "agent") {
-      const locationId = document.getElementById("agent-location").value
-      const outletId = document.getElementById("agent-outlet").value
+      const locationId = document.getElementById("agent-location").value;
+      const outletId = document.getElementById("agent-outlet").value;
 
       if (!locationId || !outletId) {
-        createToast("Please select a location and outlet.", "error")
-        return
+        createToast("Please select a location and outlet.", "error");
+        return;
       }
 
-      userData.locationId = Number.parseInt(locationId)
-      userData.outletId = Number.parseInt(outletId)
+      userData.locationId = Number.parseInt(locationId);
+      userData.outletId = Number.parseInt(outletId);
     }
 
-    const newUser = register(userData)
+    const newUser = register(userData);
 
     if (newUser) {
-      login(email, password)
-      updateAuthUI()
-      closeModals()
-      showPage("dashboard")
-      createToast("Registration successful! Welcome to DocuFind.", "success")
+      login(email, password);
+      updateAuthUI();
+      closeModals();
+      showPage("dashboard");
+      createToast("Registration successful! Welcome to DocuFind.", "success");
     } else {
-      createToast("Registration failed. Please try again.", "error")
+      createToast("Registration failed. Please try again.", "error");
     }
-  })
+  });
 
   // Report form submission
-  reportForm.addEventListener("submit", submitReport)
+  reportForm.addEventListener("submit", submitReport);
 
   // Search functionality
-  searchButton.addEventListener("click", performSearch)
+  searchButton.addEventListener("click", performSearch);
   searchInput.addEventListener("keypress", (e) => {
     if (e.key === "Enter") {
-      performSearch()
+      performSearch();
     }
-  })
+  });
 
-  document.getElementById("sort-select")?.addEventListener("change", performSearch)
-  document.getElementById("category-filter")?.addEventListener("change", performSearch)
-  locationFilter?.addEventListener("change", performSearch)
-  document.getElementById("date-filter")?.addEventListener("change", performSearch)
+  document.getElementById("sort-select")?.addEventListener("change", performSearch);
+  document.getElementById("category-filter")?.addEventListener("change", performSearch);
+  locationFilter?.addEventListener("change", performSearch);
+  document.getElementById("date-filter")?.addEventListener("change", performSearch);
 
   // Home search event listeners
-  homeSearchButton.addEventListener("click", performHomeSearch)
+  homeSearchButton.addEventListener("click", performHomeSearch);
   homeSearchInput.addEventListener("keypress", (e) => {
     if (e.key === "Enter") {
-      performHomeSearch()
+      performHomeSearch();
     }
-  })
+  });
 
-  clearHomeSearch.addEventListener("click", clearHomeSearchResults)
+  clearHomeSearch.addEventListener("click", clearHomeSearchResults);
 
   // Search suggestion clicks
   document.querySelectorAll(".search-suggestions span").forEach((span) => {
     span.addEventListener("click", () => {
-      homeSearchInput.value = span.textContent
-      performHomeSearch()
-    })
-  })
+      homeSearchInput.value = span.textContent;
+      performHomeSearch();
+    });
+  });
 
   // Login required modal buttons
   loginRequiredLoginBtn.addEventListener("click", () => {
-    loginRequiredModal.style.display = "none"
-    openLoginModal()
+    loginRequiredModal.style.display = "none";
+    openLoginModal();
 
     // Add event listener to login form for this specific case
     const loginFormHandler = (e) => {
-      e.preventDefault()
+      e.preventDefault();
 
-      const email = document.getElementById("login-email").value
-      const password = document.getElementById("login-password").value
+      const email = document.getElementById("login-email").value;
+      const password = document.getElementById("login-password").value;
 
-      const user = login(email, password)
+      const user = login(email, password);
 
       if (user) {
-        updateAuthUI()
-        closeModals()
+        updateAuthUI();
+        closeModals();
 
         // If user is a reportee, show document details
         if (user.userType === "reportee" && currentViewingDocument) {
-          openDocumentDetails(currentViewingDocument.id)
+          openDocumentDetails(currentViewingDocument.id);
         } else if (user.userType !== "reportee") {
-          createToast("You need to be registered as a document owner to view document details", "error")
+          createToast("You need to be registered as a document owner to view document details", "error");
         }
 
         // Remove this specific event listener
-        loginForm.removeEventListener("submit", loginFormHandler)
+        loginForm.removeEventListener("submit", loginFormHandler);
       } else {
-        createToast("Invalid email or password. Please try again.", "error")
+        createToast("Invalid email or password. Please try again.", "error");
       }
-    }
+    };
 
     // Replace the existing event listener
-    loginForm.removeEventListener("submit", loginForm.onsubmit)
-    loginForm.addEventListener("submit", loginFormHandler)
-  })
+    loginForm.removeEventListener("submit", loginForm.onsubmit);
+    loginForm.addEventListener("submit", loginFormHandler);
+  });
 
   loginRequiredRegisterBtn.addEventListener("click", () => {
-    loginRequiredModal.style.display = "none"
-    openRegisterModal()
+    loginRequiredModal.style.display = "none";
+    openRegisterModal();
 
     // Pre-select reportee user type
-    document.getElementById("register-user-type").value = "reportee"
-  })
+    document.getElementById("register-user-type").value = "reportee";
+  });
+
+  // Mobile menu toggle
+  const mobileMenuBtn = document.querySelector(".mobile-menu-btn");
+  const nav = document.querySelector("nav");
+  
+  mobileMenuBtn.addEventListener("click", function() {
+    nav.classList.toggle("active");
+  });
 
   // Show home page by default
-  showPage("home")
-})
+  showPage("home");
+});
 
-// Fix mobile menu toggle
-document.addEventListener("DOMContentLoaded", () => {
-  const mobileMenuBtn = document.querySelector(".mobile-menu-btn")
-  const nav = document.querySelector("nav")
-
-  mobileMenuBtn.addEventListener("click", () => {
-    nav.classList.toggle("active")
-  })
-})
-
-// Dummy functions to resolve errors
-const loadLocations = () => {
-  console.warn("loadLocations function is a placeholder.")
-}
-
+// Placeholder functions for future implementation
 const openEditProfileModal = () => {
-  console.warn("openEditProfileModal function is a placeholder.")
-}
+  createToast("Edit profile functionality coming soon!", "info");
+};
 
 const openChangePasswordModal = () => {
-  console.warn("openChangePasswordModal function is a placeholder.")
-}
+  createToast("Change password functionality coming soon!", "info");
+};
 
 const openMarkAsClaimedModal = (reportId) => {
-  console.warn("openMarkAsClaimedModal function is a placeholder. Report ID:", reportId)
-}
+  const report = getReportById(reportId);
+  if (!report) return;
+  
+  const reports = getReports();
+  const reportIndex = reports.findIndex((r) => r.id === reportId);
+  
+  reports[reportIndex].status = "claimed";
+  reports[reportIndex].dateClaimed = new Date().toISOString();
+  
+  saveReports(reports);
+  createToast("Document marked as claimed successfully!", "success");
+  
+  // Refresh dashboard
+  updateAuthenticatedPages();
+};
 
 const openEditDocumentModal = (reportId) => {
-  console.warn("openEditDocumentModal function is a placeholder. Report ID:", reportId)
-}
+  createToast("Edit document functionality coming soon!", "info");
+};
 
 const confirmDeleteDocument = (reportId) => {
-  console.warn("confirmDeleteDocument function is a placeholder. Report ID:", reportId)
-}
+  if (confirm("Are you sure you want to delete this document?")) {
+    const reports = getReports();
+    const updatedReports = reports.filter((r) => r.id !== reportId);
+    saveReports(updatedReports);
+    createToast("Document deleted successfully!", "success");
+    
+    // Refresh dashboard
+    updateAuthenticatedPages();
+  }
+};
 
 const openEditUserModal = (userId) => {
-  console.warn("openEditUserModal function is a placeholder. User ID:", userId)
-}
+  createToast("Edit user functionality coming soon!", "info");
+};
 
 const confirmDeleteUser = (userId) => {
-  console.warn("confirmDeleteUser function is a placeholder. User ID:", userId)
-}
-
+  if (confirm("Are you sure you want to delete this user?")) {
+    const users = getUsers();
+    const updatedUsers = users.filter((u) => u.id !== userId);
+    saveUsers(updatedUsers);
+    createToast("User deleted successfully!", "success");
+    
+    // Refresh dashboard
+    updateAuthenticatedPages();
+  }
+};
