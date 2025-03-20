@@ -256,8 +256,8 @@ const initializeDatabase = () => {
         reporterId: 2, // Jane Smith
         locationId: 1,
         outletId: 1,
-        dateFound: "2025-03-15T10:30:00Z",
-        dateReported: "2025-03-16T14:20:00Z",
+        dateFound: "2023-03-15T10:30:00Z",
+        dateReported: "2023-03-16T14:20:00Z",
         status: "pending", // pending, claimed, expired
         additionalDetails: "Found near the central bus station",
         claimedBy: null,
@@ -273,12 +273,12 @@ const initializeDatabase = () => {
         reporterId: 2, // Jane Smith
         locationId: 2,
         outletId: 3,
-        dateFound: "2025-03-20T15:45:00Z",
-        dateReported: "2025-03-21T09:10:00Z",
+        dateFound: "2023-03-20T15:45:00Z",
+        dateReported: "2023-03-21T09:10:00Z",
         status: "claimed",
         additionalDetails: "Found at North Mall food court",
         claimedBy: 1, // John Doe
-        dateClaimed: "2025-03-25T11:30:00Z",
+        dateClaimed: "2023-03-25T11:30:00Z",
         reporterPaid: true,
         ownerPaid: true,
       },
@@ -290,8 +290,8 @@ const initializeDatabase = () => {
         reporterId: 1, // John Doe
         locationId: 3,
         outletId: 5,
-        dateFound: "2025-04-05T12:15:00Z",
-        dateReported: "2025-04-05T16:40:00Z",
+        dateFound: "2023-04-05T12:15:00Z",
+        dateReported: "2023-04-05T16:40:00Z",
         status: "pending",
         additionalDetails: "Found in East Region park",
         claimedBy: null,
@@ -307,8 +307,8 @@ const initializeDatabase = () => {
         reporterId: 1, // John Doe
         locationId: 4,
         outletId: 7,
-        dateFound: "2025-04-10T09:20:00Z",
-        dateReported: "2025-04-10T13:50:00Z",
+        dateFound: "2023-04-10T09:20:00Z",
+        dateReported: "2023-04-10T13:50:00Z",
         status: "pending",
         additionalDetails: "Found at West County library",
         claimedBy: null,
@@ -324,12 +324,12 @@ const initializeDatabase = () => {
         reporterId: 2, // Jane Smith
         locationId: 5,
         outletId: 9,
-        dateFound: "2025-04-15T14:30:00Z",
-        dateReported: "2025-04-16T10:15:00Z",
+        dateFound: "2023-04-15T14:30:00Z",
+        dateReported: "2023-04-16T10:15:00Z",
         status: "claimed",
         additionalDetails: "Found at South City shopping center",
         claimedBy: 1, // John Doe (acting on behalf of the owner)
-        dateClaimed: "2025-04-20T15:45:00Z",
+        dateClaimed: "2023-04-20T15:45:00Z",
         reporterPaid: true,
         ownerPaid: true,
       },
