@@ -34,6 +34,21 @@ const agentLocation = document.getElementById("agent-location")
 const agentOutlet = document.getElementById("agent-outlet")
 const locationsContainer = document.getElementById("locations-container")
 
+// DOM Elements for Home Search
+const homeSearchInput = document.getElementById("home-search-input")
+const homeSearchButton = document.getElementById("home-search-button")
+const homeSearchResultsSection = document.getElementById("home-search-results-section")
+const homeResultsList = document.getElementById("home-results-list")
+const homeResultsCount = document.getElementById("home-results-count")
+const homePagination = document.getElementById("home-pagination")
+const clearHomeSearch = document.getElementById("clear-home-search")
+const loginRequiredModal = document.getElementById("login-required-modal")
+const loginRequiredLoginBtn = document.getElementById("login-required-login-btn")
+const loginRequiredRegisterBtn = document.getElementById("login-required-register-btn")
+
+// Store the current document being viewed
+let currentViewingDocument = null
+
 // Toast notification system
 const createToast = (message, type = "info") => {
   const toast = document.createElement("div")
@@ -807,6 +822,243 @@ const updateAuthenticatedPages = () => {
   }
 }
 
+// Helper Functions for Dashboard
+const generateReporteeDocumentsHTML = () => {
+  const currentUser = getCurrentUser()
+  const reports = getReports().filter((r) => r.claimedBy === currentUser.id)
+
+  if (reports.length === 0) {
+    return `<p class="no-data"><i class="fas fa-info-circle"></i> You haven't claimed any documents yet. <a href="#" onclick="showPage('search'); return false;">Search for documents</a> to see if yours has been found.</p>`
+  }
+
+  let html = ""
+  reports.forEach((report) => {
+    const category = getCategoryById(report.documentType)
+    const location = getLocationById(report.locationId)
+    const outlet = getOutletById(report.outletId)
+
+    html += `
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h4>${category ? category.name : "Unknown"}</h4>
+                    <span class="status ${report.status}">${report.status.charAt(0).toUpperCase() + report.status.slice(1)}</span>
+                </div>
+                <div class="card-body">
+                    <p><strong>Document Number:</strong> ${report.documentNumber}</p>
+                    <p><strong>Name on Document:</strong> ${report.documentName}</p>
+                    <p><strong>Location:</strong> ${location ? location.name : "Unknown"}</p>
+                    <p><strong>Outlet:</strong> ${outlet ? outlet.name : "Unknown"}</p>
+                    <p><strong>Date Claimed:</strong> ${report.dateClaimed ? new Date(report.dateClaimed).toLocaleDateString() : "N/A"}</p>
+                </div>
+                <div class="card-footer">
+                    <button class="btn btn-primary view-document" data-id="${report.id}">
+                        <i class="fas fa-eye"></i> View Details
+                    </button>
+                </div>
+            </div>
+        `
+  })
+
+  return html
+}
+
+const generateReporterDocumentsHTML = () => {
+  const currentUser = getCurrentUser()
+  const reports = getReports().filter((r) => r.reporterId === currentUser.id)
+
+  if (reports.length === 0) {
+    return `<p class="no-data"><i class="fas fa-info-circle"></i> You haven't reported any documents yet. <a href="#" onclick="showPage('report'); return false;">Report a found document</a> to help someone recover their lost item.</p>`
+  }
+
+  let html = ""
+  reports.forEach((report) => {
+    const category = getCategoryById(report.documentType)
+    const location = getLocationById(report.locationId)
+    const outlet = getOutletById(report.outletId)
+
+    html += `
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h4>${category ? category.name : "Unknown"}</h4>
+                    <span class="status ${report.status}">${report.status.charAt(0).toUpperCase() + report.status.slice(1)}</span>
+                </div>
+                <div class="card-body">
+                    <p><strong>Document Number:</strong> ${report.documentNumber}</p>
+                    <p><strong>Name on Document:</strong> ${report.documentName}</p>
+                    <p><strong>Location:</strong> ${location ? location.name : "Unknown"}</p>
+                    <p><strong>Outlet:</strong> ${outlet ? outlet.name : "Unknown"}</p>
+                    <p><strong>Date Reported:</strong> ${new Date(report.dateReported).toLocaleDateString()}</p>
+                    <p><strong>Reward Status:</strong> 
+                        <span class="badge ${report.reporterPaid ? "badge-success" : "badge-pending"}">
+                            ${report.reporterPaid ? "Paid" : "Pending"}
+                        </span>
+                    </p>
+                </div>
+                <div class="card-footer">
+                    <button class="btn btn-primary view-document" data-id="${report.id}">
+                        <i class="fas fa-eye"></i> View Details
+                    </button>
+                </div>
+            </div>
+        `
+  })
+
+  return html
+}
+
+const generateAgentPendingDocumentsHTML = (locationId, outletId) => {
+  const reports = getReports().filter(
+    (r) => r.locationId === locationId && r.outletId === outletId && r.status === "pending",
+  )
+
+  if (reports.length === 0) {
+    return `<p class="no-data"><i class="fas fa-info-circle"></i> No pending documents at your outlet.</p>`
+  }
+
+  let html = ""
+  reports.forEach((report) => {
+    const category = getCategoryById(report.documentType)
+    const reporter = getUserById(report.reporterId)
+
+    html += `
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h4>${category ? category.name : "Unknown"}</h4>
+                    <span class="status pending">Pending</span>
+                </div>
+                <div class="card-body">
+                    <p><strong>Document Number:</strong> ${report.documentNumber}</p>
+                    <p><strong>Name on Document:</strong> ${report.documentName}</p>
+                    <p><strong>Reported By:</strong> ${reporter ? reporter.name : "Unknown"}</p>
+                    <p><strong>Date Reported:</strong> ${new Date(report.dateReported).toLocaleDateString()}</p>
+                </div>
+                <div class="card-footer">
+                    <button class="btn btn-primary view-document" data-id="${report.id}">
+                        <i class="fas fa-eye"></i> View Details
+                    </button>
+                    <button class="btn btn-success mark-claimed" data-id="${report.id}">
+                        <i class="fas fa-check-circle"></i> Mark as Claimed
+                    </button>
+                </div>
+            </div>
+        `
+  })
+
+  return html
+}
+
+const generateAgentActivityTableHTML = (locationId, outletId) => {
+  const reports = getReports()
+    .filter((r) => r.locationId === locationId && r.outletId === outletId)
+    .sort((a, b) => new Date(b.dateReported) - new Date(a.dateReported))
+    .slice(0, 10)
+
+  if (reports.length === 0) {
+    return `<tr><td colspan="5" class="no-data">No activity found at your outlet.</td></tr>`
+  }
+
+  let html = ""
+  reports.forEach((report) => {
+    const category = getCategoryById(report.documentType)
+
+    html += `
+            <tr>
+                <td>${report.documentNumber}</td>
+                <td>${category ? category.name : "Unknown"}</td>
+                <td>${new Date(report.dateReported).toLocaleDateString()}</td>
+                <td><span class="status-badge ${report.status}">${report.status.charAt(0).toUpperCase() + report.status.slice(1)}</span></td>
+                <td>
+                    <button class="btn-icon view-document" data-id="${report.id}" title="View Details">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                    ${
+                      report.status === "pending"
+                        ? `
+                    <button class="btn-icon mark-claimed" data-id="${report.id}" title="Mark as Claimed">
+                        <i class="fas fa-check-circle"></i>
+                    </button>
+                    `
+                        : ""
+                    }
+                </td>
+            </tr>
+        `
+  })
+
+  return html
+}
+
+const generateAdminReportsTableHTML = () => {
+  const reports = getReports()
+    .sort((a, b) => new Date(b.dateReported) - new Date(a.dateReported))
+    .slice(0, 10)
+
+  if (reports.length === 0) {
+    return `<tr><td colspan="7" class="no-data">No reports found.</td></tr>`
+  }
+
+  let html = ""
+  reports.forEach((report) => {
+    const category = getCategoryById(report.documentType)
+    const location = getLocationById(report.locationId)
+
+    html += `
+            <tr>
+                <td>${report.id}</td>
+                <td>${report.documentNumber}</td>
+                <td>${category ? category.name : "Unknown"}</td>
+                <td>${location ? location.name : "Unknown"}</td>
+                <td>${new Date(report.dateReported).toLocaleDateString()}</td>
+                <td><span class="status-badge ${report.status}">${report.status.charAt(0).toUpperCase() + report.status.slice(1)}</span></td>
+                <td>
+                    <button class="btn-icon view-document" data-id="${report.id}" title="View Details">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                    <button class="btn-icon edit-document" data-id="${report.id}" title="Edit Document">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn-icon delete-document" data-id="${report.id}" title="Delete Document">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </td>
+            </tr>
+        `
+  })
+
+  return html
+}
+
+const generateAdminUsersTableHTML = () => {
+  const users = getUsers().sort((a, b) => new Date(b.dateJoined) - new Date(a.dateJoined))
+
+  if (users.length === 0) {
+    return `<tr><td colspan="6" class="no-data">No users found.</td></tr>`
+  }
+
+  let html = ""
+  users.forEach((user) => {
+    html += `
+            <tr>
+                <td>${user.id}</td>
+                <td>${user.name}</td>
+                <td>${user.email}</td>
+                <td><span class="badge badge-${user.userType}">${user.userType.charAt(0).toUpperCase() + user.userType.slice(1)}</span></td>
+                <td>${new Date(user.dateJoined).toLocaleDateString()}</td>
+                <td>
+                    <button class="btn-icon edit-user" data-id="${user.id}" title="Edit User">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn-icon delete-user" data-id="${user.id}" title="Delete User">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </td>
+            </tr>
+        `
+  })
+
+  return html
+}
+
 const addDashboardEventListeners = (userType) => {
   // Add event listeners for view document buttons
   document.querySelectorAll(".view-document").forEach((button) => {
@@ -920,6 +1172,7 @@ const closeModals = () => {
   loginModal.style.display = "none"
   registerModal.style.display = "none"
   documentDetailsModal.style.display = "none"
+  loginRequiredModal.style.display = "none"
 }
 
 // Dropdown Population Functions
@@ -1088,6 +1341,94 @@ const performSearch = () => {
   displaySearchResults(reports)
 }
 
+// Function to display search results
+const displaySearchResults = (reports) => {
+  if (reports.length === 0) {
+    resultsList.innerHTML = `
+      <div class="no-results">
+        <i class="fas fa-search"></i>
+        <h3>No documents found</h3>
+        <p>We couldn't find any documents matching your search. Try different keywords or <a href="#" data-page="report">report a found document</a>.</p>
+      </div>
+    `
+    pagination.innerHTML = ""
+    return
+  }
+
+  // Sort by date (newest first)
+  reports.sort((a, b) => new Date(b.dateReported) - new Date(a.dateReported))
+
+  // Simple pagination (first 5 results)
+  const displayReports = reports.slice(0, 5)
+
+  let html = ""
+  displayReports.forEach((report) => {
+    const category = getCategoryById(report.documentType)
+    const location = getLocationById(report.locationId)
+    const dateReported = new Date(report.dateReported).toLocaleDateString()
+
+    html += `
+      <div class="result-item">
+        <div class="result-header">
+          <div class="result-title">${category ? category.name : "Unknown Document"}</div>
+          <div class="result-date">${dateReported}</div>
+        </div>
+        <div class="result-details">
+          <div class="result-detail">
+            <i class="fas fa-id-card"></i>
+            <div>
+              <strong>Document Number:</strong>
+              <p>${report.documentNumber}</p>
+            </div>
+          </div>
+          <div class="result-detail">
+            <i class="fas fa-user"></i>
+            <div>
+              <strong>Name on Document:</strong>
+              <p>${report.documentName}</p>
+            </div>
+          </div>
+          <div class="result-detail">
+            <i class="fas fa-map-marker-alt"></i>
+            <div>
+              <strong>Location:</strong>
+              <p>${location ? location.name : "Unknown"}</p>
+            </div>
+          </div>
+        </div>
+        <div class="result-actions">
+          <button class="btn btn-primary view-document-search" data-id="${report.id}">
+            <i class="fas fa-eye"></i> View Details
+          </button>
+        </div>
+      </div>
+    `
+  })
+
+  resultsList.innerHTML = html
+
+  // Add pagination if needed
+  if (reports.length > 5) {
+    pagination.innerHTML = `
+      <button class="active">1</button>
+      <button>2</button>
+      <button>3</button>
+      <button disabled>...</button>
+      <button>Next</button>
+    `
+  } else {
+    pagination.innerHTML = ""
+  }
+
+  // Add event listeners for view document buttons
+  document.querySelectorAll(".view-document-search").forEach((button) => {
+    button.addEventListener("click", (e) => {
+      const reportId = Number.parseInt(e.currentTarget.getAttribute("data-id"))
+      handleViewDocument(reportId)
+    })
+  })
+}
+
 // Report Form Functions
 const submitReport = (e) => {
   e.preventDefault()
@@ -1137,6 +1478,305 @@ const submitReport = (e) => {
   createToast("Document reported successfully! Thank you for helping someone recover their document.", "success")
   reportForm.reset()
   showPage("dashboard")
+}
+
+// Home Search Functions
+const performHomeSearch = () => {
+  const searchTerm = homeSearchInput.value.trim().toLowerCase()
+
+  if (!searchTerm) {
+    createToast("Please enter a search term", "info")
+    return
+  }
+
+  let reports = getReports()
+
+  // Filter reports by search term
+  reports = reports.filter(
+    (report) =>
+      report.documentNumber.toLowerCase().includes(searchTerm) ||
+      report.documentName.toLowerCase().includes(searchTerm),
+  )
+
+  // Update results count
+  homeResultsCount.textContent = `${reports.length} document${reports.length !== 1 ? "s" : ""} found`
+
+  // Display results
+  displayHomeSearchResults(reports)
+
+  // Show results section
+  homeSearchResultsSection.style.display = "block"
+
+  // Scroll to results
+  homeSearchResultsSection.scrollIntoView({ behavior: "smooth" })
+}
+
+const displayHomeSearchResults = (reports) => {
+  if (reports.length === 0) {
+    homeResultsList.innerHTML = `
+      <div class="no-results">
+        <i class="fas fa-search"></i>
+        <h3>No documents found</h3>
+        <p>We couldn't find any documents matching your search. Try different keywords or <a href="#" data-page="report">report a found document</a>.</p>
+      </div>
+    `
+    homePagination.innerHTML = ""
+    return
+  }
+
+  // Sort by date (newest first)
+  reports.sort((a, b) => new Date(b.dateReported) - new Date(a.dateReported))
+
+  // Simple pagination (first 5 results)
+  const displayReports = reports.slice(0, 5)
+
+  let html = ""
+  displayReports.forEach((report) => {
+    const category = getCategoryById(report.documentType)
+    const location = getLocationById(report.locationId)
+    const dateReported = new Date(report.dateReported).toLocaleDateString()
+
+    html += `
+      <div class="result-item">
+        <div class="result-header">
+          <div class="result-title">${category ? category.name : "Unknown Document"}</div>
+          <div class="result-date">${dateReported}</div>
+        </div>
+        <div class="result-details">
+          <div class="result-detail">
+            <i class="fas fa-id-card"></i>
+            <div>
+              <strong>Document Number:</strong>
+              <p>${report.documentNumber}</p>
+            </div>
+          </div>
+          <div class="result-detail">
+            <i class="fas fa-user"></i>
+            <div>
+              <strong>Name on Document:</strong>
+              <p>${report.documentName}</p>
+            </div>
+          </div>
+          <div class="result-detail">
+            <i class="fas fa-map-marker-alt"></i>
+            <div>
+              <strong>Location:</strong>
+              <p>${location ? location.name : "Unknown"}</p>
+            </div>
+          </div>
+        </div>
+        <div class="result-actions">
+          <button class="btn btn-primary view-document-home" data-id="${report.id}">
+            <i class="fas fa-eye"></i> View Details
+          </button>
+        </div>
+      </div>
+    `
+  })
+
+  homeResultsList.innerHTML = html
+
+  // Add pagination if needed
+  if (reports.length > 5) {
+    homePagination.innerHTML = `
+      <button class="active">1</button>
+      <button>2</button>
+      <button>3</button>
+      <button disabled>...</button>
+      <button>Next</button>
+    `
+  } else {
+    homePagination.innerHTML = ""
+  }
+
+  // Add event listeners for view document buttons
+  document.querySelectorAll(".view-document-home").forEach((button) => {
+    button.addEventListener("click", (e) => {
+      const reportId = Number.parseInt(e.currentTarget.getAttribute("data-id"))
+      handleViewDocument(reportId)
+    })
+  })
+}
+
+const handleViewDocument = (reportId) => {
+  const report = getReportById(reportId)
+  const currentUser = getCurrentUser()
+
+  // Store the current document being viewed
+  currentViewingDocument = report
+
+  // Check if user is logged in and is a reportee
+  if (!currentUser) {
+    // Show login required modal
+    openLoginRequiredModal()
+    return
+  } else if (
+    currentUser.userType !== "reportee" &&
+    currentUser.userType !== "admin" &&
+    currentUser.userType !== "agent"
+  ) {
+    // If user is not a reportee, admin, or agent, show a message
+    createToast("You need to be registered as a document owner to view document details", "error")
+    return
+  }
+
+  // User is logged in and is a reportee, admin, or agent - show document details
+  openDocumentDetails(reportId)
+}
+
+const openLoginRequiredModal = () => {
+  modalContainer.style.display = "block"
+  loginRequiredModal.style.display = "block"
+  loginModal.style.display = "none"
+  registerModal.style.display = "none"
+  documentDetailsModal.style.display = "none"
+}
+
+const clearHomeSearchResults = () => {
+  homeSearchInput.value = ""
+  homeSearchResultsSection.style.display = "none"
+}
+
+// Function to open document details (existing function, just referenced here)
+const openDocumentDetails = (reportId) => {
+  const report = getReportById(reportId)
+  const category = getCategoryById(report.documentType)
+  const location = getLocationById(report.locationId)
+  const outlet = getOutletById(report.outletId)
+  const reporter = getUserById(report.reporterId)
+
+  modalContainer.style.display = "block"
+  documentDetailsModal.style.display = "block"
+  loginModal.style.display = "none"
+  registerModal.style.display = "none"
+  loginRequiredModal.style.display = "none"
+
+  const dateReported = new Date(report.dateReported).toLocaleDateString()
+  const dateFound = new Date(report.dateFound).toLocaleDateString()
+
+  let claimButton = ""
+  const currentUser = getCurrentUser()
+
+  // Only show claim button for reportees and if document is not claimed
+  if (currentUser && currentUser.userType === "reportee" && report.status === "pending") {
+    claimButton = `
+      <button class="btn btn-success claim-document" data-id="${report.id}">
+        <i class="fas fa-hand-holding"></i> Claim This Document
+      </button>
+    `
+  }
+
+  documentDetailsModal.querySelector("#document-details-content").innerHTML = `
+    <div class="document-details">
+      <h3>${category ? category.name : "Unknown Document"}</h3>
+      <div class="document-status">
+        <span class="status ${report.status}">${report.status.charAt(0).toUpperCase() + report.status.slice(1)}</span>
+      </div>
+      
+      <div class="details-section">
+        <h4>Document Information</h4>
+        <div class="details-grid">
+          <div class="detail-item">
+            <label>Document Number:</label>
+            <p>${report.documentNumber}</p>
+          </div>
+          <div class="detail-item">
+            <label>Name on Document:</label>
+            <p>${report.documentName}</p>
+          </div>
+          <div class="detail-item">
+            <label>Date Found:</label>
+            <p>${dateFound}</p>
+          </div>
+          <div class="detail-item">
+            <label>Date Reported:</label>
+            <p>${dateReported}</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="details-section">
+        <h4>Location Information</h4>
+        <div class="details-grid">
+          <div class="detail-item">
+            <label>Location:</label>
+            <p>${location ? location.name : "Unknown"}</p>
+          </div>
+          <div class="detail-item">
+            <label>Outlet:</label>
+            <p>${outlet ? outlet.name : "Unknown"}</p>
+          </div>
+          <div class="detail-item">
+            <label>Address:</label>
+            <p>${location ? location.address : "Unknown"}</p>
+          </div>
+          <div class="detail-item">
+            <label>Contact:</label>
+            <p>${location ? location.phone : "Unknown"}</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="details-section">
+        <h4>Additional Information</h4>
+        <p>${report.additionalDetails || "No additional details provided."}</p>
+      </div>
+      
+      <div class="document-actions">
+        ${claimButton}
+        <button class="btn btn-secondary close-details">
+          <i class="fas fa-times"></i> Close
+        </button>
+      </div>
+    </div>
+  `
+
+  // Add event listener for claim button
+  const claimBtn = documentDetailsModal.querySelector(".claim-document")
+  if (claimBtn) {
+    claimBtn.addEventListener("click", () => {
+      claimDocument(reportId)
+    })
+  }
+
+  // Add event listener for close button
+  documentDetailsModal.querySelector(".close-details").addEventListener("click", closeModals)
+}
+
+// Function to handle document claiming
+const claimDocument = (reportId) => {
+  const currentUser = getCurrentUser()
+  if (!currentUser || currentUser.userType !== "reportee") {
+    createToast("You must be logged in as a document owner to claim documents", "error")
+    return
+  }
+
+  const reports = getReports()
+  const reportIndex = reports.findIndex((r) => r.id === reportId)
+
+  if (reportIndex === -1) {
+    createToast("Document not found", "error")
+    return
+  }
+
+  // Update report status
+  reports[reportIndex].status = "claimed"
+  reports[reportIndex].claimedBy = currentUser.id
+  reports[reportIndex].dateClaimed = new Date().toISOString()
+
+  // Save updated reports
+  saveReports(reports)
+
+  // Close modal
+  closeModals()
+
+  // Show success message
+  createToast("Document claimed successfully! Please visit the collection point to retrieve your document.", "success")
+
+  // Refresh dashboard if on dashboard page
+  if (document.getElementById("dashboard").classList.contains("active")) {
+    updateAuthenticatedPages()
+  }
 }
 
 // Event Listeners
@@ -1428,6 +2068,103 @@ document.addEventListener("DOMContentLoaded", () => {
   locationFilter?.addEventListener("change", performSearch)
   document.getElementById("date-filter")?.addEventListener("change", performSearch)
 
+  // Home search event listeners
+  homeSearchButton.addEventListener("click", performHomeSearch)
+  homeSearchInput.addEventListener("keypress", (e) => {
+    if (e.key === "Enter") {
+      performHomeSearch()
+    }
+  })
+
+  clearHomeSearch.addEventListener("click", clearHomeSearchResults)
+
+  // Search suggestion clicks
+  document.querySelectorAll(".search-suggestions span").forEach((span) => {
+    span.addEventListener("click", () => {
+      homeSearchInput.value = span.textContent
+      performHomeSearch()
+    })
+  })
+
+  // Login required modal buttons
+  loginRequiredLoginBtn.addEventListener("click", () => {
+    loginRequiredModal.style.display = "none"
+    openLoginModal()
+
+    // Add event listener to login form for this specific case
+    const loginFormHandler = (e) => {
+      e.preventDefault()
+
+      const email = document.getElementById("login-email").value
+      const password = document.getElementById("login-password").value
+
+      const user = login(email, password)
+
+      if (user) {
+        updateAuthUI()
+        closeModals()
+
+        // If user is a reportee, show document details
+        if (user.userType === "reportee" && currentViewingDocument) {
+          openDocumentDetails(currentViewingDocument.id)
+        } else if (user.userType !== "reportee") {
+          createToast("You need to be registered as a document owner to view document details", "error")
+        }
+
+        // Remove this specific event listener
+        loginForm.removeEventListener("submit", loginFormHandler)
+      } else {
+        createToast("Invalid email or password. Please try again.", "error")
+      }
+    }
+
+    // Replace the existing event listener
+    loginForm.removeEventListener("submit", loginForm.onsubmit)
+    loginForm.addEventListener("submit", loginFormHandler)
+  })
+
+  loginRequiredRegisterBtn.addEventListener("click", () => {
+    loginRequiredModal.style.display = "none"
+    openRegisterModal()
+
+    // Pre-select reportee user type
+    document.getElementById("register-user-type").value = "reportee"
+  })
+
   // Show home page by default
   showPage("home")
 })
+
+// Dummy functions to resolve errors
+const loadLocations = () => {
+  console.warn("loadLocations function is a placeholder.")
+}
+
+const openEditProfileModal = () => {
+  console.warn("openEditProfileModal function is a placeholder.")
+}
+
+const openChangePasswordModal = () => {
+  console.warn("openChangePasswordModal function is a placeholder.")
+}
+
+const openMarkAsClaimedModal = (reportId) => {
+  console.warn("openMarkAsClaimedModal function is a placeholder. Report ID:", reportId)
+}
+
+const openEditDocumentModal = (reportId) => {
+  console.warn("openEditDocumentModal function is a placeholder. Report ID:", reportId)
+}
+
+const confirmDeleteDocument = (reportId) => {
+  console.warn("confirmDeleteDocument function is a placeholder. Report ID:", reportId)
+}
+
+const openEditUserModal = (userId) => {
+  console.warn("openEditUserModal function is a placeholder. User ID:", userId)
+}
+
+const confirmDeleteUser = (userId) => {
+  console.warn("confirmDeleteUser function is a placeholder. User ID:", userId)
+}
+
