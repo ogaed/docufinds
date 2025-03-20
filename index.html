@@ -4,234 +4,374 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DocuFind - Lost Document Recovery System</title>
-    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'space': ['"Space Grotesk"', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#000000',
+                        secondary: '#ffffff',
+                        accent: '#333333',
+                        light: '#f8f8f8',
+                        dark: '#0a0a0a',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        
+        .transition-all {
+            transition: all 0.3s ease;
+        }
+        
+        /* Toast Notification Styles */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: white;
+            color: black;
+            padding: 0;
+            border-radius: 0.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            max-width: 350px;
+            width: 100%;
+            z-index: 9999;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: transform 0.3s, opacity 0.3s;
+            overflow: hidden;
+        }
+        
+        .toast-visible {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .toast-hiding {
+            transform: translateY(100px);
+            opacity: 0;
+        }
+        
+        .toast-content {
+            display: flex;
+            align-items: flex-start;
+            padding: 16px;
+            gap: 12px;
+        }
+        
+        .toast i {
+            font-size: 20px;
+            margin-top: 2px;
+        }
+        
+        .toast-success {
+            border-left: 4px solid #10b981;
+        }
+        
+        .toast-success i {
+            color: #10b981;
+        }
+        
+        .toast-error {
+            border-left: 4px solid #ef4444;
+        }
+        
+        .toast-error i {
+            color: #ef4444;
+        }
+        
+        .toast-info {
+            border-left: 4px solid #000000;
+        }
+        
+        .toast-info i {
+            color: #000000;
+        }
+        
+        .toast-close {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: none;
+            border: none;
+            color: #6b7280;
+            cursor: pointer;
+            font-size: 14px;
+            padding: 4px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+        }
+        
+        .toast-close:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+    </style>
 </head>
-<body>
-    <header>
-        <div class="logo">
-            <h1><i class="fas fa-id-card"></i> DocuFind</h1>
-            <p>Lost Document Recovery System</p>
-        </div>
-        <nav>
-            <ul id="main-nav">
-                <li><a href="#" data-page="home" class="active">Home</a></li>
-                <li><a href="#" data-page="search">Search</a></li>
-                <li><a href="#" data-page="report">Report Found</a></li>
-                <li><a href="#" data-page="locations">Locations</a></li>
-                <li><a href="#" data-page="dashboard" class="nav-authenticated nav-user-specific">Dashboard</a></li>
-                <li><a href="#" data-page="profile" class="nav-authenticated nav-user-specific">Profile</a></li>
-                <li><a href="#" data-page="about">About</a></li>
-            </ul>
-        </nav>
-        <div id="auth-section" class="auth-buttons">
-            <button id="login-btn" class="btn btn-outline">Login</button>
-            <button id="register-btn" class="btn btn-primary">Register</button>
-        </div>
-        <div id="user-profile" class="user-profile" style="display: none;">
-            <span id="username-display">User</span>
-            <div class="dropdown">
-                <button class="dropbtn"><i class="fas fa-user-circle"></i></button>
-                <div class="dropdown-content">
-                    <a href="#" data-page="dashboard">Dashboard</a>
-                    <a href="#" data-page="profile">Profile</a>
-                    <a href="#" id="logout-btn">Logout</a>
+<body class="bg-white text-black min-h-screen flex flex-col">
+    <header class="bg-white border-b border-gray-200 sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center">
+                <h1 class="text-2xl font-bold mr-8">
+                    <i class="fas fa-id-card mr-2"></i> DocuFind
+                </h1>
+                <nav class="hidden md:block">
+                    <ul id="main-nav" class="flex space-x-6">
+                        <li><a href="#" data-page="home" class="active py-2 px-3 hover:bg-gray-100 rounded-md transition-all">Home</a></li>
+                        <li><a href="#" data-page="search" class="py-2 px-3 hover:bg-gray-100 rounded-md transition-all">Search</a></li>
+                        <li><a href="#" data-page="report" class="py-2 px-3 hover:bg-gray-100 rounded-md transition-all">Report Found</a></li>
+                        <li><a href="#" data-page="locations" class="py-2 px-3 hover:bg-gray-100 rounded-md transition-all">Locations</a></li>
+                        <li><a href="#" data-page="dashboard" class="nav-authenticated nav-user-specific py-2 px-3 hover:bg-gray-100 rounded-md transition-all">Dashboard</a></li>
+                        <li><a href="#" data-page="profile" class="nav-authenticated nav-user-specific py-2 px-3 hover:bg-gray-100 rounded-md transition-all">Profile</a></li>
+                        <li><a href="#" data-page="about" class="py-2 px-3 hover:bg-gray-100 rounded-md transition-all">About</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="flex items-center">
+                <div id="auth-section" class="flex space-x-3">
+                    <button id="login-btn" class="py-2 px-4 border border-black rounded-md hover:bg-gray-100 transition-all">Login</button>
+                    <button id="register-btn" class="py-2 px-4 bg-black text-white rounded-md hover:bg-gray-800 transition-all">Register</button>
                 </div>
+                <div id="user-profile" class="hidden">
+                    <div class="flex items-center">
+                        <span id="username-display" class="mr-2 font-medium">User</span>
+                        <div class="dropdown relative">
+                            <button class="dropbtn text-2xl">
+                                <i class="fas fa-user-circle"></i>
+                            </button>
+                            <div class="dropdown-content hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg border border-gray-200">
+                                <a href="#" data-page="dashboard" class="block px-4 py-2 hover:bg-gray-100">Dashboard</a>
+                                <a href="#" data-page="profile" class="block px-4 py-2 hover:bg-gray-100">Profile</a>
+                                <a href="#" id="logout-btn" class="block px-4 py-2 hover:bg-gray-100">Logout</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button class="mobile-menu-btn md:hidden ml-4 text-xl">
+                    <i class="fas fa-bars"></i>
+                </button>
             </div>
         </div>
-        <button class="mobile-menu-btn">
-            <i class="fas fa-bars"></i>
-        </button>
     </header>
 
-    <main id="main-content">
+    <main id="main-content" class="flex-grow">
         <!-- Home Page -->
         <div id="home" class="page active">
-            <section class="hero">
-                <div class="hero-content">
-                    <h2>Find Your Lost Documents</h2>
-                    <p>DocuFind helps you recover your lost documents quickly and securely. Whether you've lost your ID, passport, or driver's license, our platform connects document finders with owners.</p>
-                    
-                    <!-- Bing-inspired search bar -->
-                    <div class="home-search-container">
-                        <div class="home-search-box">
-                            <input type="text" id="home-search-input" placeholder="Enter document number or name on document...">
-                            <button id="home-search-button" class="btn btn-primary">
-                                <i class="fas fa-search"></i> Search
-                            </button>
+            <section class="bg-black text-white py-20">
+                <div class="container mx-auto px-4">
+                    <div class="flex flex-col md:flex-row items-center justify-between gap-12">
+                        <div class="md:w-1/2">
+                            <h2 class="text-4xl md:text-5xl font-bold mb-6">Find Your Lost Documents</h2>
+                            <p class="text-lg mb-8 text-gray-300">DocuFind helps you recover your lost documents quickly and securely. Whether you've lost your ID, passport, or driver's license, our platform connects document finders with owners.</p>
+                            
+                            <!-- Bing-inspired search bar -->
+                            <div class="mb-8 w-full max-w-xl">
+                                <div class="flex rounded-full overflow-hidden bg-white shadow-lg">
+                                    <input type="text" id="home-search-input" placeholder="Enter document number or name on document..." class="flex-grow py-4 px-6 text-black focus:outline-none">
+                                    <button id="home-search-button" class="bg-black text-white px-6 py-4 hover:bg-gray-800 transition-all">
+                                        <i class="fas fa-search"></i> Search
+                                    </button>
+                                </div>
+                                <div class="mt-3 text-sm text-gray-400">
+                                    <p>Try searching for: <span class="inline-block bg-gray-800 px-3 py-1 rounded-full mx-1 cursor-pointer hover:bg-gray-700 transition-all">National ID</span> <span class="inline-block bg-gray-800 px-3 py-1 rounded-full mx-1 cursor-pointer hover:bg-gray-700 transition-all">Passport</span> <span class="inline-block bg-gray-800 px-3 py-1 rounded-full mx-1 cursor-pointer hover:bg-gray-700 transition-all">Driver's License</span></p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex flex-wrap gap-4">
+                                <button id="report-found-btn" class="py-3 px-6 bg-white text-black rounded-md hover:bg-gray-200 transition-all">
+                                    <i class="fas fa-plus-circle mr-2"></i> Report Found Document
+                                </button>
+                            </div>
                         </div>
-                        <div class="search-suggestions">
-                            <p>Try searching for: <span>National ID</span> <span>Passport</span> <span>Driver's License</span></p>
+                        <div class="md:w-1/2">
+                            <img src="https://images.unsplash.com/photo-1568219656418-15c329312bf1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="Documents illustration" class="rounded-lg shadow-2xl">
                         </div>
                     </div>
-                    
-                    <div class="hero-buttons">
-                        <button id="report-found-btn" class="btn btn-secondary btn-large">
-                            <i class="fas fa-plus-circle"></i> Report Found Document
-                        </button>
-                    </div>
-                </div>
-                <div class="hero-image">
-                    <img src="https://images.unsplash.com/photo-1568219656418-15c329312bf1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="Documents illustration">
                 </div>
             </section>
 
             <!-- Quick search results section (initially hidden) -->
-            <section id="home-search-results-section" class="home-search-results-section" style="display: none;">
-                <div class="container">
-                    <div class="search-results-header">
-                        <h3>Search Results</h3>
-                        <div class="search-results-actions">
-                            <button id="clear-home-search" class="btn btn-outline btn-sm">
-                                <i class="fas fa-times"></i> Clear Search
+            <section id="home-search-results-section" class="py-10 hidden">
+                <div class="container mx-auto px-4">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-2xl font-bold">Search Results</h3>
+                        <div class="flex gap-3">
+                            <button id="clear-home-search" class="py-2 px-4 border border-black rounded-md hover:bg-gray-100 transition-all text-sm">
+                                <i class="fas fa-times mr-1"></i> Clear Search
                             </button>
-                            <a href="#" data-page="search" class="btn btn-primary btn-sm">
-                                <i class="fas fa-filter"></i> Advanced Search
+                            <a href="#" data-page="search" class="py-2 px-4 bg-black text-white rounded-md hover:bg-gray-800 transition-all text-sm">
+                                <i class="fas fa-filter mr-1"></i> Advanced Search
                             </a>
                         </div>
                     </div>
-                    <div id="home-results-count" class="results-count">0 documents found</div>
-                    <div id="home-results-list" class="results-list">
+                    <div id="home-results-count" class="text-gray-600 mb-4">0 documents found</div>
+                    <div id="home-results-list" class="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden">
                         <!-- Results will be populated here -->
                     </div>
-                    <div id="home-pagination" class="pagination">
+                    <div id="home-pagination" class="flex justify-center mt-6 gap-2">
                         <!-- Pagination will be populated here -->
                     </div>
                 </div>
             </section>
 
-            <div class="container">
-                <section class="how-it-works">
-                    <h2>How It Works</h2>
-                    <p class="section-description">Our platform makes it easy to recover lost documents through a simple process.</p>
+            <div class="container mx-auto px-4 py-16">
+                <section class="mb-20">
+                    <h2 class="text-3xl font-bold mb-4 text-center">How It Works</h2>
+                    <p class="text-gray-600 text-center max-w-3xl mx-auto mb-12">Our platform makes it easy to recover lost documents through a simple process.</p>
                     
-                    <div class="process-steps">
-                        <div class="process-step">
-                            <div class="step-number">1</div>
-                            <div class="step-icon"><i class="fas fa-upload"></i></div>
-                            <h3>Report Found Documents</h3>
-                            <p>Found a document? Report it on our platform to help the owner recover it and earn a reward.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                        <div class="bg-white p-8 rounded-lg shadow-md border border-gray-200 relative hover:shadow-lg transition-all">
+                            <div class="absolute -top-4 -left-4 w-10 h-10 bg-black text-white rounded-full flex items-center justify-center font-bold">1</div>
+                            <div class="w-16 h-16 bg-black rounded-full flex items-center justify-center text-white text-2xl mb-6 mx-auto">
+                                <i class="fas fa-upload"></i>
+                            </div>
+                            <h3 class="text-xl font-bold mb-3 text-center">Report Found Documents</h3>
+                            <p class="text-gray-600 text-center">Found a document? Report it on our platform to help the owner recover it and earn a reward.</p>
                         </div>
-                        <div class="process-step">
-                            <div class="step-number">2</div>
-                            <div class="step-icon"><i class="fas fa-search"></i></div>
-                            <h3>Search for Lost Documents</h3>
-                            <p>Lost a document? Search our database to see if someone has found and reported it.</p>
+                        <div class="bg-white p-8 rounded-lg shadow-md border border-gray-200 relative hover:shadow-lg transition-all">
+                            <div class="absolute -top-4 -left-4 w-10 h-10 bg-black text-white rounded-full flex items-center justify-center font-bold">2</div>
+                            <div class="w-16 h-16 bg-black rounded-full flex items-center justify-center text-white text-2xl mb-6 mx-auto">
+                                <i class="fas fa-search"></i>
+                            </div>
+                            <h3 class="text-xl font-bold mb-3 text-center">Search for Lost Documents</h3>
+                            <p class="text-gray-600 text-center">Lost a document? Search our database to see if someone has found and reported it.</p>
                         </div>
-                        <div class="process-step">
-                            <div class="step-number">3</div>
-                            <div class="step-icon"><i class="fas fa-map-marker-alt"></i></div>
-                            <h3>Locate Collection Points</h3>
-                            <p>Find the nearest collection point where your document is being held for safe retrieval.</p>
+                        <div class="bg-white p-8 rounded-lg shadow-md border border-gray-200 relative hover:shadow-lg transition-all">
+                            <div class="absolute -top-4 -left-4 w-10 h-10 bg-black text-white rounded-full flex items-center justify-center font-bold">3</div>
+                            <div class="w-16 h-16 bg-black rounded-full flex items-center justify-center text-white text-2xl mb-6 mx-auto">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <h3 class="text-xl font-bold mb-3 text-center">Locate Collection Points</h3>
+                            <p class="text-gray-600 text-center">Find the nearest collection point where your document is being held for safe retrieval.</p>
                         </div>
-                        <div class="process-step">
-                            <div class="step-number">4</div>
-                            <div class="step-icon"><i class="fas fa-handshake"></i></div>
-                            <h3>Claim Your Document</h3>
-                            <p>Verify your identity and claim your document from one of our secure collection points.</p>
-                        </div>
-                    </div>
-                </section>
-
-                <section class="stats-section">
-                    <div class="stats-container">
-                        <div class="stat">
-                            <div class="stat-icon"><i class="fas fa-id-card"></i></div>
-                            <h3>5,000+</h3>
-                            <p>Documents Recovered</p>
-                        </div>
-                        <div class="stat">
-                            <div class="stat-icon"><i class="fas fa-users"></i></div>
-                            <h3>10,000+</h3>
-                            <p>Registered Users</p>
-                        </div>
-                        <div class="stat">
-                            <div class="stat-icon"><i class="fas fa-building"></i></div>
-                            <h3>50+</h3>
-                            <p>Collection Points</p>
-                        </div>
-                        <div class="stat">
-                            <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
-                            <h3>98%</h3>
-                            <p>Success Rate</p>
+                        <div class="bg-white p-8 rounded-lg shadow-md border border-gray-200 relative hover:shadow-lg transition-all">
+                            <div class="absolute -top-4 -left-4 w-10 h-10 bg-black text-white rounded-full flex items-center justify-center font-bold">4</div>
+                            <div class="w-16 h-16 bg-black rounded-full flex items-center justify-center text-white text-2xl mb-6 mx-auto">
+                                <i class="fas fa-handshake"></i>
+                            </div>
+                            <h3 class="text-xl font-bold mb-3 text-center">Claim Your Document</h3>
+                            <p class="text-gray-600 text-center">Verify your identity and claim your document from one of our secure collection points.</p>
                         </div>
                     </div>
                 </section>
 
-                <section class="document-types">
-                    <h2>Document Types We Handle</h2>
-                    <p class="section-description">We help recover a wide range of important documents.</p>
-                    <div class="features">
-                        <div class="feature-card">
-                            <i class="fas fa-id-card"></i>
-                            <h3>National ID Cards</h3>
-                            <p>National identification cards and government-issued IDs.</p>
-                        </div>
-                        <div class="feature-card">
-                            <i class="fas fa-passport"></i>
-                            <h3>Passports</h3>
-                            <p>International and domestic passports from all countries.</p>
-                        </div>
-                        <div class="feature-card">
-                            <i class="fas fa-car"></i>
-                            <h3>Driver's Licenses</h3>
-                            <p>Driver's licenses and vehicle registration documents.</p>
-                        </div>
-                        <div class="feature-card">
-                            <i class="fas fa-graduation-cap"></i>
-                            <h3>Educational Documents</h3>
-                            <p>Student IDs, certificates, and academic credentials.</p>
+                <section class="mb-20">
+                    <div class="bg-black text-white p-10 rounded-lg">
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                            <div class="text-center">
+                                <div class="text-3xl mb-2"><i class="fas fa-id-card"></i></div>
+                                <h3 class="text-4xl font-bold mb-2">5,000+</h3>
+                                <p class="text-gray-300">Documents Recovered</p>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-3xl mb-2"><i class="fas fa-users"></i></div>
+                                <h3 class="text-4xl font-bold mb-2">10,000+</h3>
+                                <p class="text-gray-300">Registered Users</p>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-3xl mb-2"><i class="fas fa-building"></i></div>
+                                <h3 class="text-4xl font-bold mb-2">50+</h3>
+                                <p class="text-gray-300">Collection Points</p>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-3xl mb-2"><i class="fas fa-check-circle"></i></div>
+                                <h3 class="text-4xl font-bold mb-2">98%</h3>
+                                <p class="text-gray-300">Success Rate</p>
+                            </div>
                         </div>
                     </div>
                 </section>
 
-                <section class="testimonials">
-                    <h2>Success Stories</h2>
-                    <p class="section-description">See how DocuFind has helped people recover their important documents.</p>
+                <section class="mb-20">
+                    <h2 class="text-3xl font-bold mb-4 text-center">Document Types We Handle</h2>
+                    <p class="text-gray-600 text-center max-w-3xl mx-auto mb-12">We help recover a wide range of important documents.</p>
                     
-                    <div class="testimonial-slider">
-                        <div class="testimonial">
-                            <div class="testimonial-content">
-                                <p>"I lost my passport while traveling and was in a panic. Thanks to DocuFind, someone reported finding it, and I was able to recover it within 24 hours!"</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200 text-center hover:shadow-lg transition-all">
+                            <i class="fas fa-id-card text-4xl mb-4"></i>
+                            <h3 class="text-xl font-bold mb-2">National ID Cards</h3>
+                            <p class="text-gray-600">National identification cards and government-issued IDs.</p>
+                        </div>
+                        <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200 text-center hover:shadow-lg transition-all">
+                            <i class="fas fa-passport text-4xl mb-4"></i>
+                            <h3 class="text-xl font-bold mb-2">Passports</h3>
+                            <p class="text-gray-600">International and domestic passports from all countries.</p>
+                        </div>
+                        <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200 text-center hover:shadow-lg transition-all">
+                            <i class="fas fa-car text-4xl mb-4"></i>
+                            <h3 class="text-xl font-bold mb-2">Driver's Licenses</h3>
+                            <p class="text-gray-600">Driver's licenses and vehicle registration documents.</p>
+                        </div>
+                        <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200 text-center hover:shadow-lg transition-all">
+                            <i class="fas fa-graduation-cap text-4xl mb-4"></i>
+                            <h3 class="text-xl font-bold mb-2">Educational Documents</h3>
+                            <p class="text-gray-600">Student IDs, certificates, and academic credentials.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="mb-20">
+                    <h2 class="text-3xl font-bold mb-4 text-center">Success Stories</h2>
+                    <p class="text-gray-600 text-center max-w-3xl mx-auto mb-12">See how DocuFind has helped people recover their important documents.</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="bg-white p-8 rounded-lg shadow-md border border-gray-200">
+                            <div class="mb-6">
+                                <p class="text-gray-600 italic">"I lost my passport while traveling and was in a panic. Thanks to DocuFind, someone reported finding it, and I was able to recover it within 24 hours!"</p>
                             </div>
-                            <div class="testimonial-author">
-                                <div class="author-avatar">
-                                    <i class="fas fa-user-circle"></i>
+                            <div class="flex items-center">
+                                <div class="w-12 h-12 bg-black text-white rounded-full flex items-center justify-center text-xl mr-4">
+                                    <i class="fas fa-user"></i>
                                 </div>
-                                <div class="author-info">
-                                    <h4>Sarah Johnson</h4>
-                                    <p>Passport Recovered</p>
+                                <div>
+                                    <h4 class="font-bold">Sarah Johnson</h4>
+                                    <p class="text-gray-600 text-sm">Passport Recovered</p>
                                 </div>
                             </div>
                         </div>
-                        <div class="testimonial">
-                            <div class="testimonial-content">
-                                <p>"I found a wallet with several IDs and reported it on DocuFind. The owner was so grateful, and I received a reward for my honesty. Great platform!"</p>
+                        <div class="bg-white p-8 rounded-lg shadow-md border border-gray-200">
+                            <div class="mb-6">
+                                <p class="text-gray-600 italic">"I found a wallet with several IDs and reported it on DocuFind. The owner was so grateful, and I received a reward for my honesty. Great platform!"</p>
                             </div>
-                            <div class="testimonial-author">
-                                <div class="author-avatar">
-                                    <i class="fas fa-user-circle"></i>
+                            <div class="flex items-center">
+                                <div class="w-12 h-12 bg-black text-white rounded-full flex items-center justify-center text-xl mr-4">
+                                    <i class="fas fa-user"></i>
                                 </div>
-                                <div class="author-info">
-                                    <h4>Michael Chen</h4>
-                                    <p>Document Reporter</p>
+                                <div>
+                                    <h4 class="font-bold">Michael Chen</h4>
+                                    <p class="text-gray-600 text-sm">Document Reporter</p>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </section>
 
-                <section class="cta-section">
-                    <div class="cta-content">
-                        <h2>Ready to Find Your Lost Document?</h2>
-                        <p>Join thousands of users who have successfully recovered their important documents through our platform.</p>
-                        <div class="cta-buttons">
-                            <button class="btn btn-primary btn-large" onclick="showPage('search')">
-                                <i class="fas fa-search"></i> Search Now
+                <section class="mb-20">
+                    <div class="bg-black text-white p-12 rounded-lg text-center">
+                        <h2 class="text-3xl font-bold mb-4">Ready to Find Your Lost Document?</h2>
+                        <p class="text-gray-300 max-w-2xl mx-auto mb-8">Join thousands of users who have successfully recovered their important documents through our platform.</p>
+                        <div class="flex flex-wrap justify-center gap-4">
+                            <button class="py-3 px-6 bg-white text-black rounded-md hover:bg-gray-200 transition-all" onclick="showPage('search')">
+                                <i class="fas fa-search mr-2"></i> Search Now
                             </button>
-                            <button class="btn btn-outline btn-large" onclick="openRegisterModal()">
-                                <i class="fas fa-user-plus"></i> Create Account
+                            <button class="py-3 px-6 border border-white text-white rounded-md hover:bg-white hover:text-black transition-all" onclick="openRegisterModal()">
+                                <i class="fas fa-user-plus mr-2"></i> Create Account
                             </button>
                         </div>
                     </div>
@@ -241,35 +381,35 @@
 
         <!-- Search Page -->
         <div id="search" class="page">
-            <div class="container">
-                <div class="page-header">
-                    <h2>Search for Documents</h2>
-                    <p class="section-description">Looking for a lost document? Search our database to see if it has been found and reported.</p>
+            <div class="container mx-auto px-4 py-12">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold mb-4">Search for Documents</h2>
+                    <p class="text-gray-600 max-w-3xl mx-auto">Looking for a lost document? Search our database to see if it has been found and reported.</p>
                 </div>
 
-                <div class="search-container">
-                    <div class="search-box">
-                        <input type="text" id="search-input" placeholder="Enter document number or name on document...">
-                        <button id="search-button" class="btn btn-primary">
-                            <i class="fas fa-search"></i> Search
+                <div class="bg-white rounded-lg shadow-md border border-gray-200 p-6 mb-10 max-w-4xl mx-auto">
+                    <div class="flex flex-col md:flex-row gap-4 mb-6">
+                        <input type="text" id="search-input" placeholder="Enter document number or name on document..." class="flex-grow py-3 px-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black">
+                        <button id="search-button" class="py-3 px-6 bg-black text-white rounded-md hover:bg-gray-800 transition-all">
+                            <i class="fas fa-search mr-2"></i> Search
                         </button>
                     </div>
-                    <div class="search-filters">
-                        <div class="filter">
-                            <label for="category-filter">Document Type</label>
-                            <select id="category-filter">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label for="category-filter" class="block mb-2 font-medium">Document Type</label>
+                            <select id="category-filter" class="w-full py-3 px-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black">
                                 <option value="">All Types</option>
                             </select>
                         </div>
-                        <div class="filter">
-                            <label for="location-filter">Location</label>
-                            <select id="location-filter">
+                        <div>
+                            <label for="location-filter" class="block mb-2 font-medium">Location</label>
+                            <select id="location-filter" class="w-full py-3 px-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black">
                                 <option value="">All Locations</option>
                             </select>
                         </div>
-                        <div class="filter">
-                            <label for="date-filter">Date Reported</label>
-                            <select id="date-filter">
+                        <div>
+                            <label for="date-filter" class="block mb-2 font-medium">Date Reported</label>
+                            <select id="date-filter" class="w-full py-3 px-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black">
                                 <option value="">Any Time</option>
                                 <option value="today">Today</option>
                                 <option value="week">This Week</option>
@@ -280,158 +420,355 @@
                     </div>
                 </div>
 
-                <div class="search-results">
-                    <div class="results-info">
-                        <div class="results-count" id="results-count">0 documents found</div>
-                        <div class="sort-by">
-                            <label for="sort-select">Sort by:</label>
-                            <select id="sort-select">
+                <div class="max-w-4xl mx-auto">
+                    <div class="flex justify-between items-center mb-4">
+                        <div id="results-count" class="text-gray-600">0 documents found</div>
+                        <div class="flex items-center">
+                            <label for="sort-select" class="mr-2 font-medium">Sort by:</label>
+                            <select id="sort-select" class="py-2 px-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black">
                                 <option value="date-desc">Newest First</option>
                                 <option value="date-asc">Oldest First</option>
                                 <option value="relevance">Relevance</option>
                             </select>
                         </div>
                     </div>
-                    <div class="results-list" id="results-list">
+                    <div id="results-list" class="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden">
                         <!-- Results will be populated here -->
                     </div>
-                    <div class="pagination" id="pagination">
+                    <div id="pagination" class="flex justify-center mt-6 gap-2">
                         <!-- Pagination will be populated here -->
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Other pages remain the same -->
         <!-- Report Page -->
         <div id="report" class="page">
-            <!-- Content remains the same -->
+            <div class="container mx-auto px-4 py-12">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold mb-4">Report a Found Document</h2>
+                    <p class="text-gray-600 max-w-3xl mx-auto">Help someone recover their lost document by reporting it here. You'll be eligible for a reward when the document is claimed.</p>
+                </div>
+
+                <div id="report-login-required" class="max-w-2xl mx-auto bg-white rounded-lg shadow-md border border-gray-200 p-10 text-center hidden">
+                    <i class="fas fa-lock text-5xl mb-4"></i>
+                    <h3 class="text-2xl font-bold mb-4">Login Required</h3>
+                    <p class="text-gray-600 mb-6">You need to <a href="#" id="report-login-link" class="text-black font-bold underline">login</a> to report a found document.</p>
+                    <p class="text-gray-600">Don't have an account? <a href="#" id="report-register-link" class="text-black font-bold underline">Register now</a> to help others recover their documents and earn rewards.</p>
+                </div>
+
+                <form id="report-form" class="max-w-4xl mx-auto bg-white rounded-lg shadow-md border border-gray-200 p-8 hidden">
+                    <div class="bg-gray-100 p-4 rounded-md mb-8 flex items-start">
+                        <i class="fas fa-info-circle text-gray-600 mt-1 mr-3"></i>
+                        <p class="text-gray-600">Please provide accurate information about the document you found. This will help the owner identify and claim it.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <label for="document-type" class="block mb-2 font-medium">Document Type</label>
+                            <select id="document-type" class="w-full py-3 px-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black" required>
+                                <option value="">Select Document Type</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="document-number" class="block mb-2 font-medium">Document Number</label>
+                            <input type="text" id="document-number" placeholder="Enter the document number" class="w-full py-3 px-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black" required>
+                            <p class="text-sm text-gray-500 mt-1">This is usually printed on the document (e.g., ID number, passport number)</p>
+                        </div>
+
+                        <div>
+                            <label for="document-name" class="block mb-2 font-medium">Name on Document</label>
+                            <input type="text" id="document-name" placeholder="Enter the name as it appears on the document" class="w-full py-3 px-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black" required>
+                        </div>
+
+                        <div>
+                            <label for="found-location" class="block mb-2 font-medium">Location Found</label>
+                            <select id="found-location" class="w-full py-3 px-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black" required>
+                                <option value="">Select Location</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="found-outlet" class="block mb-2 font-medium">Specific Outlet</label>
+                            <select id="found-outlet" class="w-full py-3 px-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black" required>
+                                <option value="">Select Outlet</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="found-date" class="block mb-2 font-medium">Date Found</label>
+                            <input type="date" id="found-date" class="w-full py-3 px-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-6">
+                        <label for="additional-details" class="block mb-2 font-medium">Additional Details</label>
+                        <textarea id="additional-details" placeholder="Provide any additional details that might help identify the document or its owner" class="w-full py-3 px-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black h-32"></textarea>
+                    </div>
+
+                    <div class="mb-8">
+                        <label class="flex items-start">
+                            <input type="checkbox" class="mt-1 mr-3" required>
+                            <span class="text-gray-700">I confirm that all information provided is accurate to the best of my knowledge</span>
+                        </label>
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <button type="submit" class="py-3 px-6 bg-black text-white rounded-md hover:bg-gray-800 transition-all">
+                            <i class="fas fa-paper-plane mr-2"></i> Submit Report
+                        </button>
+                        <button type="reset" class="py-3 px-6 border border-black rounded-md hover:bg-gray-100 transition-all">
+                            <i class="fas fa-redo mr-2"></i> Reset Form
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
 
         <!-- Locations Page -->
         <div id="locations" class="page">
-            <!-- Content remains the same -->
+            <div class="container mx-auto px-4 py-12">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold mb-4">Our Locations</h2>
+                    <p class="text-gray-600 max-w-3xl mx-auto">Find the nearest DocuFind location where you can report or collect documents.</p>
+                </div>
+
+                <div class="max-w-xl mx-auto mb-10">
+                    <div class="flex">
+                        <input type="text" placeholder="Search locations..." class="flex-grow py-3 px-4 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-black">
+                        <button class="py-3 px-6 bg-black text-white rounded-r-md hover:bg-gray-800 transition-all">
+                            <i class="fas fa-search mr-2"></i> Search
+                        </button>
+                    </div>
+                </div>
+
+                <div id="locations-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Locations will be populated here -->
+                </div>
+            </div>
         </div>
 
         <!-- Dashboard Page -->
         <div id="dashboard" class="page">
-            <!-- Content remains the same -->
+            <div class="container mx-auto px-4 py-12">
+                <h2 class="text-3xl font-bold mb-8">Dashboard</h2>
+                <div id="dashboard-content">
+                    <!-- Dashboard content will be populated here -->
+                </div>
+            </div>
         </div>
 
         <!-- Profile Page -->
         <div id="profile" class="page">
-            <!-- Content remains the same -->
+            <div class="container mx-auto px-4 py-12">
+                <h2 class="text-3xl font-bold mb-8">My Profile</h2>
+                <div id="profile-content">
+                    <!-- Profile content will be populated here -->
+                </div>
+            </div>
         </div>
 
         <!-- About Page -->
         <div id="about" class="page">
-            <!-- Content remains the same -->
+            <div class="container mx-auto px-4 py-12">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold mb-4">About DocuFind</h2>
+                    <p class="text-gray-600 max-w-3xl mx-auto">Learn more about our mission to help people recover their lost documents.</p>
+                </div>
+
+                <div class="max-w-4xl mx-auto bg-white rounded-lg shadow-md border border-gray-200 p-8">
+                    <div class="mb-8">
+                        <h3 class="text-2xl font-bold mb-4">Our Mission</h3>
+                        <p class="text-gray-600">DocuFind was established with a simple mission: to help people recover their lost documents quickly and securely. We understand the stress and inconvenience of losing important documents, and we're here to make the recovery process as smooth as possible.</p>
+                    </div>
+
+                    <div class="mb-8">
+                        <h3 class="text-2xl font-bold mb-4">How It Works</h3>
+                        <ol class="list-decimal pl-6 space-y-3 text-gray-600">
+                            <li><strong>Report Found Documents:</strong> If you find a lost document, you can report it on our platform. We'll store the information securely and make it searchable for the owner.</li>
+                            <li><strong>Search for Lost Documents:</strong> If you've lost a document, you can search our database to see if it has been found and reported.</li>
+                            <li><strong>Claim Your Document:</strong> Once you find your document in our system, you can claim it by verifying your identity at one of our collection points.</li>
+                            <li><strong>Rewards for Reporters:</strong> Document finders receive a reward when the owner claims their document, incentivizing people to report found documents.</li>
+                        </ol>
+                    </div>
+
+                    <div class="mb-8">
+                        <h3 class="text-2xl font-bold mb-4">Our Team</h3>
+                        <p class="text-gray-600">DocuFind is run by a dedicated team of professionals committed to helping people recover their lost documents. Our team includes customer service representatives, IT specialists, and security experts who work together to provide a seamless experience for our users.</p>
+                    </div>
+
+                    <div>
+                        <h3 class="text-2xl font-bold mb-4">Contact Us</h3>
+                        <div class="space-y-2 text-gray-600">
+                            <p><i class="fas fa-envelope mr-3"></i> Email: info@docufind.com</p>
+                            <p><i class="fas fa-phone mr-3"></i> Phone: +1 (123) 456-7890</p>
+                            <p><i class="fas fa-map-marker-alt mr-3"></i> Address: 123 Main Street, City, Country</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </main>
 
-    <footer>
-        <!-- Footer content remains the same -->
+    <footer class="bg-black text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <h3 class="text-xl font-bold mb-4">DocuFind</h3>
+                    <p class="text-gray-400 mb-2">Lost Document Recovery System</p>
+                    <p class="text-gray-400">Helping people recover their lost documents since 2023.</p>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold mb-4">Quick Links</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" data-page="home" class="text-gray-400 hover:text-white transition-all">Home</a></li>
+                        <li><a href="#" data-page="search" class="text-gray-400 hover:text-white transition-all">Search</a></li>
+                        <li><a href="#" data-page="report" class="text-gray-400 hover:text-white transition-all">Report Found</a></li>
+                        <li><a href="#" data-page="locations" class="text-gray-400 hover:text-white transition-all">Locations</a></li>
+                        <li><a href="#" data-page="about" class="text-gray-400 hover:text-white transition-all">About</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold mb-4">Legal</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-all">Terms of Service</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-all">Privacy Policy</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-all">Cookie Policy</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-all">Data Protection</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold mb-4">Connect With Us</h3>
+                    <div class="flex space-x-4">
+                        <a href="#" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-gray-700 transition-all">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-gray-700 transition-all">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-gray-700 transition-all">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-gray-700 transition-all">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 pt-8 text-center">
+                <p class="text-gray-400">&copy; 2023 DocuFind. All rights reserved.</p>
+            </div>
+        </div>
     </footer>
 
     <!-- Modals -->
-    <div id="modal-container" class="modal-container">
+    <div id="modal-container" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center hidden backdrop-blur-sm">
         <!-- Login Modal -->
-        <div id="login-modal" class="modal">
-            <div class="modal-content">
-                <span class="close-modal">&times;</span>
-                <h2>Login to DocuFind</h2>
+        <div id="login-modal" class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4 hidden">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold">Login to DocuFind</h2>
+                    <button class="close-modal text-gray-500 hover:text-gray-800">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
                 <form id="login-form">
-                    <div class="form-group">
-                        <label for="login-email">Email Address</label>
-                        <input type="email" id="login-email" placeholder="Enter your email" required>
+                    <div class="mb-4">
+                        <label for="login-email" class="block mb-2 font-medium">Email Address</label>
+                        <input type="email" id="login-email" placeholder="Enter your email" class="w-full py-3 px-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black" required>
                     </div>
-                    <div class="form-group">
-                        <label for="login-password">Password</label>
-                        <input type="password" id="login-password" placeholder="Enter your password" required>
+                    <div class="mb-6">
+                        <label for="login-password" class="block mb-2 font-medium">Password</label>
+                        <input type="password" id="login-password" placeholder="Enter your password" class="w-full py-3 px-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black" required>
                     </div>
-                    <div class="form-actions">
-                        <button type="submit" class="btn btn-primary btn-block">
-                            <i class="fas fa-sign-in-alt"></i> Login
-                        </button>
-                    </div>
-                    <div class="form-footer">
-                        <p>Don't have an account? <a href="#" id="switch-to-register">Register now</a></p>
-                        <p><a href="#">Forgot your password?</a></p>
+                    <button type="submit" class="w-full py-3 px-4 bg-black text-white rounded-md hover:bg-gray-800 transition-all mb-4">
+                        <i class="fas fa-sign-in-alt mr-2"></i> Login
+                    </button>
+                    <div class="text-center text-gray-600">
+                        <p class="mb-2">Don't have an account? <a href="#" id="switch-to-register" class="text-black font-bold">Register now</a></p>
+                        <p><a href="#" class="text-black">Forgot your password?</a></p>
                     </div>
                 </form>
             </div>
         </div>
 
         <!-- Register Modal -->
-        <div id="register-modal" class="modal">
-            <div class="modal-content">
-                <span class="close-modal">&times;</span>
-                <h2>Create an Account</h2>
+        <div id="register-modal" class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4 hidden">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold">Create an Account</h2>
+                    <button class="close-modal text-gray-500 hover:text-gray-800">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
                 <form id="register-form">
-                    <div class="form-group">
-                        <label for="register-name">Full Name</label>
-                        <input type="text" id="register-name" placeholder="Enter your full name" required>
+                    <div class="mb-4">
+                        <label for="register-name" class="block mb-2 font-medium">Full Name</label>
+                        <input type="text" id="register-name" placeholder="Enter your full name" class="w-full py-3 px-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black" required>
                     </div>
-                    <div class="form-group">
-                        <label for="register-email">Email Address</label>
-                        <input type="email" id="register-email" placeholder="Enter your email" required>
+                    <div class="mb-4">
+                        <label for="register-email" class="block mb-2 font-medium">Email Address</label>
+                        <input type="email" id="register-email" placeholder="Enter your email" class="w-full py-3 px-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black" required>
                     </div>
-                    <div class="form-group">
-                        <label for="register-phone">Phone Number</label>
-                        <input type="tel" id="register-phone" placeholder="Enter your phone number" required>
+                    <div class="mb-4">
+                        <label for="register-phone" class="block mb-2 font-medium">Phone Number</label>
+                        <input type="tel" id="register-phone" placeholder="Enter your phone number" class="w-full py-3 px-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black" required>
                     </div>
-                    <div class="form-group">
-                        <label for="register-password">Password</label>
-                        <input type="password" id="register-password" placeholder="Create a password" required>
+                    <div class="mb-4">
+                        <label for="register-password" class="block mb-2 font-medium">Password</label>
+                        <input type="password" id="register-password" placeholder="Create a password" class="w-full py-3 px-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black" required>
                     </div>
-                    <div class="form-group">
-                        <label for="register-confirm-password">Confirm Password</label>
-                        <input type="password" id="register-confirm-password" placeholder="Confirm your password" required>
+                    <div class="mb-4">
+                        <label for="register-confirm-password" class="block mb-2 font-medium">Confirm Password</label>
+                        <input type="password" id="register-confirm-password" placeholder="Confirm your password" class="w-full py-3 px-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black" required>
                     </div>
-                    <div class="form-group">
-                        <label for="register-user-type">I am a:</label>
-                        <select id="register-user-type" required>
+                    <div class="mb-4">
+                        <label for="register-user-type" class="block mb-2 font-medium">I am a:</label>
+                        <select id="register-user-type" class="w-full py-3 px-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black" required>
                             <option value="">Select User Type</option>
                             <option value="reportee">Document Owner (Looking for lost documents)</option>
                             <option value="reporter">Document Finder (Reporting found documents)</option>
                             <option value="agent">Agent (Working at a collection point)</option>
                         </select>
                     </div>
-                    <div id="agent-location-group" class="form-group" style="display: none;">
-                        <label for="agent-location">Location</label>
-                        <select id="agent-location">
+                    <div id="agent-location-group" class="mb-4 hidden">
+                        <label for="agent-location" class="block mb-2 font-medium">Location</label>
+                        <select id="agent-location" class="w-full py-3 px-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black">
                             <option value="">Select Location</option>
                         </select>
                     </div>
-                    <div id="agent-outlet-group" class="form-group" style="display: none;">
-                        <label for="agent-outlet">Outlet</label>
-                        <select id="agent-outlet">
+                    <div id="agent-outlet-group" class="mb-4 hidden">
+                        <label for="agent-outlet" class="block mb-2 font-medium">Outlet</label>
+                        <select id="agent-outlet" class="w-full py-3 px-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black">
                             <option value="">Select Outlet</option>
                         </select>
                     </div>
-                    <div class="form-group">
-                        <label class="checkbox-container">
-                            I agree to the Terms and Conditions and Privacy Policy
-                            <input type="checkbox" id="register-terms" required>
-                            <span class="checkmark"></span>
+                    <div class="mb-6">
+                        <label class="flex items-start">
+                            <input type="checkbox" id="register-terms" class="mt-1 mr-3" required>
+                            <span class="text-gray-700">I agree to the Terms and Conditions and Privacy Policy</span>
                         </label>
                     </div>
-                    <div class="form-actions">
-                        <button type="submit" class="btn btn-primary btn-block">
-                            <i class="fas fa-user-plus"></i> Register
-                        </button>
-                    </div>
-                    <div class="form-footer">
-                        <p>Already have an account? <a href="#" id="switch-to-login">Login</a></p>
+                    <button type="submit" class="w-full py-3 px-4 bg-black text-white rounded-md hover:bg-gray-800 transition-all mb-4">
+                        <i class="fas fa-user-plus mr-2"></i> Register
+                    </button>
+                    <div class="text-center text-gray-600">
+                        <p>Already have an account? <a href="#" id="switch-to-login" class="text-black font-bold">Login</a></p>
                     </div>
                 </form>
             </div>
         </div>
 
         <!-- Document Details Modal -->
-        <div id="document-details-modal" class="modal">
-            <div class="modal-content">
-                <span class="close-modal">&times;</span>
+        <div id="document-details-modal" class="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4 hidden">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold">Document Details</h2>
+                    <button class="close-modal text-gray-500 hover:text-gray-800">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
                 <div id="document-details-content">
                     <!-- Document details will be populated here -->
                 </div>
@@ -439,21 +776,25 @@
         </div>
         
         <!-- Login Required Modal -->
-        <div id="login-required-modal" class="modal">
-            <div class="modal-content">
-                <span class="close-modal">&times;</span>
-                <div class="login-required-content">
-                    <div class="login-required-icon">
+        <div id="login-required-modal" class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4 hidden">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold">Login Required</h2>
+                    <button class="close-modal text-gray-500 hover:text-gray-800">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                <div class="text-center">
+                    <div class="text-5xl mb-4 text-black">
                         <i class="fas fa-lock"></i>
                     </div>
-                    <h2>Login Required</h2>
-                    <p>You need to login as a document owner to view the full details and claim this document.</p>
-                    <div class="login-required-actions">
-                        <button id="login-required-login-btn" class="btn btn-primary btn-block">
-                            <i class="fas fa-sign-in-alt"></i> Login
+                    <p class="text-gray-600 mb-8">You need to login as a document owner to view the full details and claim this document.</p>
+                    <div class="space-y-4">
+                        <button id="login-required-login-btn" class="w-full py-3 px-4 bg-black text-white rounded-md hover:bg-gray-800 transition-all">
+                            <i class="fas fa-sign-in-alt mr-2"></i> Login
                         </button>
-                        <button id="login-required-register-btn" class="btn btn-secondary btn-block">
-                            <i class="fas fa-user-plus"></i> Register as Document Owner
+                        <button id="login-required-register-btn" class="w-full py-3 px-4 border border-black text-black rounded-md hover:bg-gray-100 transition-all">
+                            <i class="fas fa-user-plus mr-2"></i> Register as Document Owner
                         </button>
                     </div>
                 </div>
@@ -464,4 +805,3 @@
     <script src="app.js"></script>
 </body>
 </html>
-
