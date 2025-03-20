@@ -482,12 +482,17 @@ const updateNavigationForUserType = (userType) => {
   }
 }
 
+// Improve role-based dashboard display
 const updateAuthenticatedPages = () => {
   const currentUser = getCurrentUser()
   const dashboardContent = document.getElementById("dashboard-content")
   const profileContent = document.getElementById("profile-content")
 
   if (currentUser) {
+    // Update user role display in the header
+    const usernameDisplay = document.getElementById("username-display")
+    usernameDisplay.innerHTML = `${currentUser.name} <span class="user-role">(${currentUser.userType.charAt(0).toUpperCase() + currentUser.userType.slice(1)})</span>`
+
     // Dashboard content based on user type
     let dashboardHTML = ""
 
@@ -496,6 +501,7 @@ const updateAuthenticatedPages = () => {
                 <div class="dashboard-welcome">
                     <h2>Welcome, ${currentUser.name}!</h2>
                     <p>This is your document owner dashboard. Here you can track documents you've claimed and search for lost documents.</p>
+                    <div class="user-role-badge reportee">Document Owner</div>
                 </div>
                 <div class="dashboard-actions">
                     <button class="btn btn-primary" onclick="showPage('search')">
@@ -531,6 +537,7 @@ const updateAuthenticatedPages = () => {
                 <div class="dashboard-welcome">
                     <h2>Welcome, ${currentUser.name}!</h2>
                     <p>This is your document reporter dashboard. Here you can track documents you've reported and report new found documents.</p>
+                    <div class="user-role-badge reporter">Document Finder</div>
                 </div>
                 <div class="dashboard-actions">
                     <button class="btn btn-primary" onclick="showPage('report')">
@@ -572,6 +579,7 @@ const updateAuthenticatedPages = () => {
                 <div class="dashboard-welcome">
                     <h2>Welcome, Agent ${currentUser.name}!</h2>
                     <p>This is your agent dashboard. Here you can manage documents at your location and handle claims.</p>
+                    <div class="user-role-badge agent">Collection Agent</div>
                 </div>
                 <div class="dashboard-section">
                     <h3><i class="fas fa-building"></i> Agent Information</h3>
@@ -630,6 +638,7 @@ const updateAuthenticatedPages = () => {
                 <div class="dashboard-welcome">
                     <h2>Welcome, Administrator!</h2>
                     <p>This is your admin dashboard. Here you can monitor all system activity and manage documents.</p>
+                    <div class="user-role-badge admin">System Administrator</div>
                 </div>
                 <div class="dashboard-section">
                     <h3><i class="fas fa-chart-line"></i> System Overview</h3>
@@ -714,7 +723,7 @@ const updateAuthenticatedPages = () => {
                     </div>
                     <div class="profile-info">
                         <h3>${currentUser.name}</h3>
-                        <p>${currentUser.userType.charAt(0).toUpperCase() + currentUser.userType.slice(1)}</p>
+                        <div class="user-role-badge ${currentUser.userType}">${currentUser.userType.charAt(0).toUpperCase() + currentUser.userType.slice(1)}</div>
                     </div>
                 </div>
                 <div class="profile-details">
@@ -735,15 +744,15 @@ const updateAuthenticatedPages = () => {
                         ${
                           currentUser.userType === "agent"
                             ? `
-                        <div class="profile-field">
-                            <label>Location:</label>
-                            <p>${getLocationById(currentUser.locationId)?.name || "Unknown"}</p>
-                        </div>
-                        <div class="profile-field">
-                            <label>Outlet:</label>
-                            <p>${getOutletById(currentUser.outletId)?.name || "Unknown"}</p>
-                        </div>
-                        `
+                            <div class="profile-field">
+                                <label>Location:</label>
+                                <p>${getLocationById(currentUser.locationId)?.name || "Unknown"}</p>
+                            </div>
+                            <div class="profile-field">
+                                <label>Outlet:</label>
+                                <p>${getOutletById(currentUser.outletId)?.name || "Unknown"}</p>
+                            </div>
+                            `
                             : ""
                         }
                     </div>
@@ -1345,18 +1354,15 @@ const performSearch = () => {
 const displaySearchResults = (reports) => {
   if (reports.length === 0) {
     resultsList.innerHTML = `
-      <div class="no-results">
-        <i class="fas fa-search"></i>
-        <h3>No documents found</h3>
-        <p>We couldn't find any documents matching your search. Try different keywords or <a href="#" data-page="report">report a found document</a>.</p>
-      </div>
-    `
+            <div class="no-results">
+                <i class="fas fa-search"></i>
+                <h3>No documents found</h3>
+                <p>We couldn't find any documents matching your search. Try different keywords or <a href="#" data-page="report">report a found document</a>.</p>
+            </div>
+        `
     pagination.innerHTML = ""
     return
   }
-
-  // Sort by date (newest first)
-  reports.sort((a, b) => new Date(b.dateReported) - new Date(a.dateReported))
 
   // Simple pagination (first 5 results)
   const displayReports = reports.slice(0, 5)
@@ -1368,41 +1374,41 @@ const displaySearchResults = (reports) => {
     const dateReported = new Date(report.dateReported).toLocaleDateString()
 
     html += `
-      <div class="result-item">
-        <div class="result-header">
-          <div class="result-title">${category ? category.name : "Unknown Document"}</div>
-          <div class="result-date">${dateReported}</div>
-        </div>
-        <div class="result-details">
-          <div class="result-detail">
-            <i class="fas fa-id-card"></i>
-            <div>
-              <strong>Document Number:</strong>
-              <p>${report.documentNumber}</p>
+            <div class="result-item">
+                <div class="result-header">
+                    <div class="result-title">${category ? category.name : "Unknown Document"}</div>
+                    <div class="result-date">${dateReported}</div>
+                </div>
+                <div class="result-details">
+                    <div class="result-detail">
+                        <i class="fas fa-id-card"></i>
+                        <div>
+                            <strong>Document Number:</strong>
+                            <p>${report.documentNumber}</p>
+                        </div>
+                    </div>
+                    <div class="result-detail">
+                        <i class="fas fa-user"></i>
+                        <div>
+                            <strong>Name on Document:</strong>
+                            <p>${report.documentName}</p>
+                        </div>
+                    </div>
+                    <div class="result-detail">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <div>
+                            <strong>Location:</strong>
+                            <p>${location ? location.name : "Unknown"}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="result-actions">
+                    <button class="btn btn-primary view-document-search" data-id="${report.id}">
+                        <i class="fas fa-eye"></i> View Details
+                    </button>
+                </div>
             </div>
-          </div>
-          <div class="result-detail">
-            <i class="fas fa-user"></i>
-            <div>
-              <strong>Name on Document:</strong>
-              <p>${report.documentName}</p>
-            </div>
-          </div>
-          <div class="result-detail">
-            <i class="fas fa-map-marker-alt"></i>
-            <div>
-              <strong>Location:</strong>
-              <p>${location ? location.name : "Unknown"}</p>
-            </div>
-          </div>
-        </div>
-        <div class="result-actions">
-          <button class="btn btn-primary view-document-search" data-id="${report.id}">
-            <i class="fas fa-eye"></i> View Details
-          </button>
-        </div>
-      </div>
-    `
+        `
   })
 
   resultsList.innerHTML = html
@@ -1410,12 +1416,12 @@ const displaySearchResults = (reports) => {
   // Add pagination if needed
   if (reports.length > 5) {
     pagination.innerHTML = `
-      <button class="active">1</button>
-      <button>2</button>
-      <button>3</button>
-      <button disabled>...</button>
-      <button>Next</button>
-    `
+            <button class="active">1</button>
+            <button>2</button>
+            <button>3</button>
+            <button disabled>...</button>
+            <button>Next</button>
+        `
   } else {
     pagination.innerHTML = ""
   }
@@ -2133,6 +2139,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Show home page by default
   showPage("home")
+})
+
+// Fix mobile menu toggle
+document.addEventListener("DOMContentLoaded", () => {
+  const mobileMenuBtn = document.querySelector(".mobile-menu-btn")
+  const nav = document.querySelector("nav")
+
+  mobileMenuBtn.addEventListener("click", () => {
+    nav.classList.toggle("active")
+  })
 })
 
 // Dummy functions to resolve errors
