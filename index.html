@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DocuFind - Lost Document Recovery System</title>
+    <link rel="stylesheet" href="./styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <h1><i class="fas fa-id-card"></i> DocuFind</h1>
+            <p>Lost Document Recovery System</p>
+        </div>
+        <nav>
+            <ul id="main-nav">
+                <li><a href="#" data-page="home" class="active">Home</a></li>
+                <li><a href="#" data-page="search">Search</a></li>
+                <li><a href="#" data-page="report">Report Found</a></li>
+                <li><a href="#" data-page="locations">Locations</a></li>
+                <li><a href="#" data-page="dashboard" class="nav-authenticated nav-user-specific">Dashboard</a></li>
+                <li><a href="#" data-page="profile" class="nav-authenticated nav-user-specific">Profile</a></li>
+                <li><a href="#" data-page="about">About</a></li>
+            </ul>
+        </nav>
+        <div id="auth-section" class="auth-buttons">
+            <button id="login-btn" class="btn btn-outline">Login</button>
+            <button id="register-btn" class="btn btn-primary">Register</button>
+        </div>
+        <div id="user-profile" class="user-profile" style="display: none;">
+            <span id="username-display">User</span>
+            <div class="dropdown">
+                <button class="dropbtn"><i class="fas fa-user-circle"></i></button>
+                <div class="dropdown-content">
+                    <a href="#" data-page="dashboard">Dashboard</a>
+                    <a href="#" data-page="profile">Profile</a>
+                    <a href="#" id="logout-btn">Logout</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main id="main-content">
+        <!-- Home Page -->
+        <div id="home" class="page active">
+            <section class="hero">
+                <h2>Find Your Lost Documents</h2>
+                <p>DocuFind helps you recover your lost documents quickly and securely. Whether you've lost your ID, passport, or driver's license, our platform connects document finders with owners.</p>
+                <div class="hero-buttons">
+                    <button id="search-docs-btn" class="btn btn-primary btn-large">
+                        <i class="fas fa-search"></i> Search Documents
+                    </button>
+                    <button id="report-found-btn" class="btn btn-secondary btn-large">
+                        <i class="fas fa-plus-circle"></i> Report Found Document
+                    </button>
+                </div>
+            </section>
+
+            <div class="container">
+                <section>
+                    <h2>How It Works</h2>
+                    <p class="section-description">Our platform makes it easy to recover lost documents through a simple process.</p>
+                    <div class="features">
+                        <div class="feature-card">
+                            <i class="fas fa-upload"></i>
+                            <h3>Report Found Documents</h3>
+                            <p>Found a document? Report it on our platform to help the owner recover it and earn a reward.</p>
+                        </div>
+                        <div class="feature-card">
+                            <i class="fas fa-search"></i>
+                            <h3>Search for Lost Documents</h3>
+                            <p>Lost a document? Search our database to see if someone has found and reported it.</p>
+                        </div>
+                        <div class="feature-card">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <h3>Locate Collection Points</h3>
+                            <p>Find the nearest collection point where your document is being held for safe retrieval.</p>
+                        </div>
+                        <div class="feature-card">
+                            <i class="fas fa-handshake"></i>
+                            <h3>Claim Your Document</h3>
+                            <p>Verify your identity and claim your document from one of our secure collection points.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="stats">
+                    <div class="stat">
+                        <h3>5,000+</h3>
+                        <p>Documents Recovered</p>
+                    </div>
+                    <div class="stat">
+                        <h3>10,000+</h3>
+                        <p>Registered Users</p>
+                    </div>
+                    <div class="stat">
+                        <h3>50+</h3>
+                        <p>Collection Points</p>
+                    </div>
+                    <div class="stat">
+                        <h3>98%</h3>
+                        <p>Success Rate</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h2>Document Types We Handle</h2>
+                    <p class="section-description">We help recover a wide range of important documents.</p>
+                    <div class="features">
+                        <div class="feature-card">
+                            <i class="fas fa-id-card"></i>
+                            <h3>National ID Cards</h3>
+                            <p>National identification cards and government-issued IDs.</p>
+                        </div>
+                        <div class="feature-card">
+                            <i class="fas fa-passport"></i>
+                            <h3>Passports</h3>
+                            <p>International and domestic passports from all countries.</p>
+                        </div>
+                        <div class="feature-card">
+                            <i class="fas fa-car"></i>
+                            <h3>Driver's Licenses</h3>
+                            <p>Driver's licenses and vehicle registration documents.</p>
+                        </div>
+                        <div class="feature-card">
+                            <i class="fas fa-graduation-cap"></i>
+                            <h3>Educational Documents</h3>
+                            <p>Student IDs, certificates, and academic credentials.</p>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+
+        <!-- Search Page -->
+        <div id="search" class="page">
+            <div class="container">
+                <h2>Search for Documents</h2>
+                <p class="section-description">Looking for a lost document? Search our database to see if it has been found and reported.</p>
+
+                <div class="search-container">
+                    <div class="search-box">
+                        <input type="text" id="search-input" placeholder="Enter document number or name on document...">
+                        <button id="search-button" class="btn btn-primary">
+                            <i class="fas fa-search"></i> Search
+                        </button>
+                    </div>
+                    <div class="search-filters">
+                        <div class="filter">
+                            <label for="category-filter">Document Type</label>
+                            <select id="category-filter">
+                                <option value="">All Types</option>
+                            </select>
+                        </div>
+                        <div class="filter">
+                            <label for="location-filter">Location</label>
+                            <select id="location-filter">
+                                <option value="">All Locations</option>
+                            </select>
+                        </div>
+                        <div class="filter">
+                            <label for="date-filter">Date Reported</label>
+                            <select id="date-filter">
+                                <option value="">Any Time</option>
+                                <option value="today">Today</option>
+                                <option value="week">This Week</option>
+                                <option value="month">This Month</option>
+                                <option value="year">This Year</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="search-results">
+                    <div class="results-info">
+                        <div class="results-count" id="results-count">0 documents found</div>
+                        <div class="sort-by">
+                            <label for="sort-select">Sort by:</label>
+                            <select id="sort-select">
+                                <option value="date-desc">Newest First</option>
+                                <option value="date-asc">Oldest First</option>
+                                <option value="relevance">Relevance</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="results-list" id="results-list">
+                        <!-- Results will be populated here -->
+                    </div>
+                    <div class="pagination" id="pagination">
+                        <!-- Pagination will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Report Page -->
+        <div id="report" class="page">
+            <div class="container">
+                <h2>Report a Found Document</h2>
+                <p class="section-description">Help someone recover their lost document by reporting it here. You'll be eligible for a reward when the document is claimed.</p>
+
+                <div id="report-login-required" class="login-required-message" style="display: none;">
+                    <i class="fas fa-lock"></i>
+                    <h3>Login Required</h3>
+                    <p>You need to <a href="#" id="report-login-link">login</a> to report a found document.</p>
+                    <p>Don't have an account? <a href="#" id="report-register-link">Register now</a> to help others recover their documents and earn rewards.</p>
+                </div>
+
+                <form id="report-form" class="form-container" style="display: none;">
+                    <div class="form-notice">
+                        <p><i class="fas fa-info-circle"></i> Please provide accurate information about the document you found. This will help the owner identify and claim it.</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="document-type">Document Type</label>
+                        <select id="document-type" required>
+                            <option value="">Select Document Type</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="document-number">Document Number</label>
+                        <input type="text" id="document-number" placeholder="Enter the document number" required>
+                        <p class="form-hint">This is usually printed on the document (e.g., ID number, passport number)</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="document-name">Name on Document</label>
+                        <input type="text" id="document-name" placeholder="Enter the name as it appears on the document" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="found-location">Location Found</label>
+                        <select id="found-location" required>
+                            <option value="">Select Location</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="found-outlet">Specific Outlet</label>
+                        <select id="found-outlet" required>
+                            <option value="">Select Outlet</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="found-date">Date Found</label>
+                        <input type="date" id="found-date" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="additional-details">Additional Details</label>
+                        <textarea id="additional-details" placeholder="Provide any additional details that might help identify the document or its owner"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="checkbox-container">
+                            I confirm that all information provided is accurate to the best of my knowledge
+                            <input type="checkbox" required>
+                            <span class="checkmark"></span>
+                        </label>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-paper-plane"></i> Submit Report
+                        </button>
+                        <button type="reset" class="btn btn-secondary">
+                            <i class="fas fa-redo"></i> Reset Form
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Locations Page -->
+        <div id="locations" class="page">
+            <div class="container">
+                <h2>Our Locations</h2>
+                <p class="section-description">Find the nearest DocuFind location where you can report or collect documents.</p>
+
+                <div class="locations-search">
+                    <input type="text" placeholder="Search locations...">
+                    <button class="btn btn-primary">
+                        <i class="fas fa-search"></i> Search
+                    </button>
+                </div>
+
+                <div class="locations-container" id="locations-container">
+                    <!-- Locations will be populated here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Page -->
+        <div id="dashboard" class="page">
+            <div class="container">
+                <h2>Dashboard</h2>
+                <div id="dashboard-content">
+                    <!-- Dashboard content will be populated here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile Page -->
+        <div id="profile" class="page">
+            <div class="container">
+                <h2>My Profile</h2>
+                <div id="profile-content">
+                    <!-- Profile content will be populated here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- About Page -->
+        <div id="about" class="page">
+            <div class="container">
+                <h2>About DocuFind</h2>
+                <p class="section-description">Learn more about our mission to help people recover their lost documents.</p>
+
+                <div class="about-content">
+                    <div class="about-section">
+                        <h3>Our Mission</h3>
+                        <p>DocuFind was established with a simple mission: to help people recover their lost documents quickly and securely. We understand the stress and inconvenience of losing important documents, and we're here to make the recovery process as smooth as possible.</p>
+                    </div>
+
+                    <div class="about-section">
+                        <h3>How It Works</h3>
+                        <ol>
+                            <li><strong>Report Found Documents:</strong> If you find a lost document, you can report it on our platform. We'll store the information securely and make it searchable for the owner.</li>
+                            <li><strong>Search for Lost Documents:</strong> If you've lost a document, you can search our database to see if it has been found and reported.</li>
+                            <li><strong>Claim Your Document:</strong> Once you find your document in our system, you can claim it by verifying your identity at one of our collection points.</li>
+                            <li><strong>Rewards for Reporters:</strong> Document finders receive a reward when the owner claims their document, incentivizing people to report found documents.</li>
+                        </ol>
+                    </div>
+
+                    <div class="about-section">
+                        <h3>Our Team</h3>
+                        <p>DocuFind is run by a dedicated team of professionals committed to helping people recover their lost documents. Our team includes customer service representatives, IT specialists, and security experts who work together to provide a seamless experience for our users.</p>
+                    </div>
+
+                    <div class="about-section">
+                        <h3>Contact Us</h3>
+                        <div class="contact-info">
+                            <p><i class="fas fa-envelope"></i> Email: info@docufind.com</p>
+                            <p><i class="fas fa-phone"></i> Phone: +1 (123) 456-7890</p>
+                            <p><i class="fas fa-map-marker-alt"></i> Address: 123 Main Street, City, Country</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>DocuFind</h3>
+                    <p>Lost Document Recovery System</p>
+                    <p>Helping people recover their lost documents since 2023.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="#" data-page="home">Home</a></li>
+                        <li><a href="#" data-page="search">Search</a></li>
+                        <li><a href="#" data-page="report">Report Found</a></li>
+                        <li><a href="#" data-page="locations">Locations</a></li>
+                        <li><a href="#" data-page="about">About</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Legal</h3>
+                    <ul>
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Cookie Policy</a></li>
+                        <li><a href="#">Data Protection</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Connect With Us</h3>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 DocuFind. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modals -->
+    <div id="modal-container" class="modal-container">
+        <!-- Login Modal -->
+        <div id="login-modal" class="modal">
+            <div class="modal-content">
+                <span class="close-modal">&times;</span>
+                <h2>Login to DocuFind</h2>
+                <form id="login-form">
+                    <div class="form-group">
+                        <label for="login-email">Email Address</label>
+                        <input type="email" id="login-email" placeholder="Enter your email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password">Password</label>
+                        <input type="password" id="login-password" placeholder="Enter your password" required>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary btn-block">
+                            <i class="fas fa-sign-in-alt"></i> Login
+                        </button>
+                    </div>
+                    <div class="form-footer">
+                        <p>Don't have an account? <a href="#" id="switch-to-register">Register now</a></p>
+                        <p><a href="#">Forgot your password?</a></p>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Register Modal -->
+        <div id="register-modal" class="modal">
+            <div class="modal-content">
+                <span class="close-modal">&times;</span>
+                <h2>Create an Account</h2>
+                <form id="register-form">
+                    <div class="form-group">
+                        <label for="register-name">Full Name</label>
+                        <input type="text" id="register-name" placeholder="Enter your full name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-email">Email Address</label>
+                        <input type="email" id="register-email" placeholder="Enter your email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-phone">Phone Number</label>
+                        <input type="tel" id="register-phone" placeholder="Enter your phone number" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-password">Password</label>
+                        <input type="password" id="register-password" placeholder="Create a password" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-confirm-password">Confirm Password</label>
+                        <input type="password" id="register-confirm-password" placeholder="Confirm your password" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-user-type">I am a:</label>
+                        <select id="register-user-type" required>
+                            <option value="">Select User Type</option>
+                            <option value="reportee">Document Owner (Looking for lost documents)</option>
+                            <option value="reporter">Document Finder (Reporting found documents)</option>
+                            <option value="agent">Agent (Working at a collection point)</option>
+                        </select>
+                    </div>
+                    <div id="agent-location-group" class="form-group" style="display: none;">
+                        <label for="agent-location">Location</label>
+                        <select id="agent-location">
+                            <option value="">Select Location</option>
+                        </select>
+                    </div>
+                    <div id="agent-outlet-group" class="form-group" style="display: none;">
+                        <label for="agent-outlet">Outlet</label>
+                        <select id="agent-outlet">
+                            <option value="">Select Outlet</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="checkbox-container">
+                            I agree to the Terms and Conditions and Privacy Policy
+                            <input type="checkbox" id="register-terms" required>
+                            <span class="checkmark"></span>
+                        </label>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary btn-block">
+                            <i class="fas fa-user-plus"></i> Register
+                        </button>
+                    </div>
+                    <div class="form-footer">
+                        <p>Already have an account? <a href="#" id="switch-to-login">Login</a></p>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Document Details Modal -->
+        <div id="document-details-modal" class="modal">
+            <div class="modal-content">
+                <span class="close-modal">&times;</span>
+                <div id="document-details-content">
+                    <!-- Document details will be populated here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="./app.js"></script>
+</body>
+</html>
