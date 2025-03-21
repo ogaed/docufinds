@@ -4829,5 +4829,5 @@ function deleteCategory(categoryId) {
 
 // Load categories page
 function loadCategoriesPage()
-\
+
 
