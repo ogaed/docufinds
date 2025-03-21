@@ -443,15 +443,15 @@ const updateAuthUI = () => {
   const currentUser = getCurrentUser()
 
   if (currentUser) {
-    authSection.style.display = "none"
-    userProfile.style.display = "flex"
-    usernameDisplay.textContent = currentUser.name
+    if (authSection) authSection.style.display = "none"
+    if (userProfile) userProfile.style.display = "flex"
+    if (usernameDisplay) usernameDisplay.textContent = currentUser.name
 
     // Update navigation based on user type
     updateNavigationForUserType(currentUser.userType)
   } else {
-    authSection.style.display = "flex"
-    userProfile.style.display = "none"
+    if (authSection) authSection.style.display = "flex"
+    if (userProfile) userProfile.style.display = "none"
 
     // Reset navigation to default
     updateNavigationForUserType(null)
@@ -488,10 +488,14 @@ const updateAuthenticatedPages = () => {
   const dashboardContent = document.getElementById("dashboard-content")
   const profileContent = document.getElementById("profile-content")
 
+  if (!dashboardContent || !profileContent) return
+
   if (currentUser) {
     // Update user role display in the header
     const usernameDisplay = document.getElementById("username-display")
-    usernameDisplay.innerHTML = `${currentUser.name} <span class="user-role">(${currentUser.userType.charAt(0).toUpperCase() + currentUser.userType.slice(1)})</span>`
+    if (usernameDisplay) {
+      usernameDisplay.innerHTML = `${currentUser.name} <span class="user-role">(${currentUser.userType.charAt(0).toUpperCase() + currentUser.userType.slice(1)})</span>`
+    }
 
     // Dashboard content based on user type
     let dashboardHTML = ""
@@ -834,6 +838,8 @@ const updateAuthenticatedPages = () => {
 // Helper Functions for Dashboard
 const generateReporteeDocumentsHTML = () => {
   const currentUser = getCurrentUser()
+  if (!currentUser) return ""
+
   const reports = getReports().filter((r) => r.claimedBy === currentUser.id)
 
   if (reports.length === 0) {
@@ -873,6 +879,8 @@ const generateReporteeDocumentsHTML = () => {
 
 const generateReporterDocumentsHTML = () => {
   const currentUser = getCurrentUser()
+  if (!currentUser) return ""
+
   const reports = getReports().filter((r) => r.reporterId === currentUser.id)
 
   if (reports.length === 0) {
@@ -1072,7 +1080,7 @@ const addDashboardEventListeners = (userType) => {
   // Add event listeners for view document buttons
   document.querySelectorAll(".view-document").forEach((button) => {
     button.addEventListener("click", (e) => {
-      const reportId = Number.parseInt(e.target.getAttribute("data-id"))
+      const reportId = Number.parseInt(e.currentTarget.getAttribute("data-id"))
       openDocumentDetails(reportId)
     })
   })
@@ -1081,7 +1089,7 @@ const addDashboardEventListeners = (userType) => {
   if (userType === "agent") {
     document.querySelectorAll(".mark-claimed").forEach((button) => {
       button.addEventListener("click", (e) => {
-        const reportId = Number.parseInt(e.target.getAttribute("data-id"))
+        const reportId = Number.parseInt(e.currentTarget.getAttribute("data-id"))
         openMarkAsClaimedModal(reportId)
       })
     })
@@ -1091,28 +1099,28 @@ const addDashboardEventListeners = (userType) => {
   if (userType === "admin") {
     document.querySelectorAll(".edit-document").forEach((button) => {
       button.addEventListener("click", (e) => {
-        const reportId = Number.parseInt(e.target.getAttribute("data-id"))
+        const reportId = Number.parseInt(e.currentTarget.getAttribute("data-id"))
         openEditDocumentModal(reportId)
       })
     })
 
     document.querySelectorAll(".delete-document").forEach((button) => {
       button.addEventListener("click", (e) => {
-        const reportId = Number.parseInt(e.target.getAttribute("data-id"))
+        const reportId = Number.parseInt(e.currentTarget.getAttribute("data-id"))
         confirmDeleteDocument(reportId)
       })
     })
 
     document.querySelectorAll(".edit-user").forEach((button) => {
       button.addEventListener("click", (e) => {
-        const userId = Number.parseInt(e.target.getAttribute("data-id"))
+        const userId = Number.parseInt(e.currentTarget.getAttribute("data-id"))
         openEditUserModal(userId)
       })
     })
 
     document.querySelectorAll(".delete-user").forEach((button) => {
       button.addEventListener("click", (e) => {
-        const userId = Number.parseInt(e.target.getAttribute("data-id"))
+        const userId = Number.parseInt(e.currentTarget.getAttribute("data-id"))
         confirmDeleteUser(userId)
       })
     })
@@ -1120,6 +1128,8 @@ const addDashboardEventListeners = (userType) => {
 }
 
 const updateReportPage = () => {
+  if (!reportForm || !reportLoginRequired) return
+
   const currentUser = getCurrentUser()
 
   if (currentUser) {
@@ -1140,12 +1150,12 @@ const updateReportPage = () => {
     reportForm.style.display = "none"
 
     // Add event listeners for login/register links
-    document.getElementById("report-login-link").addEventListener("click", (e) => {
+    document.getElementById("report-login-link")?.addEventListener("click", (e) => {
       e.preventDefault()
       openLoginModal()
     })
 
-    document.getElementById("report-register-link").addEventListener("click", (e) => {
+    document.getElementById("report-register-link")?.addEventListener("click", (e) => {
       e.preventDefault()
       openRegisterModal()
     })
@@ -1154,38 +1164,47 @@ const updateReportPage = () => {
 
 // Modal Functions
 const openLoginModal = () => {
+  if (!modalContainer || !loginModal || !registerModal || !documentDetailsModal) return
+
   modalContainer.style.display = "block"
   loginModal.style.display = "block"
   registerModal.style.display = "none"
   documentDetailsModal.style.display = "none"
 
   // Clear form
-  loginForm.reset()
+  if (loginForm) loginForm.reset()
 }
 
 const openRegisterModal = () => {
+  if (!modalContainer || !loginModal || !registerModal || !documentDetailsModal) return
+
   modalContainer.style.display = "block"
   registerModal.style.display = "block"
   loginModal.style.display = "none"
   documentDetailsModal.style.display = "none"
 
   // Clear form
-  registerForm.reset()
+  if (registerForm) registerForm.reset()
 
   // Populate location dropdown for agent registration
   populateLocationDropdown(agentLocation)
 }
 
 const closeModals = () => {
+  if (!modalContainer) return
+
   modalContainer.style.display = "none"
-  loginModal.style.display = "none"
-  registerModal.style.display = "none"
-  documentDetailsModal.style.display = "none"
-  loginRequiredModal.style.display = "none"
+
+  if (loginModal) loginModal.style.display = "none"
+  if (registerModal) registerModal.style.display = "none"
+  if (documentDetailsModal) documentDetailsModal.style.display = "none"
+  if (loginRequiredModal) loginRequiredModal.style.display = "none"
 }
 
 // Dropdown Population Functions
 const populateLocationDropdown = (selectElement) => {
+  if (!selectElement) return
+
   const locations = getLocations()
 
   // Clear existing options except the first one
@@ -1203,6 +1222,8 @@ const populateLocationDropdown = (selectElement) => {
 }
 
 const populateOutletDropdown = (locationId, selectElement) => {
+  if (!selectElement) return
+
   const outlets = getOutletsByLocationId(Number.parseInt(locationId))
 
   // Clear existing options except the first one
@@ -1220,6 +1241,8 @@ const populateOutletDropdown = (locationId, selectElement) => {
 }
 
 const populateLocationFilter = () => {
+  if (!locationFilter) return
+
   const locations = getLocations()
 
   // Clear existing options except the first one
@@ -1238,6 +1261,8 @@ const populateLocationFilter = () => {
 
 const populateCategoryFilter = () => {
   const categoryFilter = document.getElementById("category-filter")
+  if (!categoryFilter) return
+
   const categories = getCategories()
 
   // Clear existing options except the first one
@@ -1256,6 +1281,8 @@ const populateCategoryFilter = () => {
 
 const populateDocumentTypeDropdown = () => {
   const documentTypeSelect = document.getElementById("document-type")
+  if (!documentTypeSelect) return
+
   const categories = getCategories()
 
   // Clear existing options except the first one
@@ -1274,11 +1301,13 @@ const populateDocumentTypeDropdown = () => {
 
 // Search Functions
 const performSearch = () => {
+  if (!searchInput || !resultsList || !resultsCount) return
+
   const searchTerm = searchInput.value.trim().toLowerCase()
-  const categoryFilter = document.getElementById("category-filter").value
-  const locationFilterValue = locationFilter.value
-  const dateFilter = document.getElementById("date-filter").value
-  const sortBy = document.getElementById("sort-select").value
+  const categoryFilter = document.getElementById("category-filter")?.value
+  const locationFilterValue = locationFilter?.value
+  const dateFilter = document.getElementById("date-filter")?.value
+  const sortBy = document.getElementById("sort-select")?.value
 
   let reports = getReports()
 
@@ -1291,15 +1320,15 @@ const performSearch = () => {
     )
   }
 
-  if (categoryFilter) {
+  if (categoryFilter && categoryFilter !== "all") {
     reports = reports.filter((report) => report.documentType.toString() === categoryFilter)
   }
 
-  if (locationFilterValue) {
+  if (locationFilterValue && locationFilterValue !== "all") {
     reports = reports.filter((report) => report.locationId.toString() === locationFilterValue)
   }
 
-  if (dateFilter) {
+  if (dateFilter && dateFilter !== "all") {
     const now = new Date()
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
     const weekAgo = new Date(today)
@@ -1352,6 +1381,8 @@ const performSearch = () => {
 
 // Function to display search results
 const displaySearchResults = (reports) => {
+  if (!resultsList || !pagination) return
+
   if (reports.length === 0) {
     resultsList.innerHTML = `
             <div class="no-results">
@@ -1446,13 +1477,13 @@ const submitReport = (e) => {
     return
   }
 
-  const documentType = document.getElementById("document-type").value
-  const documentNumber = document.getElementById("document-number").value
-  const documentName = document.getElementById("document-name").value
-  const foundLocationId = document.getElementById("found-location").value
-  const foundOutletId = document.getElementById("found-outlet").value
-  const foundDate = document.getElementById("found-date").value
-  const additionalDetails = document.getElementById("additional-details").value
+  const documentType = document.getElementById("document-type")?.value
+  const documentNumber = document.getElementById("document-number")?.value
+  const documentName = document.getElementById("document-name")?.value
+  const foundLocationId = document.getElementById("found-location")?.value
+  const foundOutletId = document.getElementById("found-outlet")?.value
+  const foundDate = document.getElementById("found-date")?.value
+  const additionalDetails = document.getElementById("additional-details")?.value
 
   if (!documentType || !documentNumber || !documentName || !foundLocationId || !foundOutletId || !foundDate) {
     createToast("Please fill in all required fields.", "error")
@@ -1482,12 +1513,14 @@ const submitReport = (e) => {
   saveReports(reports)
 
   createToast("Document reported successfully! Thank you for helping someone recover their document.", "success")
-  reportForm.reset()
+  if (reportForm) reportForm.reset()
   showPage("dashboard")
 }
 
 // Home Search Functions
 const performHomeSearch = () => {
+  if (!homeSearchInput || !homeResultsList || !homeResultsCount || !homeSearchResultsSection) return
+
   const searchTerm = homeSearchInput.value.trim().toLowerCase()
 
   if (!searchTerm) {
@@ -1518,6 +1551,8 @@ const performHomeSearch = () => {
 }
 
 const displayHomeSearchResults = (reports) => {
+  if (!homeResultsList || !homePagination) return
+
   if (reports.length === 0) {
     homeResultsList.innerHTML = `
       <div class="no-results">
@@ -1631,21 +1666,30 @@ const handleViewDocument = (reportId) => {
 }
 
 const openLoginRequiredModal = () => {
+  if (!modalContainer || !loginRequiredModal) return
+
   modalContainer.style.display = "block"
   loginRequiredModal.style.display = "block"
-  loginModal.style.display = "none"
-  registerModal.style.display = "none"
-  documentDetailsModal.style.display = "none"
+
+  if (loginModal) loginModal.style.display = "none"
+  if (registerModal) registerModal.style.display = "none"
+  if (documentDetailsModal) documentDetailsModal.style.display = "none"
 }
 
 const clearHomeSearchResults = () => {
+  if (!homeSearchInput || !homeSearchResultsSection) return
+
   homeSearchInput.value = ""
   homeSearchResultsSection.style.display = "none"
 }
 
-// Function to open document details (existing function, just referenced here)
+// Function to open document details
 const openDocumentDetails = (reportId) => {
+  if (!modalContainer || !documentDetailsModal) return
+
   const report = getReportById(reportId)
+  if (!report) return
+
   const category = getCategoryById(report.documentType)
   const location = getLocationById(report.locationId)
   const outlet = getOutletById(report.outletId)
@@ -1653,9 +1697,10 @@ const openDocumentDetails = (reportId) => {
 
   modalContainer.style.display = "block"
   documentDetailsModal.style.display = "block"
-  loginModal.style.display = "none"
-  registerModal.style.display = "none"
-  loginRequiredModal.style.display = "none"
+
+  if (loginModal) loginModal.style.display = "none"
+  if (registerModal) registerModal.style.display = "none"
+  if (loginRequiredModal) loginRequiredModal.style.display = "none"
 
   const dateReported = new Date(report.dateReported).toLocaleDateString()
   const dateFound = new Date(report.dateFound).toLocaleDateString()
@@ -1672,81 +1717,84 @@ const openDocumentDetails = (reportId) => {
     `
   }
 
-  documentDetailsModal.querySelector("#document-details-content").innerHTML = `
-    <div class="document-details">
-      <h3>${category ? category.name : "Unknown Document"}</h3>
-      <div class="document-status">
-        <span class="status ${report.status}">${report.status.charAt(0).toUpperCase() + report.status.slice(1)}</span>
-      </div>
-      
-      <div class="details-section">
-        <h4>Document Information</h4>
-        <div class="details-grid">
-          <div class="detail-item">
-            <label>Document Number:</label>
-            <p>${report.documentNumber}</p>
-          </div>
-          <div class="detail-item">
-            <label>Name on Document:</label>
-            <p>${report.documentName}</p>
-          </div>
-          <div class="detail-item">
-            <label>Date Found:</label>
-            <p>${dateFound}</p>
-          </div>
-          <div class="detail-item">
-            <label>Date Reported:</label>
-            <p>${dateReported}</p>
+  const detailsContent = documentDetailsModal.querySelector("#document-details-content")
+  if (detailsContent) {
+    detailsContent.innerHTML = `
+      <div class="document-details">
+        <h3>${category ? category.name : "Unknown Document"}</h3>
+        <div class="document-status">
+          <span class="status ${report.status}">${report.status.charAt(0).toUpperCase() + report.status.slice(1)}</span>
+        </div>
+        
+        <div class="details-section">
+          <h4>Document Information</h4>
+          <div class="details-grid">
+            <div class="detail-item">
+              <label>Document Number:</label>
+              <p>${report.documentNumber}</p>
+            </div>
+            <div class="detail-item">
+              <label>Name on Document:</label>
+              <p>${report.documentName}</p>
+            </div>
+            <div class="detail-item">
+              <label>Date Found:</label>
+              <p>${dateFound}</p>
+            </div>
+            <div class="detail-item">
+              <label>Date Reported:</label>
+              <p>${dateReported}</p>
+            </div>
           </div>
         </div>
-      </div>
-      
-      <div class="details-section">
-        <h4>Location Information</h4>
-        <div class="details-grid">
-          <div class="detail-item">
-            <label>Location:</label>
-            <p>${location ? location.name : "Unknown"}</p>
-          </div>
-          <div class="detail-item">
-            <label>Outlet:</label>
-            <p>${outlet ? outlet.name : "Unknown"}</p>
-          </div>
-          <div class="detail-item">
-            <label>Address:</label>
-            <p>${location ? location.address : "Unknown"}</p>
-          </div>
-          <div class="detail-item">
-            <label>Contact:</label>
-            <p>${location ? location.phone : "Unknown"}</p>
+        
+        <div class="details-section">
+          <h4>Location Information</h4>
+          <div class="details-grid">
+            <div class="detail-item">
+              <label>Location:</label>
+              <p>${location ? location.name : "Unknown"}</p>
+            </div>
+            <div class="detail-item">
+              <label>Outlet:</label>
+              <p>${outlet ? outlet.name : "Unknown"}</p>
+            </div>
+            <div class="detail-item">
+              <label>Address:</label>
+              <p>${location ? location.address : "Unknown"}</p>
+            </div>
+            <div class="detail-item">
+              <label>Contact:</label>
+              <p>${location ? location.phone : "Unknown"}</p>
+            </div>
           </div>
         </div>
+        
+        <div class="details-section">
+          <h4>Additional Information</h4>
+          <p>${report.additionalDetails || "No additional details provided."}</p>
+        </div>
+        
+        <div class="document-actions">
+          ${claimButton}
+          <button class="btn btn-secondary close-details">
+            <i class="fas fa-times"></i> Close
+          </button>
+        </div>
       </div>
-      
-      <div class="details-section">
-        <h4>Additional Information</h4>
-        <p>${report.additionalDetails || "No additional details provided."}</p>
-      </div>
-      
-      <div class="document-actions">
-        ${claimButton}
-        <button class="btn btn-secondary close-details">
-          <i class="fas fa-times"></i> Close
-        </button>
-      </div>
-    </div>
-  `
+    `
 
-  // Add event listener for claim button
-  const claimBtn = documentDetailsModal.querySelector(".claim-document")
-  if (claimBtn) {
-    claimBtn.addEventListener("click", () => {
-      claimDocument(reportId)
-    })
+    // Add event listener for claim button
+    const claimBtn = documentDetailsModal.querySelector(".claim-document")
+    if (claimBtn) {
+      claimBtn.addEventListener("click", () => {
+        claimDocument(reportId)
+      })
+    }
+
+    // Add event listener for close button
+    documentDetailsModal.querySelector(".close-details")?.addEventListener("click", closeModals)
   }
-
-  // Add event listener for close button
-  documentDetailsModal.querySelector(".close-details").addEventListener("click", closeModals)
 }
 
 // Function to handle document claiming
@@ -1783,6 +1831,88 @@ const claimDocument = (reportId) => {
   if (document.getElementById("dashboard").classList.contains("active")) {
     updateAuthenticatedPages()
   }
+}
+
+// Load locations function
+const loadLocations = () => {
+  if (!locationsContainer) return
+
+  const locations = getLocations()
+
+  let html = ""
+
+  locations.forEach((location) => {
+    html += `
+      <div class="location-card">
+        <div class="location-image">
+          <i class="fas fa-building"></i>
+        </div>
+        <div class="location-details">
+          <h3 class="location-name">${location.name}</h3>
+          <div class="location-info">
+            <p><i class="fas fa-map-marker-alt"></i> ${location.address}</p>
+            <p><i class="fas fa-phone"></i> ${location.phone}</p>
+            <p><i class="fas fa-envelope"></i> ${location.email}</p>
+          </div>
+          <div class="location-outlets">
+            <h4>Outlets</h4>
+            <div class="outlets-list">
+              ${getOutletsByLocationId(location.id)
+                .map((outlet) => `<span class="outlet-tag">${outlet.name}</span>`)
+                .join("")}
+            </div>
+          </div>
+        </div>
+      </div>
+    `
+  })
+
+  locationsContainer.innerHTML = html
+}
+
+// Placeholder functions for features not yet implemented
+const openEditProfileModal = () => {
+  createToast("Edit profile feature coming soon!", "info")
+}
+
+const openChangePasswordModal = () => {
+  createToast("Change password feature coming soon!", "info")
+}
+
+const openMarkAsClaimedModal = (reportId) => {
+  createToast("Mark as claimed feature coming soon!", "info")
+}
+
+const openEditDocumentModal = (reportId) => {
+  createToast("Edit document feature coming soon!", "info")
+}
+
+const confirmDeleteDocument = (reportId) => {
+  if (confirm("Are you sure you want to delete this document?")) {
+    const reports = getReports()
+    const reportIndex = reports.findIndex((r) => r.id === reportId)
+
+    if (reportIndex !== -1) {
+      reports.splice(reportIndex, 1)
+      saveReports(reports)
+      createToast("Document deleted successfully", "success")
+
+      // Refresh current page
+      if (document.getElementById("dashboard").classList.contains("active")) {
+        updateAuthenticatedPages()
+      } else if (document.getElementById("search").classList.contains("active")) {
+        performSearch()
+      }
+    }
+  }
+}
+
+const openEditUserModal = (userId) => {
+  createToast("Edit user feature coming soon!", "info")
+}
+
+const confirmDeleteUser = (userId) => {
+  createToast("Delete user feature coming soon!", "info")
 }
 
 // Event Listeners
@@ -1885,13 +2015,15 @@ document.addEventListener("DOMContentLoaded", () => {
   document.head.appendChild(toastStyles)
 
   // Navigation
-  mainNav.addEventListener("click", (e) => {
-    if (e.target.tagName === "A") {
-      e.preventDefault()
-      const pageId = e.target.getAttribute("data-page")
-      showPage(pageId)
-    }
-  })
+  if (mainNav) {
+    mainNav.addEventListener("click", (e) => {
+      if (e.target.tagName === "A") {
+        e.preventDefault()
+        const pageId = e.target.getAttribute("data-page")
+        showPage(pageId)
+      }
+    })
+  }
 
   // Footer navigation
   document.querySelectorAll("footer a[data-page]").forEach((link) => {
@@ -1903,14 +2035,22 @@ document.addEventListener("DOMContentLoaded", () => {
   })
 
   // Auth buttons
-  loginBtn.addEventListener("click", openLoginModal)
-  registerBtn.addEventListener("click", openRegisterModal)
-  logoutBtn.addEventListener("click", () => {
-    logout()
-    updateAuthUI()
-    showPage("home")
-    createToast("You have been logged out successfully", "success")
-  })
+  if (loginBtn) {
+    loginBtn.addEventListener("click", openLoginModal)
+  }
+
+  if (registerBtn) {
+    registerBtn.addEventListener("click", openRegisterModal)
+  }
+
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", () => {
+      logout()
+      updateAuthUI()
+      showPage("home")
+      createToast("You have been logged out successfully", "success")
+    })
+  }
 
   // Modal close buttons
   document.querySelectorAll(".close-modal").forEach((button) => {
@@ -1918,156 +2058,190 @@ document.addEventListener("DOMContentLoaded", () => {
   })
 
   // Close modal when clicking outside
-  modalContainer.addEventListener("click", (e) => {
-    if (e.target === modalContainer) {
-      closeModals()
-    }
-  })
+  if (modalContainer) {
+    modalContainer.addEventListener("click", (e) => {
+      if (e.target === modalContainer) {
+        closeModals()
+      }
+    })
+  }
 
   // Switch between login and register
-  switchToRegister.addEventListener("click", (e) => {
-    e.preventDefault()
-    loginModal.style.display = "none"
-    registerModal.style.display = "block"
-  })
+  if (switchToRegister) {
+    switchToRegister.addEventListener("click", (e) => {
+      e.preventDefault()
+      if (loginModal) loginModal.style.display = "none"
+      if (registerModal) registerModal.style.display = "block"
+    })
+  }
 
-  switchToLogin.addEventListener("click", (e) => {
-    e.preventDefault()
-    registerModal.style.display = "none"
-    loginModal.style.display = "block"
-  })
+  if (switchToLogin) {
+    switchToLogin.addEventListener("click", (e) => {
+      e.preventDefault()
+      if (registerModal) registerModal.style.display = "none"
+      if (loginModal) loginModal.style.display = "block"
+    })
+  }
 
   // User type change in registration
-  registerUserType.addEventListener("change", () => {
-    if (registerUserType.value === "agent") {
-      agentLocationGroup.style.display = "block"
-      agentOutletGroup.style.display = "block"
-    } else {
-      agentLocationGroup.style.display = "none"
-      agentOutletGroup.style.display = "none"
-    }
-  })
+  if (registerUserType) {
+    registerUserType.addEventListener("change", () => {
+      if (agentLocationGroup && agentOutletGroup) {
+        if (registerUserType.value === "agent") {
+          agentLocationGroup.style.display = "block"
+          agentOutletGroup.style.display = "block"
+        } else {
+          agentLocationGroup.style.display = "none"
+          agentOutletGroup.style.display = "none"
+        }
+      }
+    })
+  }
 
   // Location change for outlets
-  foundLocation.addEventListener("change", () => {
-    if (foundLocation.value) {
-      populateOutletDropdown(foundLocation.value, foundOutlet)
-    }
-  })
+  if (foundLocation) {
+    foundLocation.addEventListener("change", () => {
+      if (foundLocation.value && foundOutlet) {
+        populateOutletDropdown(foundLocation.value, foundOutlet)
+      }
+    })
+  }
 
-  agentLocation.addEventListener("change", () => {
-    if (agentLocation.value) {
-      populateOutletDropdown(agentLocation.value, agentOutlet)
-    }
-  })
+  if (agentLocation) {
+    agentLocation.addEventListener("change", () => {
+      if (agentLocation.value && agentOutlet) {
+        populateOutletDropdown(agentLocation.value, agentOutlet)
+      }
+    })
+  }
 
   // Hero buttons
-  searchDocsBtn.addEventListener("click", () => {
-    showPage("search")
-  })
+  if (searchDocsBtn) {
+    searchDocsBtn.addEventListener("click", () => {
+      showPage("search")
+    })
+  }
 
-  reportFoundBtn.addEventListener("click", () => {
-    showPage("report")
-  })
+  if (reportFoundBtn) {
+    reportFoundBtn.addEventListener("click", () => {
+      showPage("report")
+    })
+  }
 
   // Login form submission
-  loginForm.addEventListener("submit", (e) => {
-    e.preventDefault()
+  if (loginForm) {
+    loginForm.addEventListener("submit", (e) => {
+      e.preventDefault()
 
-    const email = document.getElementById("login-email").value
-    const password = document.getElementById("login-password").value
+      const email = document.getElementById("login-email")?.value
+      const password = document.getElementById("login-password")?.value
 
-    const user = login(email, password)
-
-    if (user) {
-      updateAuthUI()
-      closeModals()
-      showPage("dashboard")
-      createToast(`Welcome back, ${user.name}!`, "success")
-    } else {
-      createToast("Invalid email or password. Please try again.", "error")
-    }
-  })
-
-  // Register form submission
-  registerForm.addEventListener("submit", (e) => {
-    e.preventDefault()
-
-    const name = document.getElementById("register-name").value
-    const email = document.getElementById("register-email").value
-    const phone = document.getElementById("register-phone").value
-    const password = document.getElementById("register-password").value
-    const confirmPassword = document.getElementById("register-confirm-password").value
-    const userType = document.getElementById("register-user-type").value
-    const termsAgreed = document.getElementById("register-terms").checked
-
-    if (!name || !email || !phone || !password || !confirmPassword || !userType) {
-      createToast("Please fill in all required fields.", "error")
-      return
-    }
-
-    if (password !== confirmPassword) {
-      createToast("Passwords do not match.", "error")
-      return
-    }
-
-    if (!termsAgreed) {
-      createToast("You must agree to the Terms and Conditions.", "error")
-      return
-    }
-
-    // Check if email already exists
-    const users = getUsers()
-    if (users.some((user) => user.email === email)) {
-      createToast("Email already in use. Please use a different email or login.", "error")
-      return
-    }
-
-    const userData = {
-      name,
-      email,
-      phone,
-      password,
-      userType,
-    }
-
-    // Add location and outlet for agents
-    if (userType === "agent") {
-      const locationId = document.getElementById("agent-location").value
-      const outletId = document.getElementById("agent-outlet").value
-
-      if (!locationId || !outletId) {
-        createToast("Please select a location and outlet.", "error")
+      if (!email || !password) {
+        createToast("Please enter both email and password", "error")
         return
       }
 
-      userData.locationId = Number.parseInt(locationId)
-      userData.outletId = Number.parseInt(outletId)
-    }
+      const user = login(email, password)
 
-    const newUser = register(userData)
+      if (user) {
+        updateAuthUI()
+        closeModals()
+        showPage("dashboard")
+        createToast(`Welcome back, ${user.name}!`, "success")
+      } else {
+        createToast("Invalid email or password. Please try again.", "error")
+      }
+    })
+  }
 
-    if (newUser) {
-      login(email, password)
-      updateAuthUI()
-      closeModals()
-      showPage("dashboard")
-      createToast("Registration successful! Welcome to DocuFind.", "success")
-    } else {
-      createToast("Registration failed. Please try again.", "error")
-    }
-  })
+  // Register form submission
+  if (registerForm) {
+    registerForm.addEventListener("submit", (e) => {
+      e.preventDefault()
+
+      const name = document.getElementById("register-name")?.value
+      const email = document.getElementById("register-email")?.value
+      const phone = document.getElementById("register-phone")?.value
+      const password = document.getElementById("register-password")?.value
+      const confirmPassword = document.getElementById("register-confirm-password")?.value
+      const userType = document.getElementById("register-user-type")?.value
+      const termsAgreed = document.getElementById("register-terms")?.checked
+
+      if (!name || !email || !phone || !password || !confirmPassword || !userType) {
+        createToast("Please fill in all required fields.", "error")
+        return
+      }
+
+      if (password !== confirmPassword) {
+        createToast("Passwords do not match.", "error")
+        return
+      }
+
+      if (!termsAgreed) {
+        createToast("You must agree to the Terms and Conditions.", "error")
+        return
+      }
+
+      // Check if email already exists
+      const users = getUsers()
+      if (users.some((user) => user.email === email)) {
+        createToast("Email already in use. Please use a different email or login.", "error")
+        return
+      }
+
+      const userData = {
+        name,
+        email,
+        phone,
+        password,
+        userType,
+      }
+
+      // Add location and outlet for agents
+      if (userType === "agent") {
+        const locationId = document.getElementById("agent-location")?.value
+        const outletId = document.getElementById("agent-outlet")?.value
+
+        if (!locationId || !outletId) {
+          createToast("Please select a location and outlet.", "error")
+          return
+        }
+
+        userData.locationId = Number.parseInt(locationId)
+        userData.outletId = Number.parseInt(outletId)
+      }
+
+      const newUser = register(userData)
+
+      if (newUser) {
+        login(email, password)
+        updateAuthUI()
+        closeModals()
+        showPage("dashboard")
+        createToast("Registration successful! Welcome to DocuFind.", "success")
+      } else {
+        createToast("Registration failed. Please try again.", "error")
+      }
+    })
+  }
 
   // Report form submission
-  reportForm.addEventListener("submit", submitReport)
+  if (reportForm) {
+    reportForm.addEventListener("submit", submitReport)
+  }
 
   // Search functionality
-  searchButton.addEventListener("click", performSearch)
-  searchInput.addEventListener("keypress", (e) => {
-    if (e.key === "Enter") {
-      performSearch()
-    }
-  })
+  if (searchButton) {
+    searchButton.addEventListener("click", performSearch)
+  }
+
+  if (searchInput) {
+    searchInput.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") {
+        performSearch()
+      }
+    })
+  }
 
   document.getElementById("sort-select")?.addEventListener("change", performSearch)
   document.getElementById("category-filter")?.addEventListener("change", performSearch)
@@ -2075,510 +2249,1019 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("date-filter")?.addEventListener("change", performSearch)
 
   // Home search event listeners
-  homeSearchButton.addEventListener("click", performHomeSearch)
-  homeSearchInput.addEventListener("keypress", (e) => {
-    if (e.key === "Enter") {
-      performHomeSearch()
-    }
-  })
+  if (homeSearchButton) {
+    homeSearchButton.addEventListener("click", performHomeSearch)
+  }
 
-  clearHomeSearch.addEventListener("click", clearHomeSearchResults)
+  if (homeSearchInput) {
+    homeSearchInput.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") {
+        performHomeSearch()
+      }
+    })
+  }
+
+  if (clearHomeSearch) {
+    clearHomeSearch.addEventListener("click", clearHomeSearchResults)
+  }
 
   // Search suggestion clicks
   document.querySelectorAll(".search-suggestions span").forEach((span) => {
     span.addEventListener("click", () => {
-      homeSearchInput.value = span.textContent
-      performHomeSearch()
+      if (homeSearchInput) {
+        homeSearchInput.value = span.textContent
+        performHomeSearch()
+      }
     })
   })
 
   // Login required modal buttons
-  loginRequiredLoginBtn.addEventListener("click", () => {
-    loginRequiredModal.style.display = "none"
-    openLoginModal()
+  if (loginRequiredLoginBtn) {
+    loginRequiredLoginBtn.addEventListener("click", () => {
+      if (loginRequiredModal) loginRequiredModal.style.display = "none"
+      openLoginModal()
+    })
+  }
 
-    // Add event listener to login form for this specific case
-    const loginFormHandler = (e) => {
+  if (loginRequiredRegisterBtn) {
+    loginRequiredRegisterBtn.addEventListener("click", () => {
+      if (loginRequiredModal) loginRequiredModal.style.display = "none"
+      openRegisterModal()
+
+      // Pre-select reportee user type
+      const userTypeSelect = document.getElementById("register-user-type")
+      if (userTypeSelect) userTypeSelect.value = "reportee"
+    })
+  }
+
+  // Fix mobile menu toggle
+  const mobileMenuBtn = document.querySelector(".mobile-menu-btn")
+  const nav = document.querySelector("nav")
+
+  if (mobileMenuBtn && nav) {
+    mobileMenuBtn.addEventListener("click", () => {
+      nav.classList.toggle("active")
+    })
+  }
+
+  // Show home page by default
+  showPage("home")
+})
+
+// Load locations function
+const loadLocations = () => {
+  if (!locationsContainer) return
+
+  const locations = getLocations()
+
+  let html = ""
+
+  locations.forEach((location) => {
+    html += `
+      <div class="location-card">
+        <div class="location-image">
+          <i class="fas fa-building"></i>
+        </div>
+        <div class="location-details">
+          <h3 class="location-name">${location.name}</h3>
+          <div class="location-info">
+            <p><i class="fas fa-map-marker-alt"></i> ${location.address}</p>
+            <p><i class="fas fa-phone"></i> ${location.phone}</p>
+            <p><i class="fas fa-envelope"></i> ${location.email}</p>
+          </div>
+          <div class="location-outlets">
+            <h4>Outlets</h4>
+            <div class="outlets-list">
+              ${getOutletsByLocationId(location.id)
+                .map((outlet) => `<span class="outlet-tag">${outlet.name}</span>`)
+                .join("")}
+            </div>
+          </div>
+        </div>
+      </div>
+    `
+  })
+
+  locationsContainer.innerHTML = html
+}
+
+// Placeholder functions for features not yet implemented
+const openEditProfileModal = () => {
+  createToast("Edit profile feature coming soon!", "info")
+}
+
+const openChangePasswordModal = () => {
+  createToast("Change password feature coming soon!", "info")
+}
+
+const openMarkAsClaimedModal = (reportId) => {
+  createToast("Mark as claimed feature coming soon!", "info")
+}
+
+const openEditDocumentModal = (reportId) => {
+  createToast("Edit document feature coming soon!", "info")
+}
+
+const confirmDeleteDocument = (reportId) => {
+  if (confirm("Are you sure you want to delete this document?")) {
+    const reports = getReports()
+    const reportIndex = reports.findIndex((r) => r.id === reportId)
+
+    if (reportIndex !== -1) {
+      reports.splice(reportIndex, 1)
+      saveReports(reports)
+      createToast("Document deleted successfully", "success")
+
+      // Refresh current page
+      if (document.getElementById("dashboard").classList.contains("active")) {
+        updateAuthenticatedPages()
+      } else if (document.getElementById("search").classList.contains("active")) {
+        performSearch()
+      }
+    }
+  }
+}
+
+const openEditUserModal = (userId) => {
+  createToast("Edit user feature coming soon!", "info")
+}
+
+const confirmDeleteUser = (userId) => {
+  createToast("Delete user feature coming soon!", "info")
+}
+
+// Event Listeners
+document.addEventListener("DOMContentLoaded", () => {
+  // Initialize database
+  initializeDatabase()
+
+  // Update UI based on authentication status
+  updateAuthUI()
+
+  // Add CSS for toast notifications
+  const toastStyles = document.createElement("style")
+  toastStyles.textContent = `
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: white;
+            color: var(--text-color);
+            padding: 0;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-lg);
+            max-width: 350px;
+            width: 100%;
+            z-index: 9999;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: transform 0.3s, opacity 0.3s;
+            overflow: hidden;
+        }
+        
+        .toast-visible {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .toast-hiding {
+            transform: translateY(100px);
+            opacity: 0;
+        }
+        
+        .toast-content {
+            display: flex;
+            align-items: flex-start;
+            padding: 16px;
+            gap: 12px;
+        }
+        
+        .toast i {
+            font-size: 20px;
+            margin-top: 2px;
+        }
+        
+        .toast-success {
+            border-left: 4px solid var(--success-color);
+        }
+        
+        .toast-success i {
+            color: var(--success-color);
+        }
+        
+        .toast-error {
+            border-left: 4px solid var(--danger-color);
+        }
+        
+        .toast-error i {
+            color: var(--danger-color);
+        }
+        
+        .toast-info {
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .toast-info i {
+            color: var(--primary-color);
+        }
+        
+        .toast-close {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: none;
+            border: none;
+            color: var(--text-light);
+            cursor: pointer;
+            font-size: 14px;
+            padding: 4px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+        }
+        
+        .toast-close:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+  `
+  document.head.appendChild(toastStyles)
+
+  // Navigation
+  if (mainNav) {
+    mainNav.addEventListener("click", (e) => {
+      if (e.target.tagName === "A") {
+        e.preventDefault()
+        const pageId = e.target.getAttribute("data-page")
+        showPage(pageId)
+      }
+    })
+  }
+
+  // Footer navigation
+  document.querySelectorAll("footer a[data-page]").forEach((link) => {
+    link.addEventListener("click", (e) => {
+      e.preventDefault()
+      const pageId = e.target.getAttribute("data-page")
+      showPage(pageId)
+    })
+  })
+
+  // Auth buttons
+  if (loginBtn) {
+    loginBtn.addEventListener("click", openLoginModal)
+  }
+
+  if (registerBtn) {
+    registerBtn.addEventListener("click", openRegisterModal)
+  }
+
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", () => {
+      logout()
+      updateAuthUI()
+      showPage("home")
+      createToast("You have been logged out successfully", "success")
+    })
+  }
+
+  // Modal close buttons
+  document.querySelectorAll(".close-modal").forEach((button) => {
+    button.addEventListener("click", closeModals)
+  })
+
+  // Close modal when clicking outside
+  if (modalContainer) {
+    modalContainer.addEventListener("click", (e) => {
+      if (e.target === modalContainer) {
+        closeModals()
+      }
+    })
+  }
+
+  // Switch between login and register
+  if (switchToRegister) {
+    switchToRegister.addEventListener("click", (e) => {
+      e.preventDefault()
+      if (loginModal) loginModal.style.display = "none"
+      if (registerModal) registerModal.style.display = "block"
+    })
+  }
+
+  if (switchToLogin) {
+    switchToLogin.addEventListener("click", (e) => {
+      e.preventDefault()
+      if (registerModal) registerModal.style.display = "none"
+      if (loginModal) loginModal.style.display = "block"
+    })
+  }
+
+  // User type change in registration
+  if (registerUserType) {
+    registerUserType.addEventListener("change", () => {
+      if (agentLocationGroup && agentOutletGroup) {
+        if (registerUserType.value === "agent") {
+          agentLocationGroup.style.display = "block"
+          agentOutletGroup.style.display = "block"
+        } else {
+          agentLocationGroup.style.display = "none"
+          agentOutletGroup.style.display = "none"
+        }
+      }
+    })
+  }
+
+  // Location change for outlets
+  if (foundLocation) {
+    foundLocation.addEventListener("change", () => {
+      if (foundLocation.value && foundOutlet) {
+        populateOutletDropdown(foundLocation.value, foundOutlet)
+      }
+    })
+  }
+
+  if (agentLocation) {
+    agentLocation.addEventListener("change", () => {
+      if (agentLocation.value && agentOutlet) {
+        populateOutletDropdown(agentLocation.value, agentOutlet)
+      }
+    })
+  }
+
+  // Hero buttons
+  if (searchDocsBtn) {
+    searchDocsBtn.addEventListener("click", () => {
+      showPage("search")
+    })
+  }
+
+  if (reportFoundBtn) {
+    reportFoundBtn.addEventListener("click", () => {
+      showPage("report")
+    })
+  }
+
+  // Login form submission
+  if (loginForm) {
+    loginForm.addEventListener("submit", (e) => {
       e.preventDefault()
 
-      const email = document.getElementById("login-email").value
-      const password = document.getElementById("login-password").value
+      const email = document.getElementById("login-email")?.value
+      const password = document.getElementById("login-password")?.value
+
+      if (!email || !password) {
+        createToast("Please enter both email and password", "error")
+        return
+      }
 
       const user = login(email, password)
 
       if (user) {
         updateAuthUI()
         closeModals()
-
-        // If user is a reportee, show document details
-        if (user.userType === "reportee" && currentViewingDocument) {
-          openDocumentDetails(currentViewingDocument.id)
-        } else if (user.userType !== "reportee") {
-          createToast("You need to be registered as a document owner to view document details", "error")
-        }
-
-        // Remove this specific event listener
-        loginForm.removeEventListener("submit", loginForm.onsubmit)
-        loginForm.addEventListener("submit", loginFormHandler)
+        showPage("dashboard")
+        createToast(`Welcome back, ${user.name}!`, "success")
       } else {
         createToast("Invalid email or password. Please try again.", "error")
       }
-    }
+    })
+  }
 
-    // Replace the existing event listener
-    loginForm.removeEventListener("submit", loginForm.onsubmit)
-    loginForm.addEventListener("submit", loginFormHandler)
+  // Register form submission
+  if (registerForm) {
+    registerForm.addEventListener("submit", (e) => {
+      e.preventDefault()
+
+      const name = document.getElementById("register-name")?.value
+      const email = document.getElementById("register-email")?.value
+      const phone = document.getElementById("register-phone")?.value
+      const password = document.getElementById("register-password")?.value
+      const confirmPassword = document.getElementById("register-confirm-password")?.value
+      const userType = document.getElementById("register-user-type")?.value
+      const termsAgreed = document.getElementById("register-terms")?.checked
+
+      if (!name || !email || !phone || !password || !confirmPassword || !userType) {
+        createToast("Please fill in all required fields.", "error")
+        return
+      }
+
+      if (password !== confirmPassword) {
+        createToast("Passwords do not match.", "error")
+        return
+      }
+
+      if (!termsAgreed) {
+        createToast("You must agree to the Terms and Conditions.", "error")
+        return
+      }
+
+      // Check if email already exists
+      const users = getUsers()
+      if (users.some((user) => user.email === email)) {
+        createToast("Email already in use. Please use a different email or login.", "error")
+        return
+      }
+
+      const userData = {
+        name,
+        email,
+        phone,
+        password,
+        userType,
+      }
+
+      // Add location and outlet for agents
+      if (userType === "agent") {
+        const locationId = document.getElementById("agent-location")?.value
+        const outletId = document.getElementById("agent-outlet")?.value
+
+        if (!locationId || !outletId) {
+          createToast("Please select a location and outlet.", "error")
+          return
+        }
+
+        userData.locationId = Number.parseInt(locationId)
+        userData.outletId = Number.parseInt(outletId)
+      }
+
+      const newUser = register(userData)
+
+      if (newUser) {
+        login(email, password)
+        updateAuthUI()
+        closeModals()
+        showPage("dashboard")
+        createToast("Registration successful! Welcome to DocuFind.", "success")
+      } else {
+        createToast("Registration failed. Please try again.", "error")
+      }
+    })
+  }
+
+  // Report form submission
+  if (reportForm) {
+    reportForm.addEventListener("submit", submitReport)
+  }
+
+  // Search functionality
+  if (searchButton) {
+    searchButton.addEventListener("click", performSearch)
+  }
+
+  if (searchInput) {
+    searchInput.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") {
+        performSearch()
+      }
+    })
+  }
+
+  document.getElementById("sort-select")?.addEventListener("change", performSearch)
+  document.getElementById("category-filter")?.addEventListener("change", performSearch)
+  locationFilter?.addEventListener("change", performSearch)
+  document.getElementById("date-filter")?.addEventListener("change", performSearch)
+
+  // Home search event listeners
+  if (homeSearchButton) {
+    homeSearchButton.addEventListener("click", performHomeSearch)
+  }
+
+  if (homeSearchInput) {
+    homeSearchInput.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") {
+        performHomeSearch()
+      }
+    })
+  }
+
+  if (clearHomeSearch) {
+    clearHomeSearch.addEventListener("click", clearHomeSearchResults)
+  }
+
+  // Search suggestion clicks
+  document.querySelectorAll(".search-suggestions span").forEach((span) => {
+    span.addEventListener("click", () => {
+      if (homeSearchInput) {
+        homeSearchInput.value = span.textContent
+        performHomeSearch()
+      }
+    })
   })
 
-  loginRequiredRegisterBtn.addEventListener("click", () => {
-    loginRequiredModal.style.display = "none"
-    openRegisterModal()
+  // Login required modal buttons
+  if (loginRequiredLoginBtn) {
+    loginRequiredLoginBtn.addEventListener("click", () => {
+      if (loginRequiredModal) loginRequiredModal.style.display = "none"
+      openLoginModal()
+    })
+  }
 
-    // Pre-select reportee user type
-    document.getElementById("register-user-type").value = "reportee"
-  })
+  if (loginRequiredRegisterBtn) {
+    loginRequiredRegisterBtn.addEventListener("click", () => {
+      if (loginRequiredModal) loginRequiredModal.style.display = "none"
+      openRegisterModal()
+
+      // Pre-select reportee user type
+      const userTypeSelect = document.getElementById("register-user-type")
+      if (userTypeSelect) userTypeSelect.value = "reportee"
+    })
+  }
+
+  // Fix mobile menu toggle
+  const mobileMenuBtn = document.querySelector(".mobile-menu-btn")
+  const nav = document.querySelector("nav")
+
+  if (mobileMenuBtn && nav) {
+    mobileMenuBtn.addEventListener("click", () => {
+      nav.classList.toggle("active")
+    })
+  }
 
   // Show home page by default
   showPage("home")
 })
 
-// Fix mobile menu toggle
-document.addEventListener("DOMContentLoaded", () => {
-  const mobileMenuBtn = document.querySelector(".mobile-menu-btn")
-  const nav = document.querySelector("nav")
-
-  mobileMenuBtn.addEventListener("click", () => {
-    nav.classList.toggle("active")
-  })
-})
-
-// Dummy functions to resolve errors
+// Load locations function
 const loadLocations = () => {
-  console.warn("loadLocations function is a placeholder.")
+  if (!locationsContainer) return
+
+  const locations = getLocations()
+
+  let html = ""
+
+  locations.forEach((location) => {
+    html += `
+      <div class="location-card">
+        <div class="location-image">
+          <i class="fas fa-building"></i>
+        </div>
+        <div class="location-details">
+          <h3 class="location-name">${location.name}</h3>
+          <div class="location-info">
+            <p><i class="fas fa-map-marker-alt"></i> ${location.address}</p>
+            <p><i class="fas fa-phone"></i> ${location.phone}</p>
+            <p><i class="fas fa-envelope"></i> ${location.email}</p>
+          </div>
+          <div class="location-outlets">
+            <h4>Outlets</h4>
+            <div class="outlets-list">
+              ${getOutletsByLocationId(location.id)
+                .map((outlet) => `<span class="outlet-tag">${outlet.name}</span>`)
+                .join("")}
+            </div>
+          </div>
+        </div>
+      </div>
+    `
+  })
+
+  locationsContainer.innerHTML = html
 }
 
+// Placeholder functions for features not yet implemented
 const openEditProfileModal = () => {
-  console.warn("openEditProfileModal function is a placeholder.")
+  createToast("Edit profile feature coming soon!", "info")
 }
 
 const openChangePasswordModal = () => {
-  console.warn("openChangePasswordModal function is a placeholder.")
+  createToast("Change password feature coming soon!", "info")
 }
 
 const openMarkAsClaimedModal = (reportId) => {
-  console.warn("openMarkAsClaimedModal function is a placeholder. Report ID:", reportId)
+  createToast("Mark as claimed feature coming soon!", "info")
 }
 
 const openEditDocumentModal = (reportId) => {
-  console.warn("openEditDocumentModal function is a placeholder. Report ID:", reportId)
+  createToast("Edit document feature coming soon!", "info")
 }
 
 const confirmDeleteDocument = (reportId) => {
-  console.warn("confirmDeleteDocument function is a placeholder. Report ID:", reportId)
+  if (confirm("Are you sure you want to delete this document?")) {
+    const reports = getReports()
+    const reportIndex = reports.findIndex((r) => r.id === reportId)
+
+    if (reportIndex !== -1) {
+      reports.splice(reportIndex, 1)
+      saveReports(reports)
+      createToast("Document deleted successfully", "success")
+
+      // Refresh current page
+      if (document.getElementById("dashboard").classList.contains("active")) {
+        updateAuthenticatedPages()
+      } else if (document.getElementById("search").classList.contains("active")) {
+        performSearch()
+      }
+    }
+  }
 }
 
 const openEditUserModal = (userId) => {
-  console.warn("openEditUserModal function is a placeholder. User ID:", userId)
+  createToast("Edit user feature coming soon!", "info")
 }
 
 const confirmDeleteUser = (userId) => {
-  console.warn("confirmDeleteUser function is a placeholder. User ID:", userId)
+  createToast("Delete user feature coming soon!", "info")
 }
 
 // Global variables
-let currentUser = null;
-let documents = [];
-let users = [];
-let categories = [];
-let locations = [];
-let transactions = [];
+let currentUser = null
+let documents = []
+let users = []
+let categories = []
+let locations = []
+let transactions = []
 
 // Initialize the application
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener("DOMContentLoaded", () => {
   // Load data from localStorage
-  loadData();
-  
+  loadData()
+
   // Setup navigation
-  setupNavigation();
-  
+  setupNavigation()
+
   // Setup event listeners
-  setupEventListeners();
-  
+  setupEventListeners()
+
   // Check if user is logged in
-  checkUserLogin();
-  
+  checkUserLogin()
+
   // Show home page by default
-  showPageFunc('home');
-});
+  showPageFunc("home")
+})
 
 // Load data from localStorage
 function loadData() {
-  documents = JSON.parse(localStorage.getItem('documents')) || [];
-  users = JSON.parse(localStorage.getItem('users')) || [];
-  categories = JSON.parse(localStorage.getItem('categories')) || getDefaultCategories();
-  locations = JSON.parse(localStorage.getItem('locations')) || getDefaultLocations();
-  transactions = JSON.parse(localStorage.getItem('transactions')) || [];
-  
+  documents = JSON.parse(localStorage.getItem("documents")) || []
+  users = JSON.parse(localStorage.getItem("users")) || []
+  categories = JSON.parse(localStorage.getItem("categories")) || getDefaultCategories()
+  locations = JSON.parse(localStorage.getItem("locations")) || getDefaultLocations()
+  transactions = JSON.parse(localStorage.getItem("transactions")) || []
+
   // If no users exist, create default admin
   if (users.length === 0) {
     const adminUser = {
       id: generateId(),
-      name: 'Admin User',
-      email: 'admin@docufind.com',
-      password: 'admin123',
-      role: 'admin',
-      createdAt: new Date().toISOString()
-    };
-    users.push(adminUser);
-    saveData('users');
+      name: "Admin User",
+      email: "admin@docufind.com",
+      password: "admin123",
+      role: "admin",
+      createdAt: new Date().toISOString(),
+    }
+    users.push(adminUser)
+    saveData("users")
   }
 }
 
 // Default categories
 function getDefaultCategories() {
   return [
-    { id: 'cat1', name: 'ID Cards', description: 'National ID, Voter ID, etc.', fee: 20 },
-    { id: 'cat2', name: 'Passports', description: 'International passports', fee: 50 },
-    { id: 'cat3', name: 'Driver\'s License', description: 'Driving permits', fee: 30 },
-    { id: 'cat4', name: 'Academic Certificates', description: 'Diplomas, degrees, etc.', fee: 25 },
-    { id: 'cat5', name: 'Credit/Debit Cards', description: 'Bank cards', fee: 15 }
-  ];
+    { id: "cat1", name: "ID Cards", description: "National ID, Voter ID, etc.", fee: 20 },
+    { id: "cat2", name: "Passports", description: "International passports", fee: 50 },
+    { id: "cat3", name: "Driver's License", description: "Driving permits", fee: 30 },
+    { id: "cat4", name: "Academic Certificates", description: "Diplomas, degrees, etc.", fee: 25 },
+    { id: "cat5", name: "Credit/Debit Cards", description: "Bank cards", fee: 15 },
+  ]
 }
 
 // Default locations
 function getDefaultLocations() {
   return [
     {
-      id: 'loc1',
-      name: 'Central Police Station',
-      address: '123 Main Street, Downtown',
-      city: 'Metropolis',
-      phone: '+1-555-123-4567',
-      email: 'central@police.gov',
-      hours: 'Mon-Fri: 8am-6pm, Sat: 9am-1pm',
-      type: 'Police Station'
+      id: "loc1",
+      name: "Central Police Station",
+      address: "123 Main Street, Downtown",
+      city: "Metropolis",
+      phone: "+1-555-123-4567",
+      email: "central@police.gov",
+      hours: "Mon-Fri: 8am-6pm, Sat: 9am-1pm",
+      type: "Police Station",
     },
     {
-      id: 'loc2',
-      name: 'City Hall Document Center',
-      address: '456 Government Ave, Civic Center',
-      city: 'Metropolis',
-      phone: '+1-555-987-6543',
-      email: 'documents@cityhall.gov',
-      hours: 'Mon-Fri: 9am-5pm',
-      type: 'Government Office'
+      id: "loc2",
+      name: "City Hall Document Center",
+      address: "456 Government Ave, Civic Center",
+      city: "Metropolis",
+      phone: "+1-555-987-6543",
+      email: "documents@cityhall.gov",
+      hours: "Mon-Fri: 9am-5pm",
+      type: "Government Office",
     },
     {
-      id: 'loc3',
-      name: 'University Lost & Found',
-      address: '789 Campus Drive, University District',
-      city: 'Metropolis',
-      phone: '+1-555-234-5678',
-      email: 'lostandfound@university.edu',
-      hours: 'Mon-Fri: 10am-4pm',
-      type: 'Educational Institution'
+      id: "loc3",
+      name: "University Lost & Found",
+      address: "789 Campus Drive, University District",
+      city: "Metropolis",
+      phone: "+1-555-234-5678",
+      email: "lostandfound@university.edu",
+      hours: "Mon-Fri: 10am-4pm",
+      type: "Educational Institution",
     },
     {
-      id: 'loc4',
-      name: 'Metro Mall Information Desk',
-      address: '101 Shopping Lane, Retail District',
-      city: 'Metropolis',
-      phone: '+1-555-345-6789',
-      email: 'info@metromall.com',
-      hours: 'Mon-Sun: 10am-9pm',
-      type: 'Commercial Center'
-    }
-  ];
+      id: "loc4",
+      name: "Metro Mall Information Desk",
+      address: "101 Shopping Lane, Retail District",
+      city: "Metropolis",
+      phone: "+1-555-345-6789",
+      email: "info@metromall.com",
+      hours: "Mon-Sun: 10am-9pm",
+      type: "Commercial Center",
+    },
+  ]
 }
 
 // Save data to localStorage
 function saveData(dataType) {
   switch (dataType) {
-    case 'documents':
-      localStorage.setItem('documents', JSON.stringify(documents));
-      break;
-    case 'users':
-      localStorage.setItem('users', JSON.stringify(users));
-      break;
-    case 'categories':
-      localStorage.setItem('categories', JSON.stringify(categories));
-      break;
-    case 'locations':
-      localStorage.setItem('locations', JSON.stringify(locations));
-      break;
-    case 'transactions':
-      localStorage.setItem('transactions', JSON.stringify(transactions));
-      break;
-    case 'all':
-      localStorage.setItem('documents', JSON.stringify(documents));
-      localStorage.setItem('users', JSON.stringify(users));
-      localStorage.setItem('categories', JSON.stringify(categories));
-      localStorage.setItem('locations', JSON.stringify(locations));
-      localStorage.setItem('transactions', JSON.stringify(transactions));
-      break;
+    case "documents":
+      localStorage.setItem("documents", JSON.stringify(documents))
+      break
+    case "users":
+      localStorage.setItem("users", JSON.stringify(users))
+      break
+    case "categories":
+      localStorage.setItem("categories", JSON.stringify(categories))
+      break
+    case "locations":
+      localStorage.setItem("locations", JSON.stringify(locations))
+      break
+    case "transactions":
+      localStorage.setItem("transactions", JSON.stringify(transactions))
+      break
+    case "all":
+      localStorage.setItem("documents", JSON.stringify(documents))
+      localStorage.setItem("users", JSON.stringify(users))
+      localStorage.setItem("categories", JSON.stringify(categories))
+      localStorage.setItem("locations", JSON.stringify(locations))
+      localStorage.setItem("transactions", JSON.stringify(transactions))
+      break
   }
 }
 
 // Setup navigation
 function setupNavigation() {
-  const navLinks = document.querySelectorAll('nav a');
-  navLinks.forEach(link => {
-    link.addEventListener('click', (e) => {
-      e.preventDefault();
-      const page = link.getAttribute('href').substring(1);
-      showPageFunc(page);
-    });
-  });
-  
+  const navLinks = document.querySelectorAll("nav a")
+  navLinks.forEach((link) => {
+    link.addEventListener("click", (e) => {
+      e.preventDefault()
+      const page = link.getAttribute("href").substring(1)
+      showPageFunc(page)
+    })
+  })
+
   // Mobile menu toggle
-  const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
-  const nav = document.querySelector('nav');
-  
+  const mobileMenuBtn = document.querySelector(".mobile-menu-btn")
+  const nav = document.querySelector("nav")
+
   if (mobileMenuBtn) {
-    mobileMenuBtn.addEventListener('click', () => {
-      nav.classList.toggle('active');
-    });
+    mobileMenuBtn.addEventListener("click", () => {
+      nav.classList.toggle("active")
+    })
   }
 }
 
 // Setup event listeners
 function setupEventListeners() {
   // Login form
-  const loginForm = document.getElementById('login-form');
+  const loginForm = document.getElementById("login-form")
   if (loginForm) {
-    loginForm.addEventListener('submit', handleLogin);
+    loginForm.addEventListener("submit", handleLogin)
   }
-  
+
   // Register form
-  const registerForm = document.getElementById('register-form');
+  const registerForm = document.getElementById("register-form")
   if (registerForm) {
-    registerForm.addEventListener('submit', handleRegister);
+    registerForm.addEventListener("submit", handleRegister)
   }
-  
+
   // Report document form
-  const reportDocForm = document.getElementById('report-document-form');
+  const reportDocForm = document.getElementById("report-document-form")
   if (reportDocForm) {
-    reportDocForm.addEventListener('submit', handleReportDocument);
+    reportDocForm.addEventListener("submit", handleReportDocument)
   }
-  
+
   // Search form
-  const searchForm = document.getElementById('search-form');
+  const searchForm = document.getElementById("search-form")
   if (searchForm) {
-    searchForm.addEventListener('submit', handleSearch);
+    searchForm.addEventListener("submit", handleSearch)
   }
-  
+
   // Home search form
-  const homeSearchForm = document.getElementById('home-search-form');
+  const homeSearchForm = document.getElementById("home-search-form")
   if (homeSearchForm) {
-    homeSearchForm.addEventListener('submit', handleHomeSearch);
+    homeSearchForm.addEventListener("submit", handleHomeSearch)
   }
-  
+
   // Logout button
-  const logoutBtn = document.getElementById('logout-btn');
+  const logoutBtn = document.getElementById("logout-btn")
   if (logoutBtn) {
-    logoutBtn.addEventListener('click', handleLogout);
+    logoutBtn.addEventListener("click", handleLogout)
   }
-  
+
   // Category form
-  const categoryForm = document.getElementById('category-form');
+  const categoryForm = document.getElementById("category-form")
   if (categoryForm) {
-    categoryForm.addEventListener('submit', handleCategorySubmit);
+    categoryForm.addEventListener("submit", handleCategorySubmit)
   }
-  
+
   // Location form
-  const locationForm = document.getElementById('location-form');
+  const locationForm = document.getElementById("location-form")
   if (locationForm) {
-    locationForm.addEventListener('submit', handleLocationSubmit);
+    locationForm.addEventListener("submit", handleLocationSubmit)
   }
-  
+
   // User form
-  const userForm = document.getElementById('user-form');
+  const userForm = document.getElementById("user-form")
   if (userForm) {
-    userForm.addEventListener('submit', handleUserSubmit);
+    userForm.addEventListener("submit", handleUserSubmit)
   }
-  
+
   // Close modal buttons
-  const closeModalBtns = document.querySelectorAll('.close-modal');
-  closeModalBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      closeAllModals();
-    });
-  });
-  
+  const closeModalBtns = document.querySelectorAll(".close-modal")
+  closeModalBtns.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      closeAllModals()
+    })
+  })
+
   // Modal container click to close
-  const modalContainers = document.querySelectorAll('.modal-container');
-  modalContainers.forEach(container => {
-    container.addEventListener('click', (e) => {
+  const modalContainers = document.querySelectorAll(".modal-container")
+  modalContainers.forEach((container) => {
+    container.addEventListener("click", (e) => {
       if (e.target === container) {
-        closeAllModals();
+        closeAllModals()
       }
-    });
-  });
-  
+    })
+  })
+
   // Claim document buttons
-  document.addEventListener('click', (e) => {
-    if (e.target.classList.contains('claim-document-btn')) {
-      const documentId = e.target.getAttribute('data-id');
-      showClaimDocumentModal(documentId);
+  document.addEventListener("click", (e) => {
+    if (e.target.classList.contains("claim-document-btn")) {
+      const documentId = e.target.getAttribute("data-id")
+      showClaimDocumentModal(documentId)
     }
-  });
-  
+  })
+
   // Claim document form
-  const claimDocForm = document.getElementById('claim-document-form');
+  const claimDocForm = document.getElementById("claim-document-form")
   if (claimDocForm) {
-    claimDocForm.addEventListener('submit', handleClaimDocument);
+    claimDocForm.addEventListener("submit", handleClaimDocument)
   }
-  
+
   // Edit document buttons
-  document.addEventListener('click', (e) => {
-    if (e.target.classList.contains('edit-document-btn')) {
-      const documentId = e.target.getAttribute('data-id');
-      showEditDocumentModal(documentId);
+  document.addEventListener("click", (e) => {
+    if (e.target.classList.contains("edit-document-btn")) {
+      const documentId = e.target.getAttribute("data-id")
+      showEditDocumentModal(documentId)
     }
-  });
-  
+  })
+
   // Edit document form
-  const editDocForm = document.getElementById('edit-document-form');
+  const editDocForm = document.getElementById("edit-document-form")
   if (editDocForm) {
-    editDocForm.addEventListener('submit', handleEditDocument);
+    editDocForm.addEventListener("submit", handleEditDocument)
   }
-  
+
   // Delete document buttons
-  document.addEventListener('click', (e) => {
-    if (e.target.classList.contains('delete-document-btn')) {
-      const documentId = e.target.getAttribute('data-id');
-      if (confirm('Are you sure you want to delete this document?')) {
-        deleteDocument(documentId);
+  document.addEventListener("click", (e) => {
+    if (e.target.classList.contains("delete-document-btn")) {
+      const documentId = e.target.getAttribute("data-id")
+      if (confirm("Are you sure you want to delete this document?")) {
+        deleteDocument(documentId)
       }
     }
-  });
-  
+  })
+
   // Edit category buttons
-  document.addEventListener('click', (e) => {
-    if (e.target.classList.contains('edit-category-btn')) {
-      const categoryId = e.target.getAttribute('data-id');
-      showEditCategoryModal(categoryId);
+  document.addEventListener("click", (e) => {
+    if (e.target.classList.contains("edit-category-btn")) {
+      const categoryId = e.target.getAttribute("data-id")
+      showEditCategoryModal(categoryId)
     }
-  });
-  
+  })
+
   // Delete category buttons
-  document.addEventListener('click', (e) => {
-    if (e.target.classList.contains('delete-category-btn')) {
-      const categoryId = e.target.getAttribute('data-id');
-      if (confirm('Are you sure you want to delete this category?')) {
-        deleteCategory(categoryId);
+  document.addEventListener("click", (e) => {
+    if (e.target.classList.contains("delete-category-btn")) {
+      const categoryId = e.target.getAttribute("data-id")
+      if (confirm("Are you sure you want to delete this category?")) {
+        deleteCategory(categoryId)
       }
     }
-  });
-  
+  })
+
   // Edit location buttons
-  document.addEventListener('click', (e) => {
-    if (e.target.classList.contains('edit-location-btn')) {
-      const locationId = e.target.getAttribute('data-id');
-      showEditLocationModal(locationId);
+  document.addEventListener("click", (e) => {
+    if (e.target.classList.contains("edit-location-btn")) {
+      const locationId = e.target.getAttribute("data-id")
+      showEditLocationModal(locationId)
     }
-  });
-  
+  })
+
   // Delete location buttons
-  document.addEventListener('click', (e) => {
-    if (e.target.classList.contains('delete-location-btn')) {
-      const locationId = e.target.getAttribute('data-id');
-      if (confirm('Are you sure you want to delete this location?')) {
-        deleteLocation(locationId);
+  document.addEventListener("click", (e) => {
+    if (e.target.classList.contains("delete-location-btn")) {
+      const locationId = e.target.getAttribute("data-id")
+      if (confirm("Are you sure you want to delete this location?")) {
+        deleteLocation(locationId)
       }
     }
-  });
-  
+  })
+
   // Edit user buttons
-  document.addEventListener('click', (e) => {
-    if (e.target.classList.contains('edit-user-btn')) {
-      const userId = e.target.getAttribute('data-id');
-      showEditUserModal(userId);
+  document.addEventListener("click", (e) => {
+    if (e.target.classList.contains("edit-user-btn")) {
+      const userId = e.target.getAttribute("data-id")
+      showEditUserModal(userId)
     }
-  });
-  
+  })
+
   // Delete user buttons
-  document.addEventListener('click', (e) => {
-    if (e.target.classList.contains('delete-user-btn')) {
-      const userId = e.target.getAttribute('data-id');
-      if (confirm('Are you sure you want to delete this user?')) {
-        deleteUser(userId);
+  document.addEventListener("click", (e) => {
+    if (e.target.classList.contains("delete-user-btn")) {
+      const userId = e.target.getAttribute("data-id")
+      if (confirm("Are you sure you want to delete this user?")) {
+        deleteUser(userId)
       }
     }
-  });
-  
+  })
+
   // Revenue period buttons
-  document.addEventListener('click', (e) => {
-    if (e.target.classList.contains('revenue-period-btn')) {
-      const period = e.target.getAttribute('data-period');
-      updateRevenueStats(period);
-      
+  document.addEventListener("click", (e) => {
+    if (e.target.classList.contains("revenue-period-btn")) {
+      const period = e.target.getAttribute("data-period")
+      updateRevenueStats(period)
+
       // Update active button
-      document.querySelectorAll('.revenue-period-btn').forEach(btn => {
-        btn.classList.remove('active');
-      });
-      e.target.classList.add('active');
+      document.querySelectorAll(".revenue-period-btn").forEach((btn) => {
+        btn.classList.remove("active")
+      })
+      e.target.classList.add("active")
     }
-  });
+  })
 }
 
 // Check if user is logged in
 function checkUserLogin() {
-  const storedUser = localStorage.getItem('currentUser');
+  const storedUser = localStorage.getItem("currentUser")
   if (storedUser) {
-    currentUser = JSON.parse(storedUser);
-    updateUIForLoggedInUser();
+    currentUser = JSON.parse(storedUser)
+    updateUIForLoggedInUser()
   } else {
-    updateUIForLoggedOutUser();
+    updateUIForLoggedOutUser()
   }
 }
 
 // Update UI for logged in user
 function updateUIForLoggedInUser() {
-  const authButtons = document.querySelector('.auth-buttons');
-  const userProfile = document.querySelector('.user-profile');
-  const usernameDisplay = document.getElementById('username-display');
-  const userRoleDisplay = document.getElementById('user-role');
-  
-  if (authButtons) authButtons.style.display = 'none';
-  if (userProfile) userProfile.style.display = 'flex';
-  if (usernameDisplay) usernameDisplay.textContent = currentUser.name;
-  if (userRoleDisplay) userRoleDisplay.textContent = currentUser.role;
-  
+  const authButtons = document.querySelector(".auth-buttons")
+  const userProfile = document.querySelector(".user-profile")
+  const usernameDisplay = document.getElementById("username-display")
+  const userRoleDisplay = document.getElementById("user-role")
+
+  if (authButtons) authButtons.style.display = "none"
+  if (userProfile) userProfile.style.display = "flex"
+  if (usernameDisplay) usernameDisplay.textContent = currentUser.name
+  if (userRoleDisplay) userRoleDisplay.textContent = currentUser.role
+
   // Update navigation based on user role
-  updateNavigation();
+  updateNavigation()
 }
 
 // Update UI for logged out user
 function updateUIForLoggedOutUser() {
-  const authButtons = document.querySelector('.auth-buttons');
-  const userProfile = document.querySelector('.user-profile');
-  
-  if (authButtons) authButtons.style.display = 'flex';
-  if (userProfile) userProfile.style.display = 'none';
-  
+  const authButtons = document.querySelector(".auth-buttons")
+  const userProfile = document.querySelector(".user-profile")
+
+  if (authButtons) authButtons.style.display = "flex"
+  if (userProfile) userProfile.style.display = "none"
+
   // Update navigation for logged out user
-  updateNavigation();
+  updateNavigation()
 }
 
 // Update navigation based on user role
 function updateNavigation() {
-  const dashboardLink = document.getElementById('nav-dashboard');
-  const reportDocLink = document.getElementById('nav-report-document');
-  
+  const dashboardLink = document.getElementById("nav-dashboard")
+  const reportDocLink = document.getElementById("nav-report-document")
+
   if (dashboardLink) {
     if (currentUser) {
-      dashboardLink.style.display = 'block';
+      dashboardLink.style.display = "block"
     } else {
-      dashboardLink.style.display = 'none';
+      dashboardLink.style.display = "none"
     }
   }
-  
+
   if (reportDocLink) {
-    if (currentUser && (currentUser.role === 'reporter' || currentUser.role === 'agent' || currentUser.role === 'admin')) {
-      reportDocLink.style.display = 'block';
+    if (
+      currentUser &&
+      (currentUser.role === "reporter" || currentUser.role === "agent" || currentUser.role === "admin")
+    ) {
+      reportDocLink.style.display = "block"
     } else {
-      reportDocLink.style.display = 'none';
+      reportDocLink.style.display = "none"
     }
   }
 }
@@ -2586,94 +3269,94 @@ function updateNavigation() {
 // Show page
 function showPageFunc(pageId) {
   // Hide all pages
-  const pages = document.querySelectorAll('.page');
-  pages.forEach(page => {
-    page.classList.remove('active');
-  });
-  
+  const pages = document.querySelectorAll(".page")
+  pages.forEach((page) => {
+    page.classList.remove("active")
+  })
+
   // Show the selected page
-  const selectedPage = document.getElementById(`${pageId}-page`);
+  const selectedPage = document.getElementById(`${pageId}-page`)
   if (selectedPage) {
-    selectedPage.classList.add('active');
-    
+    selectedPage.classList.add("active")
+
     // Special handling for specific pages
-    if (pageId === 'dashboard' && currentUser) {
-      loadDashboard();
-    } else if (pageId === 'search') {
-      loadSearchPage();
-    } else if (pageId === 'locations') {
-      loadLocationsPage();
-    } else if (pageId === 'report-document' && !currentUser) {
-      showLoginRequiredModal();
-      return;
+    if (pageId === "dashboard" && currentUser) {
+      loadDashboard()
+    } else if (pageId === "search") {
+      loadSearchPage()
+    } else if (pageId === "locations") {
+      loadLocationsPage()
+    } else if (pageId === "report-document" && !currentUser) {
+      showLoginRequiredModal()
+      return
     }
   }
-  
+
   // Update active navigation link
-  const navLinks = document.querySelectorAll('nav a');
-  navLinks.forEach(link => {
-    link.classList.remove('active');
-    const linkPage = link.getAttribute('href').substring(1);
+  const navLinks = document.querySelectorAll("nav a")
+  navLinks.forEach((link) => {
+    link.classList.remove("active")
+    const linkPage = link.getAttribute("href").substring(1)
     if (linkPage === pageId) {
-      link.classList.add('active');
+      link.classList.add("active")
     }
-  });
-  
+  })
+
   // Close mobile menu after navigation
-  const nav = document.querySelector('nav');
-  if (nav) nav.classList.remove('active');
-  
+  const nav = document.querySelector("nav")
+  if (nav) nav.classList.remove("active")
+
   // Scroll to top
-  window.scrollTo(0, 0);
+  window.scrollTo(0, 0)
 }
 
 // Handle login
 function handleLogin(e) {
-  e.preventDefault();
-  
-  const email = document.getElementById('login-email').value;
-  const password = document.getElementById('login-password').value;
-  
-  const user = users.find(u => u.email === email && u.password === password);
-  
+  e.preventDefault()
+
+  const email = document.getElementById("login-email").value
+  const password = document.getElementById("login-password").value
+
+  const user = users.find((u) => u.email === email && u.password === password)
+
   if (user) {
-    currentUser = user;
-    localStorage.setItem('currentUser', JSON.stringify(user));
-    updateUIForLoggedInUser();
-    showToast('Login successful!', 'success');
-    
+    currentUser = user
+    localStorage.setItem("currentUser", JSON.stringify(user))
+    updateUIForLoggedInUser()
+    showToast("Login successful!", "success")
+
     // Redirect to dashboard
-    showPageFunc('dashboard');
-    
+    showPageFunc("dashboard")
+
     // Reset form
-    e.target.reset();
+    e.target.reset()
   } else {
-    showToast('Invalid email or password!', 'error');
+    showToast("Invalid email or password!", "error")
   }
 }
 
 // Handle register
 function handleRegister(e) {
-  e.preventDefault();
-  
-  const name = document.getElementById('register-name').value;
-  const email = document.getElementById('register-email').value;
-  const password = document.getElementById('register-password').value;
-  const confirmPassword = document.getElementById('register-confirm-password').value;
-  const role = document.getElementById('register-role').value;
-  
+  e.preventDefault()
+
+  const name = document.getElementById("register-name").value
+  const email = document.getElementById("register-email").value
+  const password = document.getElementById("register-password").value
+  const confirmPassword = document.getElementById("register-confirm-password").value
+  const role = document.getElementById("register-role").value
+
   // Validate passwords match
   if (password !== confirmPassword) {
-    showToast('Passwords do not match!', 'error');
-    return;
+    showToast("Passwords do not match!", "error")
+    return
   }
-  
+
   // Check if email already exists
-  if (users.some(u => u.email === email)) {
-    showToast('Email already registered!', 'error');
-    return;
+  if (users.some((u) => u.email === email)) {
+    showToast("Email already registered!", "error")
+    return
   }
-  
+
   // Create new user
   const newUser = {
     id: generateId(),
@@ -2681,61 +3364,61 @@ function handleRegister(e) {
     email,
     password,
     role,
-    createdAt: new Date().toISOString()
-  };
-  
+    createdAt: new Date().toISOString(),
+  }
+
   // Add user to users array
-  users.push(newUser);
-  saveData('users');
-  
+  users.push(newUser)
+  saveData("users")
+
   // Log in the new user
-  currentUser = newUser;
-  localStorage.setItem('currentUser', JSON.stringify(newUser));
-  updateUIForLoggedInUser();
-  
-  showToast('Registration successful!', 'success');
-  
+  currentUser = newUser
+  localStorage.setItem("currentUser", JSON.stringify(newUser))
+  updateUIForLoggedInUser()
+
+  showToast("Registration successful!", "success")
+
   // Redirect to dashboard
-  showPageFunc('dashboard');
-  
+  showPageFunc("dashboard")
+
   // Reset form
-  e.target.reset();
+  e.target.reset()
 }
 
 // Handle logout
 function handleLogout(e) {
-  e.preventDefault();
-  
-  currentUser = null;
-  localStorage.removeItem('currentUser');
-  updateUIForLoggedOutUser();
-  
-  showToast('Logged out successfully!', 'success');
-  
+  e.preventDefault()
+
+  currentUser = null
+  localStorage.removeItem("currentUser")
+  updateUIForLoggedOutUser()
+
+  showToast("Logged out successfully!", "success")
+
   // Redirect to home
-  showPageFunc('home');
+  showPageFunc("home")
 }
 
 // Handle report document
 function handleReportDocument(e) {
-  e.preventDefault();
-  
+  e.preventDefault()
+
   if (!currentUser) {
-    showLoginRequiredModal();
-    return;
+    showLoginRequiredModal()
+    return
   }
-  
-  const title = document.getElementById('document-title').value;
-  const category = document.getElementById('document-category').value;
-  const location = document.getElementById('document-location').value;
-  const description = document.getElementById('document-description').value;
-  const ownerName = document.getElementById('document-owner-name').value;
-  const ownerContact = document.getElementById('document-owner-contact').value;
-  
+
+  const title = document.getElementById("document-title").value
+  const category = document.getElementById("document-category").value
+  const location = document.getElementById("document-location").value
+  const description = document.getElementById("document-description").value
+  const ownerName = document.getElementById("document-owner-name").value
+  const ownerContact = document.getElementById("document-owner-contact").value
+
   // Get category fee
-  const selectedCategory = categories.find(cat => cat.id === category);
-  const fee = selectedCategory ? selectedCategory.fee : 0;
-  
+  const selectedCategory = categories.find((cat) => cat.id === category)
+  const fee = selectedCategory ? selectedCategory.fee : 0
+
   // Create new document
   const newDocument = {
     id: generateId(),
@@ -2745,115 +3428,118 @@ function handleReportDocument(e) {
     description,
     ownerName,
     ownerContact,
-    status: 'pending',
+    status: "pending",
     reportedBy: currentUser.id,
     reportedAt: new Date().toISOString(),
-    fee
-  };
-  
+    fee,
+  }
+
   // Add document to documents array
-  documents.push(newDocument);
-  saveData('documents');
-  
+  documents.push(newDocument)
+  saveData("documents")
+
   // Create transaction for reporter fee
   const reporterTransaction = {
     id: generateId(),
-    type: 'reporter_fee',
+    type: "reporter_fee",
     amount: fee * 0.3, // 30% of fee goes to reporter
     documentId: newDocument.id,
     userId: currentUser.id,
     date: new Date().toISOString(),
-    status: 'completed'
-  };
-  
-  transactions.push(reporterTransaction);
-  saveData('transactions');
-  
-  showToast('Document reported successfully!', 'success');
-  
+    status: "completed",
+  }
+
+  transactions.push(reporterTransaction)
+  saveData("transactions")
+
+  showToast("Document reported successfully!", "success")
+
   // Reset form
-  e.target.reset();
-  
+  e.target.reset()
+
   // Redirect to dashboard
-  showPageFunc('dashboard');
+  showPageFunc("dashboard")
 }
 
 // Handle search
 function handleSearch(e) {
-  e.preventDefault();
-  
-  const searchQuery = document.getElementById('search-query').value.toLowerCase();
-  const categoryFilter = document.getElementById('category-filter').value;
-  const locationFilter = document.getElementById('location-filter').value;
-  const dateFilter = document.getElementById('date-filter').value;
-  
-  let filteredDocuments = documents.filter(doc => {
+  e.preventDefault()
+
+  const searchQuery = document.getElementById("search-query").value.toLowerCase()
+  const categoryFilter = document.getElementById("category-filter").value
+  const locationFilter = document.getElementById("location-filter").value
+  const dateFilter = document.getElementById("date-filter").value
+
+  const filteredDocuments = documents.filter((doc) => {
     // Search query
-    const matchesQuery = doc.title.toLowerCase().includes(searchQuery) || 
-                         doc.description.toLowerCase().includes(searchQuery) ||
-                         doc.ownerName.toLowerCase().includes(searchQuery);
-    
+    const matchesQuery =
+      doc.title.toLowerCase().includes(searchQuery) ||
+      doc.description.toLowerCase().includes(searchQuery) ||
+      doc.ownerName.toLowerCase().includes(searchQuery)
+
     // Category filter
-    const matchesCategory = categoryFilter === 'all' || doc.category === categoryFilter;
-    
+    const matchesCategory = categoryFilter === "all" || doc.category === categoryFilter
+
     // Location filter
-    const matchesLocation = locationFilter === 'all' || doc.location === locationFilter;
-    
-// Date filter
-    let matchesDate = true;
-    if (dateFilter !== 'all') {
-      const docDate = new Date(doc.reportedAt);
-      const now = new Date();
-      
+    const matchesLocation = locationFilter === "all" || doc.location === locationFilter
+
+    // Date filter
+    let matchesDate = true
+    if (dateFilter !== "all") {
+      const docDate = new Date(doc.reportedAt)
+      const now = new Date()
+
       switch (dateFilter) {
-        case 'today':
-          matchesDate = docDate.toDateString() === now.toDateString();
-          break;
-        case 'week':
-          const weekAgo = new Date(now.setDate(now.getDate() - 7));
-          matchesDate = docDate >= weekAgo;
-          break;
-        case 'month':
-          const monthAgo = new Date(now.setMonth(now.getMonth() - 1));
-          matchesDate = docDate >= monthAgo;
-          break;
+        case "today":
+          matchesDate = docDate.toDateString() === now.toDateString()
+          break
+        case "week":
+          const weekAgo = new Date(now.setDate(now.getDate() - 7))
+          matchesDate = docDate >= weekAgo
+          break
+        case "month":
+          const monthAgo = new Date(now.setMonth(now.getMonth() - 1))
+          matchesDate = docDate >= monthAgo
+          break
       }
     }
-    
-    return matchesQuery && matchesCategory && matchesLocation && matchesDate;
-  });
-  
-  displaySearchResultsFunc(filteredDocuments);
+
+    return matchesQuery && matchesCategory && matchesLocation && matchesDate
+  })
+
+  displaySearchResultsFunc(filteredDocuments)
 }
 
 // Handle home search
 function handleHomeSearch(e) {
-  e.preventDefault();
-  
-  const searchQuery = document.getElementById('home-search-input').value.toLowerCase();
-  
+  e.preventDefault()
+
+  const searchQuery = document.getElementById("home-search-input").value.toLowerCase()
+
   // Filter documents based on search query
-  let filteredDocuments = documents.filter(doc => {
-    return doc.title.toLowerCase().includes(searchQuery) || 
-           doc.description.toLowerCase().includes(searchQuery) ||
-           doc.ownerName.toLowerCase().includes(searchQuery);
-  });
-  
+  const filteredDocuments = documents.filter((doc) => {
+    return (
+      doc.title.toLowerCase().includes(searchQuery) ||
+      doc.description.toLowerCase().includes(searchQuery) ||
+      doc.ownerName.toLowerCase().includes(searchQuery)
+    )
+  })
+
   // Show search results section
-  const searchResultsSection = document.getElementById('home-search-results-section');
+  const searchResultsSection = document.getElementById("home-search-results-section")
   if (searchResultsSection) {
-    searchResultsSection.style.display = 'block';
+    searchResultsSection.style.display = "block"
   }
-  
+
   // Display search results
-  displayHomeSearchResultsFunc(filteredDocuments);
+  displayHomeSearchResultsFunc(filteredDocuments)
 }
 
 // Display search results
 function displaySearchResultsFunc(results) {
-  const resultsContainer = document.getElementById('search-results');
-  const resultsCount = document.getElementById('results-count');
-  
+  const resultsContainer = document.getElementById("search-results")
+  const resultsCount = document.getElementById("results-count")
+
   if (resultsContainer) {
     if (results.length === 0) {
       resultsContainer.innerHTML = `
@@ -2862,15 +3548,15 @@ function displaySearchResultsFunc(results) {
           <h3>No documents found</h3>
           <p>Try adjusting your search criteria or check back later.</p>
         </div>
-      `;
+      `
     } else {
-      let html = '<div class="results-list">';
-      
-      results.forEach(doc => {
-        const category = categories.find(cat => cat.id === doc.category);
-        const location = locations.find(loc => loc.id === doc.location);
-        const reporter = users.find(user => user.id === doc.reportedBy);
-        
+      let html = '<div class="results-list">'
+
+      results.forEach((doc) => {
+        const category = categories.find((cat) => cat.id === doc.category)
+        const location = locations.find((loc) => loc.id === doc.location)
+        const reporter = users.find((user) => user.id === doc.reportedBy)
+
         html += `
           <div class="result-item">
             <div class="result-header">
@@ -2882,14 +3568,14 @@ function displaySearchResultsFunc(results) {
                 <i class="fas fa-folder"></i>
                 <div>
                   <strong>Category</strong>
-                  <div>${category ? category.name : 'Unknown'}</div>
+                  <div>${category ? category.name : "Unknown"}</div>
                 </div>
               </div>
               <div class="result-detail">
                 <i class="fas fa-map-marker-alt"></i>
                 <div>
                   <strong>Location</strong>
-                  <div>${location ? location.name : 'Unknown'}</div>
+                  <div>${location ? location.name : "Unknown"}</div>
                 </div>
               </div>
               <div class="result-detail">
@@ -2903,7 +3589,7 @@ function displaySearchResultsFunc(results) {
                 <i class="fas fa-user-edit"></i>
                 <div>
                   <strong>Reported By</strong>
-                  <div>${reporter ? reporter.name : 'Unknown'}</div>
+                  <div>${reporter ? reporter.name : "Unknown"}</div>
                 </div>
               </div>
               <div class="result-detail">
@@ -2915,30 +3601,37 @@ function displaySearchResultsFunc(results) {
               </div>
             </div>
             <div class="result-actions">
-              ${currentUser && currentUser.role === 'reportee' ? 
-                `<button class="btn btn-primary claim-document-btn" data-id="${doc.id}">Claim Document</button>` : ''}
-              ${currentUser && (currentUser.role === 'admin' || currentUser.role === 'agent' || currentUser.id === doc.reportedBy) ? 
-                `<button class="btn btn-secondary edit-document-btn" data-id="${doc.id}">Edit</button>
-                 <button class="btn btn-danger delete-document-btn" data-id="${doc.id}">Delete</button>` : ''}
+              ${
+                currentUser && currentUser.role === "reportee"
+                  ? `<button class="btn btn-primary claim-document-btn" data-id="${doc.id}">Claim Document</button>`
+                  : ""
+              }
+              ${
+                currentUser &&
+                (currentUser.role === "admin" || currentUser.role === "agent" || currentUser.id === doc.reportedBy)
+                  ? `<button class="btn btn-secondary edit-document-btn" data-id="${doc.id}">Edit</button>
+                 <button class="btn btn-danger delete-document-btn" data-id="${doc.id}">Delete</button>`
+                  : ""
+              }
             </div>
           </div>
-        `;
-      });
-      
-      html += '</div>';
-      resultsContainer.innerHTML = html;
+        `
+      })
+
+      html += "</div>"
+      resultsContainer.innerHTML = html
     }
   }
-  
+
   if (resultsCount) {
-    resultsCount.textContent = `${results.length} document${results.length !== 1 ? 's' : ''} found`;
+    resultsCount.textContent = `${results.length} document${results.length !== 1 ? "s" : ""} found`
   }
 }
 
 // Display home search results
 function displayHomeSearchResultsFunc(results) {
-  const resultsContainer = document.getElementById('home-search-results');
-  
+  const resultsContainer = document.getElementById("home-search-results")
+
   if (resultsContainer) {
     if (results.length === 0) {
       resultsContainer.innerHTML = `
@@ -2947,14 +3640,14 @@ function displayHomeSearchResultsFunc(results) {
           <h3>No documents found</h3>
           <p>Try adjusting your search criteria or check back later.</p>
         </div>
-      `;
+      `
     } else {
-      let html = '<div class="results-list">';
-      
-      results.forEach(doc => {
-        const category = categories.find(cat => cat.id === doc.category);
-        const location = locations.find(loc => loc.id === doc.location);
-        
+      let html = '<div class="results-list">'
+
+      results.forEach((doc) => {
+        const category = categories.find((cat) => cat.id === doc.category)
+        const location = locations.find((loc) => loc.id === doc.location)
+
         html += `
           <div class="result-item">
             <div class="result-header">
@@ -2966,14 +3659,14 @@ function displayHomeSearchResultsFunc(results) {
                 <i class="fas fa-folder"></i>
                 <div>
                   <strong>Category</strong>
-                  <div>${category ? category.name : 'Unknown'}</div>
+                  <div>${category ? category.name : "Unknown"}</div>
                 </div>
               </div>
               <div class="result-detail">
                 <i class="fas fa-map-marker-alt"></i>
                 <div>
                   <strong>Location</strong>
-                  <div>${location ? location.name : 'Unknown'}</div>
+                  <div>${location ? location.name : "Unknown"}</div>
                 </div>
               </div>
               <div class="result-detail">
@@ -2988,11 +3681,11 @@ function displayHomeSearchResultsFunc(results) {
               <button class="btn btn-primary view-details-btn" onclick="showLoginRequiredModal()">View Details</button>
             </div>
           </div>
-        `;
-      });
-      
-      html += '</div>';
-      resultsContainer.innerHTML = html;
+        `
+      })
+
+      html += "</div>"
+      resultsContainer.innerHTML = html
     }
   }
 }
@@ -3000,34 +3693,34 @@ function displayHomeSearchResultsFunc(results) {
 // Load search page
 function loadSearchPage() {
   // Populate category filter
-  const categoryFilter = document.getElementById('category-filter');
+  const categoryFilter = document.getElementById("category-filter")
   if (categoryFilter) {
-    categoryFilter.innerHTML = '<option value="all">All Categories</option>';
-    
-    categories.forEach(category => {
-      categoryFilter.innerHTML += `<option value="${category.id}">${category.name}</option>`;
-    });
+    categoryFilter.innerHTML = '<option value="all">All Categories</option>'
+
+    categories.forEach((category) => {
+      categoryFilter.innerHTML += `<option value="${category.id}">${category.name}</option>`
+    })
   }
-  
+
   // Populate location filter
-  const locationFilter = document.getElementById('location-filter');
+  const locationFilter = document.getElementById("location-filter")
   if (locationFilter) {
-    locationFilter.innerHTML = '<option value="all">All Locations</option>';
-    
-    locations.forEach(location => {
-      locationFilter.innerHTML += `<option value="${location.id}">${location.name}</option>`;
-    });
+    locationFilter.innerHTML = '<option value="all">All Locations</option>'
+
+    locations.forEach((location) => {
+      locationFilter.innerHTML += `<option value="${location.id}">${location.name}</option>`
+    })
   }
 }
 
 // Load locations page
 function loadLocationsPage() {
-  const locationsContainer = document.getElementById('locations-container');
-  
+  const locationsContainer = document.getElementById("locations-container")
+
   if (locationsContainer) {
-    let html = '';
-    
-    locations.forEach(location => {
+    let html = ""
+
+    locations.forEach((location) => {
       html += `
         <div class="location-card">
           <div class="location-image">
@@ -3049,51 +3742,51 @@ function loadLocationsPage() {
             </div>
           </div>
         </div>
-      `;
-    });
-    
-    locationsContainer.innerHTML = html;
+      `
+    })
+
+    locationsContainer.innerHTML = html
   }
 }
 
 // Load dashboard
 function loadDashboard() {
   if (!currentUser) {
-    showPageFunc('home');
-    return;
+    showPageFunc("home")
+    return
   }
-  
+
   // Load dashboard based on user role
   switch (currentUser.role) {
-    case 'admin':
-      loadAdminDashboard();
-      break;
-    case 'agent':
-      loadAgentDashboard();
-      break;
-    case 'reporter':
-      loadReporterDashboard();
-      break;
-    case 'reportee':
-      loadReporteeDashboard();
-      break;
+    case "admin":
+      loadAdminDashboard()
+      break
+    case "agent":
+      loadAgentDashboard()
+      break
+    case "reporter":
+      loadReporterDashboard()
+      break
+    case "reportee":
+      loadReporteeDashboard()
+      break
   }
 }
 
 // Load admin dashboard
 function loadAdminDashboard() {
-  const dashboardContent = document.getElementById('dashboard-content');
-  
+  const dashboardContent = document.getElementById("dashboard-content")
+
   if (dashboardContent) {
     // Get dashboard stats
-    const totalDocuments = documents.length;
-    const pendingDocuments = documents.filter(doc => doc.status === 'pending').length;
-    const claimedDocuments = documents.filter(doc => doc.status === 'claimed').length;
-    const totalUsers = users.length;
-    const totalRevenue = calculateTotalRevenue();
-    
+    const totalDocuments = documents.length
+    const pendingDocuments = documents.filter((doc) => doc.status === "pending").length
+    const claimedDocuments = documents.filter((doc) => doc.status === "claimed").length
+    const totalUsers = users.length
+    const totalRevenue = calculateTotalRevenue()
+
     // Create dashboard HTML
-    let html = `
+    const html = `
       <div class="dashboard-welcome">
         <h2>Welcome, ${currentUser.name}</h2>
         <p>Here's an overview of your system</p>
@@ -3143,17 +3836,17 @@ function loadAdminDashboard() {
           <div class="revenue-cards">
             <div class="revenue-card">
               <h4>Total Revenue</h4>
-              <div class="amount" id="period-revenue">$${calculatePeriodRevenue('week').toFixed(2)}</div>
+              <div class="amount" id="period-revenue">$${calculatePeriodRevenue("week").toFixed(2)}</div>
               <div class="change positive"><i class="fas fa-arrow-up"></i> 12.5% from previous period</div>
             </div>
             <div class="revenue-card">
               <h4>Reporter Fees</h4>
-              <div class="amount" id="reporter-revenue">$${calculateReporterRevenue('week').toFixed(2)}</div>
+              <div class="amount" id="reporter-revenue">$${calculateReporterRevenue("week").toFixed(2)}</div>
               <div class="change positive"><i class="fas fa-arrow-up"></i> 8.3% from previous period</div>
             </div>
             <div class="revenue-card">
               <h4>Reportee Fees</h4>
-              <div class="amount" id="reportee-revenue">$${calculateReporteeRevenue('week').toFixed(2)}</div>
+              <div class="amount" id="reportee-revenue">$${calculateReporteeRevenue("week").toFixed(2)}</div>
               <div class="change positive"><i class="fas fa-arrow-up"></i> 15.2% from previous period</div>
             </div>
           </div>
@@ -3210,27 +3903,29 @@ function loadAdminDashboard() {
         <button class="btn btn-primary" onclick="showPageFunc('locations')">Manage Locations</button>
         <button class="btn btn-primary" onclick="showPageFunc('users')">Manage Users</button>
       </div>
-    `;
-    
-    dashboardContent.innerHTML = html;
-    
+    `
+
+    dashboardContent.innerHTML = html
+
     // Initialize revenue stats
-    updateRevenueStats('week');
+    updateRevenueStats("week")
   }
 }
 
 // Load agent dashboard
 function loadAgentDashboard() {
-  const dashboardContent = document.getElementById('dashboard-content');
-  
+  const dashboardContent = document.getElementById("dashboard-content")
+
   if (dashboardContent) {
     // Get dashboard stats
-    const totalHandled = documents.filter(doc => doc.handledBy === currentUser.id).length;
-    const pendingDocuments = documents.filter(doc => doc.status === 'pending').length;
-    const claimedDocuments = documents.filter(doc => doc.status === 'claimed' && doc.handledBy === currentUser.id).length;
-    
+    const totalHandled = documents.filter((doc) => doc.handledBy === currentUser.id).length
+    const pendingDocuments = documents.filter((doc) => doc.status === "pending").length
+    const claimedDocuments = documents.filter(
+      (doc) => doc.status === "claimed" && doc.handledBy === currentUser.id,
+    ).length
+
     // Create dashboard HTML
-    let html = `
+    const html = `
       <div class="dashboard-welcome">
         <h2>Welcome, ${currentUser.name}</h2>
         <p>Here's an overview of your activities</p>
@@ -3286,25 +3981,29 @@ function loadAgentDashboard() {
         <button class="btn btn-primary" onclick="showPageFunc('report-document')">Report New Document</button>
         <button class="btn btn-primary" onclick="showPageFunc('search')">Search Documents</button>
       </div>
-    `;
-    
-    dashboardContent.innerHTML = html;
+    `
+
+    dashboardContent.innerHTML = html
   }
 }
 
 // Load reporter dashboard
 function loadReporterDashboard() {
-  const dashboardContent = document.getElementById('dashboard-content');
-  
+  const dashboardContent = document.getElementById("dashboard-content")
+
   if (dashboardContent) {
     // Get dashboard stats
-    const totalReported = documents.filter(doc => doc.reportedBy === currentUser.id).length;
-    const pendingDocuments = documents.filter(doc => doc.status === 'pending' && doc.reportedBy === currentUser.id).length;
-    const claimedDocuments = documents.filter(doc => doc.status === 'claimed' && doc.reportedBy === currentUser.id).length;
-    const totalEarnings = calculateReporterEarnings(currentUser.id);
-    
+    const totalReported = documents.filter((doc) => doc.reportedBy === currentUser.id).length
+    const pendingDocuments = documents.filter(
+      (doc) => doc.status === "pending" && doc.reportedBy === currentUser.id,
+    ).length
+    const claimedDocuments = documents.filter(
+      (doc) => doc.status === "claimed" && doc.reportedBy === currentUser.id,
+    ).length
+    const totalEarnings = calculateReporterEarnings(currentUser.id)
+
     // Create dashboard HTML
-    let html = `
+    const html = `
       <div class="dashboard-welcome">
         <h2>Welcome, ${currentUser.name}</h2>
         <p>Here's an overview of your reporting activities</p>
@@ -3378,23 +4077,23 @@ function loadReporterDashboard() {
         <button class="btn btn-primary" onclick="showPageFunc('report-document')">Report New Document</button>
         <button class="btn btn-primary" onclick="showPageFunc('search')">Search Documents</button>
       </div>
-    `;
-    
-    dashboardContent.innerHTML = html;
+    `
+
+    dashboardContent.innerHTML = html
   }
 }
 
 // Load reportee dashboard
 function loadReporteeDashboard() {
-  const dashboardContent = document.getElementById('dashboard-content');
-  
+  const dashboardContent = document.getElementById("dashboard-content")
+
   if (dashboardContent) {
     // Get dashboard stats
-    const totalClaimed = documents.filter(doc => doc.claimedBy === currentUser.id).length;
-    const totalFees = calculateReporteeFees(currentUser.id);
-    
+    const totalClaimed = documents.filter((doc) => doc.claimedBy === currentUser.id).length
+    const totalFees = calculateReporteeFees(currentUser.id)
+
     // Create dashboard HTML
-    let html = `
+    const html = `
       <div class="dashboard-welcome">
         <h2>Welcome, ${currentUser.name}</h2>
         <p>Here's an overview of your claimed documents</p>
@@ -3437,35 +4136,35 @@ function loadReporteeDashboard() {
       <div class="dashboard-actions">
         <button class="btn btn-primary" onclick="showPageFunc('search')">Search Documents</button>
       </div>
-    `;
-    
-    dashboardContent.innerHTML = html;
+    `
+
+    dashboardContent.innerHTML = html
   }
 }
 
 // Get recent documents HTML
 function getRecentDocumentsHTML(limit) {
   // Sort documents by reported date (newest first)
-  const sortedDocuments = [...documents].sort((a, b) => new Date(b.reportedAt) - new Date(a.reportedAt));
-  
+  const sortedDocuments = [...documents].sort((a, b) => new Date(b.reportedAt) - new Date(a.reportedAt))
+
   // Limit to specified number
-  const recentDocuments = sortedDocuments.slice(0, limit);
-  
+  const recentDocuments = sortedDocuments.slice(0, limit)
+
   if (recentDocuments.length === 0) {
-    return `<tr><td colspan="6" style="text-align: center;">No documents found</td></tr>`;
+    return `<tr><td colspan="6" style="text-align: center;">No documents found</td></tr>`
   }
-  
-  let html = '';
-  
-  recentDocuments.forEach(doc => {
-    const category = categories.find(cat => cat.id === doc.category);
-    const location = locations.find(loc => loc.id === doc.location);
-    
+
+  let html = ""
+
+  recentDocuments.forEach((doc) => {
+    const category = categories.find((cat) => cat.id === doc.category)
+    const location = locations.find((loc) => loc.id === doc.location)
+
     html += `
       <tr>
         <td>${doc.title}</td>
-        <td>${category ? category.name : 'Unknown'}</td>
-        <td>${location ? location.name : 'Unknown'}</td>
+        <td>${category ? category.name : "Unknown"}</td>
+        <td>${location ? location.name : "Unknown"}</td>
         <td><span class="status ${doc.status}">${doc.status.charAt(0).toUpperCase() + doc.status.slice(1)}</span></td>
         <td>${formatDate(doc.reportedAt)}</td>
         <td>
@@ -3473,27 +4172,27 @@ function getRecentDocumentsHTML(limit) {
           <button class="btn-icon delete-document-btn" data-id="${doc.id}" title="Delete"><i class="fas fa-trash"></i></button>
         </td>
       </tr>
-    `;
-  });
-  
-  return html;
+    `
+  })
+
+  return html
 }
 
 // Get recent users HTML
 function getRecentUsersHTML(limit) {
   // Sort users by created date (newest first)
-  const sortedUsers = [...users].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-  
+  const sortedUsers = [...users].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+
   // Limit to specified number
-  const recentUsers = sortedUsers.slice(0, limit);
-  
+  const recentUsers = sortedUsers.slice(0, limit)
+
   if (recentUsers.length === 0) {
-    return `<tr><td colspan="5" style="text-align: center;">No users found</td></tr>`;
+    return `<tr><td colspan="5" style="text-align: center;">No users found</td></tr>`
   }
-  
-  let html = '';
-  
-  recentUsers.forEach(user => {
+
+  let html = ""
+
+  recentUsers.forEach((user) => {
     html += `
       <tr>
         <td>${user.name}</td>
@@ -3505,35 +4204,35 @@ function getRecentUsersHTML(limit) {
           <button class="btn-icon delete-user-btn" data-id="${user.id}" title="Delete"><i class="fas fa-trash"></i></button>
         </td>
       </tr>
-    `;
-  });
-  
-  return html;
+    `
+  })
+
+  return html
 }
 
 // Get reporter documents HTML
 function getReporterDocumentsHTML(reporterId) {
   // Filter documents by reporter ID
-  const reporterDocuments = documents.filter(doc => doc.reportedBy === reporterId);
-  
+  const reporterDocuments = documents.filter((doc) => doc.reportedBy === reporterId)
+
   if (reporterDocuments.length === 0) {
-    return `<tr><td colspan="6" style="text-align: center;">No documents reported yet</td></tr>`;
+    return `<tr><td colspan="6" style="text-align: center;">No documents reported yet</td></tr>`
   }
-  
+
   // Sort by reported date (newest first)
-  reporterDocuments.sort((a, b) => new Date(b.reportedAt) - new Date(a.reportedAt));
-  
-  let html = '';
-  
-  reporterDocuments.forEach(doc => {
-    const category = categories.find(cat => cat.id === doc.category);
-    const location = locations.find(loc => loc.id === doc.location);
-    
+  reporterDocuments.sort((a, b) => new Date(b.reportedAt) - new Date(a.reportedAt))
+
+  let html = ""
+
+  reporterDocuments.forEach((doc) => {
+    const category = categories.find((cat) => cat.id === doc.category)
+    const location = locations.find((loc) => loc.id === doc.location)
+
     html += `
       <tr>
         <td>${doc.title}</td>
-        <td>${category ? category.name : 'Unknown'}</td>
-        <td>${location ? location.name : 'Unknown'}</td>
+        <td>${category ? category.name : "Unknown"}</td>
+        <td>${location ? location.name : "Unknown"}</td>
         <td><span class="status ${doc.status}">${doc.status.charAt(0).toUpperCase() + doc.status.slice(1)}</span></td>
         <td>${formatDate(doc.reportedAt)}</td>
         <td>
@@ -3541,1075 +4240,594 @@ function getReporterDocumentsHTML(reporterId) {
           <button class="btn-icon delete-document-btn" data-id="${doc.id}" title="Delete"><i class="fas fa-trash"></i></button>
         </td>
       </tr>
-    `;
-  });
-  
-  return html;
+    `
+  })
+
+  return html
 }
 
 // Get reporter earnings HTML
 function getReporterEarningsHTML(reporterId) {
   // Filter transactions by reporter ID and type
   const reporterTransactions = transactions.filter(
-    trans => trans.userId === reporterId && trans.type === 'reporter_fee'
-  );
-  
+    (trans) => trans.userId === reporterId && trans.type === "reporter_fee",
+  )
+
   if (reporterTransactions.length === 0) {
-    return `<tr><td colspan="4" style="text-align: center;">No earnings yet</td></tr>`;
+    return `<tr><td colspan="4" style="text-align: center;">No earnings yet</td></tr>`
   }
-  
+
   // Sort by date (newest first)
-  reporterTransactions.sort((a, b) => new Date(b.date) - new Date(a.date));
-  
-  let html = '';
-  
-  reporterTransactions.forEach(trans => {
-    const doc = documents.find(d => d.id === trans.documentId);
-    
+  reporterTransactions.sort((a, b) => new Date(b.date) - new Date(a.date))
+
+  let html = ""
+
+  reporterTransactions.forEach((trans) => {
+    const doc = documents.find((d) => d.id === trans.documentId)
+
     html += `
       <tr>
-        <td>${doc ? doc.title : 'Unknown Document'}</td>
+        <td>${doc ? doc.title : "Unknown Document"}</td>
         <td>$${trans.amount.toFixed(2)}</td>
         <td>${formatDate(trans.date)}</td>
         <td><span class="status ${trans.status}">${trans.status.charAt(0).toUpperCase() + trans.status.slice(1)}</span></td>
       </tr>
-    `;
-  });
-  
-  return html;
+    `
+  })
+
+  return html
 }
 
 // Get reportee documents HTML
 function getReporteeDocumentsHTML(reporteeId) {
   // Filter documents by claimed by ID
-  const reporteeDocuments = documents.filter(doc => doc.claimedBy === reporteeId);
-  
+  const reporteeDocuments = documents.filter((doc) => doc.claimedBy === reporteeId)
+
   if (reporteeDocuments.length === 0) {
-    return `<tr><td colspan="5" style="text-align: center;">No documents claimed yet</td></tr>`;
+    return `<tr><td colspan="5" style="text-align: center;">No documents claimed yet</td></tr>`
   }
-  
+
   // Sort by claimed date (newest first)
-  reporteeDocuments.sort((a, b) => new Date(b.claimedAt) - new Date(a.claimedAt));
-  
-  let html = '';
-  
-  reporteeDocuments.forEach(doc => {
-    const category = categories.find(cat => cat.id === doc.category);
-    const location = locations.find(loc => loc.id === doc.location);
-    
+  reporteeDocuments.sort((a, b) => new Date(b.claimedAt) - new Date(a.claimedAt))
+
+  let html = ""
+
+  reporteeDocuments.forEach((doc) => {
+    const category = categories.find((cat) => cat.id === doc.category)
+    const location = locations.find((loc) => loc.id === doc.location)
+
     html += `
       <tr>
         <td>${doc.title}</td>
-        <td>${category ? category.name : 'Unknown'}</td>
-        <td>${location ? location.name : 'Unknown'}</td>
+        <td>${category ? category.name : "Unknown"}</td>
+        <td>${location ? location.name : "Unknown"}</td>
         <td>${formatDate(doc.claimedAt)}</td>
         <td>$${doc.fee.toFixed(2)}</td>
       </tr>
-    `;
-  });
-  
-  return html;
+    `
+  })
+
+  return html
 }
 
 // Calculate total revenue
 function calculateTotalRevenue() {
-  return transactions.reduce((total, trans) => total + trans.amount, 0);
+  return transactions.reduce((total, trans) => total + trans.amount, 0)
 }
 
 // Calculate period revenue
 function calculatePeriodRevenue(period) {
-  const now = new Date();
-  let startDate;
-  
+  const now = new Date()
+  let startDate
+
   switch (period) {
-    case 'week':
-      startDate = new Date(now.setDate(now.getDate() - 7));
-      break;
-    case 'month':
-      startDate = new Date(now.setMonth(now.getMonth() - 1));
-      break;
-    case 'year':
-      startDate = new Date(now.setFullYear(now.getFullYear() - 1));
-      break;
+    case "week":
+      startDate = new Date(now.setDate(now.getDate() - 7))
+      break
+    case "month":
+      startDate = new Date(now.setMonth(now.getMonth() - 1))
+      break
+    case "year":
+      startDate = new Date(now.setFullYear(now.getFullYear() - 1))
+      break
     default:
-      startDate = new Date(now.setDate(now.getDate() - 7));
+      startDate = new Date(now.setDate(now.getDate() - 7))
   }
-  
+
   return transactions
-    .filter(trans => new Date(trans.date) >= startDate)
-    .reduce((total, trans) => total + trans.amount, 0);
+    .filter((trans) => new Date(trans.date) >= startDate)
+    .reduce((total, trans) => total + trans.amount, 0)
 }
 
 // Calculate reporter revenue
 function calculateReporterRevenue(period) {
-  const now = new Date();
-  let startDate;
-  
+  const now = new Date()
+  let startDate
+
   switch (period) {
-    case 'week':
-      startDate = new Date(now.setDate(now.getDate() - 7));
-      break;
-    case 'month':
-      startDate = new Date(now.setMonth(now.getMonth() - 1));
-      break;
-    case 'year':
-      startDate = new Date(now.setFullYear(now.getFullYear() - 1));
-      break;
+    case "week":
+      startDate = new Date(now.setDate(now.getDate() - 7))
+      break
+    case "month":
+      startDate = new Date(now.setMonth(now.getMonth() - 1))
+      break
+    case "year":
+      startDate = new Date(now.setFullYear(now.getFullYear() - 1))
+      break
     default:
-      startDate = new Date(now.setDate(now.getDate() - 7));
+      startDate = new Date(now.setDate(now.getDate() - 7))
   }
-  
+
   return transactions
-    .filter(trans => new Date(trans.date) >= startDate && trans.type === 'reporter_fee')
-    .reduce((total, trans) => total + trans.amount, 0);
+    .filter((trans) => new Date(trans.date) >= startDate && trans.type === "reporter_fee")
+    .reduce((total, trans) => total + trans.amount, 0)
 }
 
 // Calculate reportee revenue
 function calculateReporteeRevenue(period) {
-  const now = new Date();
-  let startDate;
-  
+  const now = new Date()
+  let startDate
+
   switch (period) {
-    case 'week':
-      startDate = new Date(now.setDate(now.getDate() - 7));
-      break;
-    case 'month':
-      startDate = new Date(now.setMonth(now.getMonth() - 1));
-      break;
-    case 'year':
-      startDate = new Date(now.setFullYear(now.getFullYear() - 1));
-      break;
+    case "week":
+      startDate = new Date(now.setDate(now.getDate() - 7))
+      break
+    case "month":
+      startDate = new Date(now.setMonth(now.getMonth() - 1))
+      break
+    case "year":
+      startDate = new Date(now.setFullYear(now.getFullYear() - 1))
+      break
     default:
-      startDate = new Date(now.setDate(now.getDate() - 7));
+      startDate = new Date(now.setDate(now.getDate() - 7))
   }
-  
+
   return transactions
-    .filter(trans => new Date(trans.date) >= startDate && trans.type === 'reportee_fee')
-    .reduce((total, trans) => total + trans.amount, 0);
+    .filter((trans) => new Date(trans.date) >= startDate && trans.type === "reportee_fee")
+    .reduce((total, trans) => total + trans.amount, 0)
 }
 
 // Update revenue stats
 function updateRevenueStats(period) {
-  const periodRevenueElement = document.getElementById('period-revenue');
-  const reporterRevenueElement = document.getElementById('reporter-revenue');
-  const reporteeRevenueElement = document.getElementById('reportee-revenue');
-  
+  const periodRevenueElement = document.getElementById("period-revenue")
+  const reporterRevenueElement = document.getElementById("reporter-revenue")
+  const reporteeRevenueElement = document.getElementById("reportee-revenue")
+
   if (periodRevenueElement) {
-    periodRevenueElement.textContent = `$${calculatePeriodRevenue(period).toFixed(2)}`;
+    periodRevenueElement.textContent = `$${calculatePeriodRevenue(period).toFixed(2)}`
   }
-  
+
   if (reporterRevenueElement) {
-    reporterRevenueElement.textContent = `$${calculateReporterRevenue(period).toFixed(2)}`;
+    reporterRevenueElement.textContent = `$${calculateReporterRevenue(period).toFixed(2)}`
   }
-  
+
   if (reporteeRevenueElement) {
-    reporteeRevenueElement.textContent = `$${calculateReporteeRevenue(period).toFixed(2)}`;
+    reporteeRevenueElement.textContent = `$${calculateReporteeRevenue(period).toFixed(2)}`
   }
 }
 
 // Calculate reporter earnings
 function calculateReporterEarnings(reporterId) {
   return transactions
-    .filter(trans => trans.userId === reporterId && trans.type === 'reporter_fee')
-    .reduce((total, trans) => total + trans.amount, 0);
+    .filter((trans) => trans.userId === reporterId && trans.type === "reporter_fee")
+    .reduce((total, trans) => total + trans.amount, 0)
 }
 
 // Calculate reportee fees
 function calculateReporteeFees(reporteeId) {
   return transactions
-    .filter(trans => trans.userId === reporteeId && trans.type === 'reportee_fee')
-    .reduce((total, trans) => total + trans.amount, 0);
+    .filter((trans) => trans.userId === reporteeId && trans.type === "reportee_fee")
+    .reduce((total, trans) => total + trans.amount, 0)
 }
 
 // Show login required modal
 function showLoginRequiredModal() {
-  const modalContainer = document.getElementById('login-required-modal-container');
-  const modal = document.getElementById('login-required-modal');
-  
+  const modalContainer = document.getElementById("login-required-modal-container")
+  const modal = document.getElementById("login-required-modal")
+
   if (modalContainer && modal) {
-    modalContainer.style.display = 'block';
-    modal.style.display = 'block';
+    modalContainer.style.display = "block"
+    modal.style.display = "block"
   }
 }
 
 // Show claim document modal
 function showClaimDocumentModal(documentId) {
   if (!currentUser) {
-    showLoginRequiredModal();
-    return;
+    showLoginRequiredModal()
+    return
   }
-  
-  if (currentUser.role !== 'reportee') {
-    showToast('Only document owners can claim documents!', 'error');
-    return;
+
+  if (currentUser.role !== "reportee") {
+    showToast("Only document owners can claim documents!", "error")
+    return
   }
-  
-  const doc = documents.find(d => d.id === documentId);
-  
+
+  const doc = documents.find((d) => d.id === documentId)
+
   if (!doc) {
-    showToast('Document not found!', 'error');
-    return;
+    showToast("Document not found!", "error")
+    return
   }
-  
-  if (doc.status === 'claimed') {
-    showToast('This document has already been claimed!', 'error');
-    return;
+
+  if (doc.status === "claimed") {
+    showToast("This document has already been claimed!", "error")
+    return
   }
-  
-  const modalContainer = document.getElementById('claim-document-modal-container');
-  const modal = document.getElementById('claim-document-modal');
-  const form = document.getElementById('claim-document-form');
-  
+
+  const modalContainer = document.getElementById("claim-document-modal-container")
+  const modal = document.getElementById("claim-document-modal")
+  const form = document.getElementById("claim-document-form")
+
   if (modalContainer && modal && form) {
     // Set document ID in form
-    form.setAttribute('data-id', documentId);
-    
+    form.setAttribute("data-id", documentId)
+
     // Set document details in modal
-    const docTitle = document.getElementById('claim-document-title');
-    const docCategory = document.getElementById('claim-document-category');
-    const docLocation = document.getElementById('claim-document-location');
-    const docFee = document.getElementById('claim-document-fee');
-    
-    if (docTitle) docTitle.textContent = doc.title;
-    
-    const category = categories.find(cat => cat.id === doc.category);
-    if (docCategory && category) docCategory.textContent = category.name;
-    
-    const location = locations.find(loc => loc.id === doc.location);
-    if (docLocation && location) docLocation.textContent = location.name;
-    
-    if (docFee) docFee.textContent = `$${doc.fee.toFixed(2)}`;
-    
+    const docTitle = document.getElementById("claim-document-title")
+    const docCategory = document.getElementById("claim-document-category")
+    const docLocation = document.getElementById("claim-document-location")
+    const docFee = document.getElementById("claim-document-fee")
+
+    if (docTitle) docTitle.textContent = doc.title
+
+    const category = categories.find((cat) => cat.id === doc.category)
+    if (docCategory && category) docCategory.textContent = category.name
+
+    const location = locations.find((loc) => loc.id === doc.location)
+    if (docLocation && location) docLocation.textContent = location.name
+
+    if (docFee) docFee.textContent = `$${doc.fee.toFixed(2)}`
+
     // Show modal
-    modalContainer.style.display = 'block';
-    modal.style.display = 'block';
+    modalContainer.style.display = "block"
+    modal.style.display = "block"
   }
 }
 
 // Handle claim document
 function handleClaimDocument(e) {
-  e.preventDefault();
-  
+  e.preventDefault()
+
   if (!currentUser) {
-    showLoginRequiredModal();
-    return;
+    showLoginRequiredModal()
+    return
   }
-  
-  const documentId = e.target.getAttribute('data-id');
-  const doc = documents.find(d => d.id === documentId);
-  
+
+  const documentId = e.target.getAttribute("data-id")
+  const doc = documents.find((d) => d.id === documentId)
+
   if (!doc) {
-    showToast('Document not found!', 'error');
-    return;
+    showToast("Document not found!", "error")
+    return
   }
-  
+
   // Update document
-  doc.status = 'claimed';
-  doc.claimedBy = currentUser.id;
-  doc.claimedAt = new Date().toISOString();
-  
+  doc.status = "claimed"
+  doc.claimedBy = currentUser.id
+  doc.claimedAt = new Date().toISOString()
+
   // Create transaction for reportee fee
   const reporteeTransaction = {
     id: generateId(),
-    type: 'reportee_fee',
+    type: "reportee_fee",
     amount: doc.fee * 0.7, // 70% of fee goes to system
     documentId: doc.id,
     userId: currentUser.id,
     date: new Date().toISOString(),
-    status: 'completed'
-  };
-  
-  transactions.push(reporteeTransaction);
-  
+    status: "completed",
+  }
+
+  transactions.push(reporteeTransaction)
+
   // Save data
-  saveData('documents');
-  saveData('transactions');
-  
+  saveData("documents")
+  saveData("transactions")
+
   // Close modal
-  closeAllModals();
-  
-  showToast('Document claimed successfully!', 'success');
-  
+  closeAllModals()
+
+  showToast("Document claimed successfully!", "success")
+
   // Reload dashboard if on dashboard page
-  if (document.getElementById('dashboard-page').classList.contains('active')) {
-    loadDashboard();
+  if (document.getElementById("dashboard-page").classList.contains("active")) {
+    loadDashboard()
   }
 }
 
 // Show edit document modal
 function showEditDocumentModal(documentId) {
   if (!currentUser) {
-    showLoginRequiredModal();
-    return;
+    showLoginRequiredModal()
+    return
   }
-  
-  const doc = documents.find(d => d.id === documentId);
-  
+
+  const doc = documents.find((d) => d.id === documentId)
+
   if (!doc) {
-    showToast('Document not found!', 'error');
-    return;
+    showToast("Document not found!", "error")
+    return
   }
-  
+
   // Check if user has permission to edit
-  if (currentUser.role !== 'admin' && currentUser.role !== 'agent' && currentUser.id !== doc.reportedBy) {
-    showToast('You do not have permission to edit this document!', 'error');
-    return;
+  if (currentUser.role !== "admin" && currentUser.role !== "agent" && currentUser.id !== doc.reportedBy) {
+    showToast("You do not have permission to edit this document!", "error")
+    return
   }
-  
-  const modalContainer = document.getElementById('edit-document-modal-container');
-  const modal = document.getElementById('edit-document-modal');
-  const form = document.getElementById('edit-document-form');
-  
+
+  const modalContainer = document.getElementById("edit-document-modal-container")
+  const modal = document.getElementById("edit-document-modal")
+  const form = document.getElementById("edit-document-form")
+
   if (modalContainer && modal && form) {
     // Set document ID in form
-    form.setAttribute('data-id', documentId);
-    
+    form.setAttribute("data-id", documentId)
+
     // Set document details in form
-    const titleInput = document.getElementById('edit-document-title');
-    const categorySelect = document.getElementById('edit-document-category');
-    const locationSelect = document.getElementById('edit-document-location');
-    const descriptionInput = document.getElementById('edit-document-description');
-    const ownerNameInput = document.getElementById('edit-document-owner-name');
-    const ownerContactInput = document.getElementById('edit-document-owner-contact');
-    const statusSelect = document.getElementById('edit-document-status');
-    
-    if (titleInput) titleInput.value = doc.title;
-    
+    const titleInput = document.getElementById("edit-document-title")
+    const categorySelect = document.getElementById("edit-document-category")
+    const locationSelect = document.getElementById("edit-document-location")
+    const descriptionInput = document.getElementById("edit-document-description")
+    const ownerNameInput = document.getElementById("edit-document-owner-name")
+    const ownerContactInput = document.getElementById("edit-document-owner-contact")
+    const statusSelect = document.getElementById("edit-document-status")
+
+    if (titleInput) titleInput.value = doc.title
+
     if (categorySelect) {
-      categorySelect.innerHTML = '';
-      categories.forEach(category => {
-        const option = document.createElement('option');
-        option.value = category.id;
-        option.textContent = category.name;
-        if (category.id === doc.category) option.selected = true;
-        categorySelect.appendChild(option);
-      });
+      categorySelect.innerHTML = ""
+      categories.forEach((category) => {
+        const option = document.createElement("option")
+        option.value = category.id
+        option.textContent = category.name
+        if (category.id === doc.category) option.selected = true
+        categorySelect.appendChild(option)
+      })
     }
-    
+
     if (locationSelect) {
-      locationSelect.innerHTML = '';
-      locations.forEach(location => {
-        const option = document.createElement('option');
-        option.value = location.id;
-        option.textContent = location.name;
-        if (location.id === doc.location) option.selected = true;
-        locationSelect.appendChild(option);
-      });
+      locationSelect.innerHTML = ""
+      locations.forEach((location) => {
+        const option = document.createElement("option")
+        option.value = location.id
+        option.textContent = location.name
+        if (location.id === doc.location) option.selected = true
+        locationSelect.appendChild(option)
+      })
     }
-    
-    if (descriptionInput) descriptionInput.value = doc.description;
-    if (ownerNameInput) ownerNameInput.value = doc.ownerName;
-    if (ownerContactInput) ownerContactInput.value = doc.ownerContact;
-    
+
+    if (descriptionInput) descriptionInput.value = doc.description
+    if (ownerNameInput) ownerNameInput.value = doc.ownerName
+    if (ownerContactInput) ownerContactInput.value = doc.ownerContact
+
     if (statusSelect) {
-      statusSelect.innerHTML = '';
-      const statuses = ['pending', 'claimed', 'expired'];
-      statuses.forEach(status => {
-        const option = document.createElement('option');
-        option.value = status;
-        option.textContent = status.charAt(0).toUpperCase() + status.slice(1);
-        if (status === doc.status) option.selected = true;
-        statusSelect.appendChild(option);
-      });
+      statusSelect.innerHTML = ""
+      const statuses = ["pending", "claimed", "expired"]
+      statuses.forEach((status) => {
+        const option = document.createElement("option")
+        option.value = status
+        option.textContent = status.charAt(0).toUpperCase() + status.slice(1)
+        if (status === doc.status) option.selected = true
+        statusSelect.appendChild(option)
+      })
     }
-    
+
     // Show modal
-    modalContainer.style.display = 'block';
-    modal.style.display = 'block';
+    modalContainer.style.display = "block"
+    modal.style.display = "block"
   }
 }
 
 // Handle edit document
 function handleEditDocument(e) {
-  e.preventDefault();
-  
+  e.preventDefault()
+
   if (!currentUser) {
-    showLoginRequiredModal();
-    return;
+    showLoginRequiredModal()
+    return
   }
-  
-  const documentId = e.target.getAttribute('data-id');
-  const doc = documents.find(d => d.id === documentId);
-  
+
+  const documentId = e.target.getAttribute("data-id")
+  const doc = documents.find((d) => d.id === documentId)
+
   if (!doc) {
-    showToast('Document not found!', 'error');
-    return;
+    showToast("Document not found!", "error")
+    return
   }
-  
+
   // Get form values
-  const title = document.getElementById('edit-document-title').value;
-  const category = document.getElementById('edit-document-category').value;
-  const location = document.getElementById('edit-document-location').value;
-  const description = document.getElementById('edit-document-description').value;
-  const ownerName = document.getElementById('edit-document-owner-name').value;
-  const ownerContact = document.getElementById('edit-document-owner-contact').value;
-  const status = document.getElementById('edit-document-status').value;
-  
+  const title = document.getElementById("edit-document-title").value
+  const category = document.getElementById("edit-document-category").value
+  const location = document.getElementById("edit-document-location").value
+  const description = document.getElementById("edit-document-description").value
+  const ownerName = document.getElementById("edit-document-owner-name").value
+  const ownerContact = document.getElementById("edit-document-owner-contact").value
+  const status = document.getElementById("edit-document-status").value
+
   // Update document
-  doc.title = title;
-  doc.category = category;
-  doc.location = location;
-  doc.description = description;
-  doc.ownerName = ownerName;
-  doc.ownerContact = ownerContact;
-  doc.status = status;
-  
+  doc.title = title
+  doc.category = category
+  doc.location = location
+  doc.description = description
+  doc.ownerName = ownerName
+  doc.ownerContact = ownerContact
+  doc.status = status
+
   // Save data
-  saveData('documents');
-  
+  saveData("documents")
+
   // Close modal
-  closeAllModals();
-  
-  showToast('Document updated successfully!', 'success');
-  
+  closeAllModals()
+
+  showToast("Document updated successfully!", "success")
+
   // Reload current page
-  if (document.getElementById('dashboard-page').classList.contains('active')) {
-    loadDashboard();
-  } else if (document.getElementById('search-page').classList.contains('active')) {
-    const searchForm = document.getElementById('search-form');
-    if (searchForm) searchForm.dispatchEvent(new Event('submit'));
+  if (document.getElementById("dashboard-page").classList.contains("active")) {
+    loadDashboard()
+  } else if (document.getElementById("search-page").classList.contains("active")) {
+    const searchForm = document.getElementById("search-form")
+    if (searchForm) searchForm.dispatchEvent(new Event("submit"))
   }
 }
 
 // Delete document
 function deleteDocument(documentId) {
   if (!currentUser) {
-    showLoginRequiredModal();
-    return;
+    showLoginRequiredModal()
+    return
   }
-  
-  const docIndex = documents.findIndex(d => d.id === documentId);
-  
+
+  const docIndex = documents.findIndex((d) => d.id === documentId)
+
   if (docIndex === -1) {
-    showToast('Document not found!', 'error');
-    return;
+    showToast("Document not found!", "error")
+    return
   }
-  
-  const doc = documents[docIndex];
-  
+
+  const doc = documents[docIndex]
+
   // Check if user has permission to delete
-  if (currentUser.role !== 'admin' && currentUser.role !== 'agent' && currentUser.id !== doc.reportedBy) {
-    showToast('You do not have permission to delete this document!', 'error');
-    return;
+  if (currentUser.role !== "admin" && currentUser.role !== "agent" && currentUser.id !== doc.reportedBy) {
+    showToast("You do not have permission to delete this document!", "error")
+    return
   }
-  
+
   // Remove document
-  documents.splice(docIndex, 1);
-  
+  documents.splice(docIndex, 1)
+
   // Remove related transactions
-  transactions = transactions.filter(t => t.documentId !== documentId);
-  
+  transactions = transactions.filter((t) => t.documentId !== documentId)
+
   // Save data
-  saveData('documents');
-  
-  showToast('Document deleted successfully!', 'success');
-  
+  saveData("documents")
+
+  showToast("Document deleted successfully!", "success")
+
   // Reload current page
-  if (document.getElementById('dashboard-page').classList.contains('active')) {
-    loadDashboard();
-  } else if (document.getElementById('search-page').classList.contains('active')) {
-    const searchForm = document.getElementById('search-form');
-    if (searchForm) searchForm.dispatchEvent(new Event('submit'));
+  if (document.getElementById("dashboard-page").classList.contains("active")) {
+    loadDashboard()
+  } else if (document.getElementById("search-page").classList.contains("active")) {
+    const searchForm = document.getElementById("search-form")
+    if (searchForm) searchForm.dispatchEvent(new Event("submit"))
   }
 }
 
 // Handle category submit
 function handleCategorySubmit(e) {
-  e.preventDefault();
-  
-  if (!currentUser || currentUser.role !== 'admin') {
-    showToast('Only administrators can manage categories!', 'error');
-    return;
+  e.preventDefault()
+
+  if (!currentUser || currentUser.role !== "admin") {
+    showToast("Only administrators can manage categories!", "error")
+    return
   }
-  
-  const categoryId = e.target.getAttribute('data-id');
-  const name = document.getElementById('category-name').value;
-  const description = document.getElementById('category-description').value;
-  const fee = parseFloat(document.getElementById('category-fee').value);
-  
+
+  const categoryId = e.target.getAttribute("data-id")
+  const name = document.getElementById("category-name").value
+  const description = document.getElementById("category-description").value
+  const fee = Number.parseFloat(document.getElementById("category-fee").value)
+
   if (categoryId) {
     // Edit existing category
-    const category = categories.find(c => c.id === categoryId);
-    
+    const category = categories.find((c) => c.id === categoryId)
+
     if (!category) {
-      showToast('Category not found!', 'error');
-      return;
+      showToast("Category not found!", "error")
+      return
     }
-    
-    category.name = name;
-    category.description = description;
-    category.fee = fee;
-    
-    showToast('Category updated successfully!', 'success');
+
+    category.name = name
+    category.description = description
+    category.fee = fee
+
+    showToast("Category updated successfully!", "success")
   } else {
     // Add new category
     const newCategory = {
       id: generateId(),
       name,
       description,
-      fee
-    };
-    
-    categories.push(newCategory);
-    
-    showToast('Category added successfully!', 'success');
+      fee,
+    }
+
+    categories.push(newCategory)
+
+    showToast("Category added successfully!", "success")
   }
-  
+
   // Save data
-  saveData('categories');
-  
+  saveData("categories")
+
   // Reset form
-  e.target.reset();
-  e.target.removeAttribute('data-id');
-  
+  e.target.reset()
+  e.target.removeAttribute("data-id")
+
   // Update categories list
-  loadCategoriesPage();
+  loadCategoriesPage()
 }
 
 // Show edit category modal
 function showEditCategoryModal(categoryId) {
-  if (!currentUser || currentUser.role !== 'admin') {
-    showToast('Only administrators can manage categories!', 'error');
-    return;
+  if (!currentUser || currentUser.role !== "admin") {
+    showToast("Only administrators can manage categories!", "error")
+    return
   }
-  
-  const category = categories.find(c => c.id === categoryId);
-  
+
+  const category = categories.find((c) => c.id === categoryId)
+
   if (!category) {
-    showToast('Category not found!', 'error');
-    return;
+    showToast("Category not found!", "error")
+    return
   }
-  
-  const form = document.getElementById('category-form');
-  const nameInput = document.getElementById('category-name');
-  const descriptionInput = document.getElementById('category-description');
-  const feeInput = document.getElementById('category-fee');
-  
+
+  const form = document.getElementById("category-form")
+  const nameInput = document.getElementById("category-name")
+  const descriptionInput = document.getElementById("category-description")
+  const feeInput = document.getElementById("category-fee")
+
   if (form && nameInput && descriptionInput && feeInput) {
-    form.setAttribute('data-id', categoryId);
-    nameInput.value = category.name;
-    descriptionInput.value = category.description;
-    feeInput.value = category.fee;
-    
+    form.setAttribute("data-id", categoryId)
+    nameInput.value = category.name
+    descriptionInput.value = category.description
+    feeInput.value = category.fee
+
     // Scroll to form
-    form.scrollIntoView({ behavior: 'smooth' });
+    form.scrollIntoView({ behavior: "smooth" })
   }
 }
 
 // Delete category
 function deleteCategory(categoryId) {
-  if (!currentUser || currentUser.role !== 'admin') {
-    showToast('Only administrators can manage categories!', 'error');
-    return;
+  if (!currentUser || currentUser.role !== "admin") {
+    showToast("Only administrators can manage categories!", "error")
+    return
   }
-  
-  const categoryIndex = categories.findIndex(c => c.id === categoryId);
-  
+
+  const categoryIndex = categories.findIndex((c) => c.id === categoryId)
+
   if (categoryIndex === -1) {
-    showToast('Category not found!', 'error');
-    return;
+    showToast("Category not found!", "error")
+    return
   }
-  
+
   // Check if category is in use
-  if (documents.some(doc => doc.category === categoryId)) {
-    showToast('Cannot delete category that is in use!', 'error');
-    return;
+  if (documents.some((doc) => doc.category === categoryId)) {
+    showToast("Cannot delete category that is in use!", "error")
+    return
   }
-  
+
   // Remove category
-  categories.splice(categoryIndex, 1);
-  
+  categories.splice(categoryIndex, 1)
+
   // Save data
-  saveData('categories');
-  
-  showToast('Category deleted successfully!', 'success');
-  
+  saveData("categories")
+
+  showToast("Category deleted successfully!", "success")
+
   // Reload categories page
-  loadCategoriesPage();
+  loadCategoriesPage()
 }
 
 // Load categories page
-function loadCategoriesPage() {
-  const categoriesContainer = document.getElementById('categories-container');
-  
-  if (categoriesContainer) {
-    let html = '<div class="dashboard-table">';
-    html += `
-      <table>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Description</th>
-            <th>Fee</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-    `;
-    
-    if (categories.length === 0) {
-      html += `<tr><td colspan="4" style="text-align: center;">No categories found</td></tr>`;
-    } else {
-      categories.forEach(category => {
-        html += `
-          <tr>
-            <td>${category.name}</td>
-            <td>${category.description}</td>
-            <td>$${category.fee.toFixed(2)}</td>
-            <td>
-              <button class="btn-icon edit-category-btn" data-id="${category.id}" title="Edit"><i class="fas fa-edit"></i></button>
-              <button class="btn-icon delete-category-btn" data-id="${category.id}" title="Delete"><i class="fas fa-trash"></i></button>
-            </td>
-          </tr>
-        `;
-      });
-    }
-    
-    html += `
-        </tbody>
-      </table>
-    </div>
-    `;
-    
-    categoriesContainer.innerHTML = html;
-  }
-}
+function loadCategoriesPage()
+\
 
-// Handle location submit
-function handleLocationSubmit(e) {
-  e.preventDefault();
-  
-  if (!currentUser || currentUser.role !== 'admin') {
-    showToast('Only administrators can manage locations!', 'error');
-    return;
-  }
-  
-  const locationId = e.target.getAttribute('data-id');
-  const name = document.getElementById('location-name').value;
-  const address = document.getElementById('location-address').value;
-  const city = document.getElementById('location-city').value;
-  const phone = document.getElementById('location-phone').value;
-  const email = document.getElementById('location-email').value;
-  const hours = document.getElementById('location-hours').value;
-  const type = document.getElementById('location-type').value;
-  
-  if (locationId) {
-    // Edit existing location
-    const location = locations.find(l => l.id === locationId);
-    
-    if (!location) {
-      showToast('Location not found!', 'error');
-      return;
-    }
-    
-    location.name = name;
-    location.address = address;
-    location.city = city;
-    location.phone = phone;
-    location.email = email;
-    location.hours = hours;
-    location.type = type;
-    
-    showToast('Location updated successfully!', 'success');
-  } else {
-    // Add new location
-    const newLocation = {
-      id: generateId(),
-      name,
-      address,
-      city,
-      phone,
-      email,
-      hours,
-      type
-    };
-    
-    locations.push(newLocation);
-    
-    showToast('Location added successfully!', 'success');
-  }
-  
-  // Save data
-  saveData('locations');
-  
-  // Reset form
-  e.target.reset();
-  e.target.removeAttribute('data-id');
-  
-  // Update locations list
-  loadLocationsManagementPage();
-}
-
-// Show edit location modal
-function showEditLocationModal(locationId) {
-  if (!currentUser || currentUser.role !== 'admin') {
-    showToast('Only administrators can manage locations!', 'error');
-    return;
-  }
-  
-  const location = locations.find(l => l.id === locationId);
-  
-  if (!location) {
-    showToast('Location not found!', 'error');
-    return;
-  }
-  
-  const form = document.getElementById('location-form');
-  const nameInput = document.getElementById('location-name');
-  const addressInput = document.getElementById('location-address');
-  const cityInput = document.getElementById('location-city');
-  const phoneInput = document.getElementById('location-phone');
-  const emailInput = document.getElementById('location-email');
-  const hoursInput = document.getElementById('location-hours');
-  const typeInput = document.getElementById('location-type');
-  
-  if (form && nameInput && addressInput && cityInput && phoneInput && emailInput && hoursInput && typeInput) {
-    form.setAttribute('data-id', locationId);
-    nameInput.value = location.name;
-    addressInput.value = location.address;
-    cityInput.value = location.city;
-    phoneInput.value = location.phone;
-    emailInput.value = location.email;
-    hoursInput.value = location.hours;
-    typeInput.value = location.type;
-    
-    // Scroll to form
-    form.scrollIntoView({ behavior: 'smooth' });
-  }
-}
-
-// Delete location
-function deleteLocation(locationId) {
-  if (!currentUser || currentUser.role !== 'admin') {
-    showToast('Only administrators can manage locations!', 'error');
-    return;
-  }
-  
-  const locationIndex = locations.findIndex(l => l.id === locationId);
-  
-  if (locationIndex === -1) {
-    showToast('Location not found!', 'error');
-    return;
-  }
-  
-  // Check if location is in use
-  if (documents.some(doc => doc.location === locationId)) {
-    showToast('Cannot delete location that is in use!', 'error');
-    return;
-  }
-  
-  // Remove location
-  locations.splice(locationIndex, 1);
-  
-  // Save data
-  saveData('locations');
-  
-  showToast('Location deleted successfully!', 'success');
-  
-  // Reload locations page
-  loadLocationsManagementPage();
-}
-
-// Load locations management page
-function loadLocationsManagementPage() {
-  const locationsContainer = document.getElementById('locations-management-container');
-  
-  if (locationsContainer) {
-    let html = '<div class="dashboard-table">';
-    html += `
-      <table>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Address</th>
-            <th>City</th>
-            <th>Phone</th>
-            <th>Type</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-    `;
-    
-    if (locations.length === 0) {
-      html += `<tr><td colspan="6" style="text-align: center;">No locations found</td></tr>`;
-    } else {
-      locations.forEach(location => {
-        html += `
-          <tr>
-            <td>${location.name}</td>
-            <td>${location.address}</td>
-            <td>${location.city}</td>
-            <td>${location.phone}</td>
-            <td>${location.type}</td>
-            <td>
-              <button class="btn-icon edit-location-btn" data-id="${location.id}" title="Edit"><i class="fas fa-edit"></i></button>
-              <button class="btn-icon delete-location-btn" data-id="${location.id}" title="Delete"><i class="fas fa-trash"></i></button>
-            </td>
-          </tr>
-        `;
-      });
-    }
-    
-    html += `
-        </tbody>
-      </table>
-    </div>
-    `;
-    
-    locationsContainer.innerHTML = html;
-  }
-}
-
-// Handle user submit
-function handleUserSubmit(e) {
-  e.preventDefault();
-  
-  if (!currentUser || currentUser.role !== 'admin') {
-    showToast('Only administrators can manage users!', 'error');
-    return;
-  }
-  
-  const userId = e.target.getAttribute('data-id');
-  const name = document.getElementById('user-name').value;
-  const email = document.getElementById('user-email').value;
-  const password = document.getElementById('user-password').value;
-  const role = document.getElementById('user-role').value;
-  
-  if (userId) {
-    // Edit existing user
-    const user = users.find(u => u.id === userId);
-    
-    if (!user) {
-      showToast('User not found!', 'error');
-      return;
-    }
-    
-    user.name = name;
-    user.email = email;
-    if (password) user.password = password;
-    user.role = role;
-    
-    showToast('User updated successfully!', 'success');
-  } else {
-    // Check if email already exists
-    if (users.some(u => u.email === email)) {
-      showToast('Email already registered!', 'error');
-      return;
-    }
-    
-    // Add new user
-    const newUser = {
-      id: generateId(),
-      name,
-      email,
-      password,
-      role,
-      createdAt: new Date().toISOString()
-    };
-    
-    users.push(newUser);
-    
-    showToast('User added successfully!', 'success');
-  }
-  
-  // Save data
-  saveData('users');
-  
-  // Reset form
-  e.target.reset();
-  e.target.removeAttribute('data-id');
-  
-  // Update users list
-  loadUsersPage();
-}
-
-// Show edit user modal
-function showEditUserModal(userId) {
-  if (!currentUser || currentUser.role !== 'admin') {
-    showToast('Only administrators can manage users!', 'error');
-    return;
-  }
-  
-  const user = users.find(u => u.id === userId);
-  
-  if (!user) {
-    showToast('User not found!', 'error');
-    return;
-  }
-  
-  const form = document.getElementById('user-form');
-  const nameInput = document.getElementById('user-name');
-  const emailInput = document.getElementById('user-email');
-  const passwordInput = document.getElementById('user-password');
-  const passwordLabel = document.querySelector('label[for="user-password"]');
-  const roleInput = document.getElementById('user-role');
-  
-  if (form && nameInput && emailInput && passwordInput && passwordLabel && roleInput) {
-    form.setAttribute('data-id', userId);
-    nameInput.value = user.name;
-    emailInput.value = user.email;
-    passwordInput.value = '';
-    passwordLabel.textContent = 'Password (leave blank to keep current)';
-    
-    // Set role
-    roleInput.value = user.role;
-    
-    // Scroll to form
-    form.scrollIntoView({ behavior: 'smooth' });
-  }
-}
-
-// Delete user
-function deleteUser(userId) {
-  if (!currentUser || currentUser.role !== 'admin') {
-    showToast('Only administrators can manage users!', 'error');
-    return;
-  }
-  
-  // Prevent deleting yourself
-  if (userId === currentUser.id) {
-    showToast('You cannot delete your own account!', 'error');
-    return;
-  }
-  
-  const userIndex = users.findIndex(u => u.id === userId);
-  
-  if (userIndex === -1) {
-    showToast('User not found!', 'error');
-    return;
-  }
-  
-  // Remove user
-  users.splice(userIndex, 1);
-  
-  // Save data
-  saveData('users');
-  
-  showToast('User deleted successfully!', 'success');
-  
-  // Reload users page
-  loadUsersPage();
-}
-
-// Load users page
-function loadUsersPage() {
-  const usersContainer = document.getElementById('users-container');
-  
-  if (usersContainer) {
-    let html = '<div class="dashboard-table">';
-    html += `
-      <table>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Role</th>
-            <th>Joined On</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-    `;
-    
-    if (users.length === 0) {
-      html += `<tr><td colspan="5" style="text-align: center;">No users found</td></tr>`;
-    } else {
-      users.forEach(user => {
-        html += `
-          <tr>
-            <td>${user.name}</td>
-            <td>${user.email}</td>
-            <td>${user.role.charAt(0).toUpperCase() + user.role.slice(1)}</td>
-            <td>${formatDate(user.createdAt)}</td>
-            <td>
-              <button class="btn-icon edit-user-btn" data-id="${user.id}" title="Edit"><i class="fas fa-edit"></i></button>
-              ${user.id !== currentUser.id ? `<button class="btn-icon delete-user-btn" data-id="${user.id}" title="Delete"><i class="fas fa-trash"></i></button>` : ''}
-            </td>
-          </tr>
-        `;
-      });
-    }
-    
-    html += `
-        </tbody>
-      </table>
-    </div>
-    `;
-    
-    usersContainer.innerHTML = html;
-  }
-}
-
-// Close all modals
-function closeAllModals() {
-  const modalContainers = document.querySelectorAll('.modal-container');
-  const modals = document.querySelectorAll('.modal');
-  
-  modalContainers.forEach(container => {
-    container.style.display = 'none';
-  });
-  
-  modals.forEach(modal => {
-    modal.style.display = 'none';
-  });
-}
-
-// Show toast notification
-function showToast(message, type = 'info') {
-  // Create toast element if it doesn't exist
-  let toast = document.querySelector('.toast');
-  
-  if (!toast) {
-    toast = document.createElement('div');
-    toast.className = 'toast';
-    document.body.appendChild(toast);
-  }
-  
-  // Set toast content
-  toast.innerHTML = `
-    <div class="toast-content toast-${type}">
-      <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'}"></i>
-      <div>
-        <strong>${type.charAt(0).toUpperCase() + type.slice(1)}</strong>
-        <p>${message}</p>
-      </div>
-    </div>
-    <button class="toast-close">&times;</button>
-  `;
-  
-  // Add visible class
-  toast.classList.add('toast-visible');
-  
-  // Add close button event listener
-  const closeBtn = toast.querySelector('.toast-close');
-  if (closeBtn) {
-    closeBtn.addEventListener('click', () => {
-      toast.classList.remove('toast-visible');
-      toast.classList.add('toast-hiding');
-    });
-  }
-  
-  // Auto hide after 5 seconds
-  setTimeout(() => {
-    if (toast) {
-      toast.classList.remove('toast-visible');
-      toast.classList.add('toast-hiding');
-    }
-  }, 5000);
-}
-
-// Format date
-function formatDate(dateString) {
-  const date = new Date(dateString);
-  return date.toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric'
-  });
-}
-
-// Generate ID
-function generateId() {
-  return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-}
